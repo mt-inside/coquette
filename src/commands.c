@@ -226,3 +226,17 @@ static int read_register_2bytes( engine_reg_t reg, int *out )
     free( data );
     return 0;
 }
+
+int peek_memory( uint16_t addr, uint8_t *out )
+{
+    unsigned len;
+    uint8_t *data;
+
+    read_frame_args( cmd_PEEK_MEMORY, &data, &len, 2, (addr & 0xff00) >> 8, addr & 0x00ff );
+    assert( len == 1 );
+
+    *out = *data;
+
+    free( data );
+    return 0;
+}
