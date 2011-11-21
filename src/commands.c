@@ -27,7 +27,6 @@ typedef enum
     cmd_PEEK_MEMORY = 0xc9, /* ROM or RAM. */
     cmd_READ_ECU_PART_NUMBER = 0xd0,
     cmd_READ_DTC = 0xd1
-    /* TODO */
 } cmd_t;
 
 typedef int (*scale_fn_t)( int in );
@@ -79,7 +78,30 @@ reg_info_t reg_infos[ ] =
     { &read_register_1byte,  &scale_id },
     /* 0x20 */ { NULL, NULL },
     { &read_register_1byte,  &scale_id },
-    /* TODO... */
+    { &read_register_2bytes, &scale_inj_time },
+    /* 0x23 */ { NULL, NULL },
+    /* 0x24 */ { NULL, NULL },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    /* 0x2b */ { NULL, NULL },
+    /* 0x2c */ { NULL, NULL },
+    /* 0x2d */ { NULL, NULL },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id }
 };
 
 

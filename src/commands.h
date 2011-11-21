@@ -47,12 +47,17 @@ typedef enum
     /* 0x20 */
     reg_engine_FLAGS3 = 0x21,
     reg_RH_INJ_PULSE_TIME = 0x22,
+    /* 0x23 */
+    /* 0x24 */
     reg_PURG_VOL_CTRL_VALVE = 0x25,
     reg_FUEL_TANK_TEMP = 0x26,
     reg_FPCM_DR_VOLT = 0x27,
     reg_WASTE_GATE_SOLENOID = 0x28,
     reg_BOOST = 0x29,
     reg_ENGINE_MOUNT = 0x2a,
+    /* 0x2b */
+    /* 0x2c */
+    /* 0x2d */
     reg_POSITION_COUNTER = 0x2e,
     reg_FUEL_LEVEL = 0x2f,
     reg_LH_FR_O2_HEATER = 0x30,
