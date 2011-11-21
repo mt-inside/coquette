@@ -4,28 +4,39 @@
 typedef enum
 {
     reg_TACHO = 0x00,
+    /* 0x01 */
     reg_RPM_REF = 0x02,
+    /* 0x03 */
     reg_LH_MAF = 0x04,
+    /* 0x05 */
     reg_RH_MAF = 0x06,
+    /* 0x07 */
     reg_engine_COOLANT_TEMP = 0x08,
     reg_LH_O2 = 0x09,
     reg_RH_O2 = 0x0a,
     reg_ROAD_SPEED = 0x0b,
     reg_BATT_VOLT = 0x0c,
     reg_TPS = 0x0d,
+    /* 0x0e */
     reg_FUEL_TEMP = 0x0f,
+    /* 0x10 */
     reg_INTAKE_TEMP = 0x11,
     reg_EXHAUST_TEMP = 0x12,
     reg_engine_FLAGS0 = 0x13,
     reg_LH_INJ_PULSE_TIME = 0x14,
+    /* 0x15 */
     reg_IGN_TIMING = 0x16,
     reg_IDLE_AIR_VALVE = 0x17,
+    /* 0x18 */
+    /* 0x19 */
     reg_LH_ALPHA = 0x1a,
     reg_RH_ALPHA = 0x1b,
     reg_LH_ALPHA_SELFLEARN = 0x1c,
     reg_RH_ALPHA_SELFLEARN = 0x1d,
     reg_engine_FLAGS1 = 0x1e,
+    /* 0x1f */
     reg_engine_FLAGS2 = 0x1f,
+    /* 0x20 */
     reg_engine_FLAGS3 = 0x21,
     reg_RH_INJ_PULSE_TIME = 0x22,
     reg_PURG_VOL_CTRL_VALVE = 0x25,

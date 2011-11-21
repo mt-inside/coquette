@@ -43,7 +43,34 @@ reg_info_t reg_infos[ ] =
     /* 0x05 */ { NULL, NULL },
     { &read_register_2bytes, &scale_maf },
     /* 0x07 */ { NULL, NULL },
-    { &read_register_1byte,  &scale_coolant_temp },
+    { &read_register_1byte,  &scale_temp },
+    { &read_register_1byte,  &scale_o2 },
+    { &read_register_1byte,  &scale_o2 },
+    { &read_register_1byte,  &scale_road_speed },
+    { &read_register_1byte,  &scale_batt_volt },
+    { &read_register_1byte,  &scale_tps },
+    /* 0x07 */ { NULL, NULL },
+    { &read_register_1byte,  &scale_temp },
+    /* 0x10 */ { NULL, NULL },
+    { &read_register_1byte,  &scale_temp },
+    { &read_register_1byte,  &scale_egt },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_2bytes, &scale_inj_time },
+    /* 0x15 */ { NULL, NULL },
+    { &read_register_1byte,  &scale_ign_time },
+    { &read_register_1byte,  &scale_aac_valve },
+    /* 0x18 */ { NULL, NULL },
+    /* 0x19 */ { NULL, NULL },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    { &read_register_1byte,  &scale_id },
+    /* 0x1f */ { NULL, NULL },
+    { &read_register_1byte,  &scale_id },
+    /* 0x20 */ { NULL, NULL },
+    { &read_register_1byte,  &scale_id },
+    /* TODO... */
 };
 
 
@@ -186,7 +213,12 @@ int read_ecu_part_no( ecu_part_no_t **part_no )
 /* TODO: deal with addressing aircon computer */
 int read_register( engine_reg_t reg, int *out )
 {
-    reg_info_t reg_info = reg_infos[ reg ];
+    reg_info_t reg_info;
+
+    printf("reg: %d\n", reg);
+    assert( reg < sizeof(reg_infos) / sizeof(reg_infos[0]) );
+
+    reg_info = reg_infos[ reg ];
 
     reg_info.reader( reg, out );
     *out = reg_info.scaler( *out );
