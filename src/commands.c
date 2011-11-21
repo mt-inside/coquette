@@ -19,25 +19,34 @@ typedef enum
     /* TODO */
 } cmd_t;
 
-static int read_frame( cmd_t cmd, uint8_t **data, unsigned *len )
+static int read_frame_inner( cmd_t cmd,
+                             uint8_t *args,  unsigned arg_len,
+                             uint8_t **data, unsigned *data_len )
 {
+    unsigned i;
     uint8_t out;
 
-    com_send_byte( cmd );
+    com_send_byte( (uint8_t)cmd );
+    for( i = 0; i < arg_len; ++i ) com_send_byte( args[i] );
     com_send_byte( c_end_of_request );
 
     com_read_byte( &out );
     assert( out == (uint8_t)~cmd );
+    for( i = 0; i < arg_len; ++i )
+    {
+        com_read_byte( &out );
+        assert( out == args[i] );
+    }
 
     com_read_byte( &out );
     assert( out == c_response_frame_start );
 
     com_read_byte( &out );
-    *len = out;
-    assert( *len > 0 );
+    *data_len = out;
+    assert( *data_len > 0 );
 
-    *data = malloc( *len );
-    com_read_bytes( *data, *len );
+    *data = malloc( *data_len );
+    com_read_bytes( *data, *data_len );
 
     /* ECU continues to steam... */
 
@@ -50,6 +59,19 @@ static int read_frame( cmd_t cmd, uint8_t **data, unsigned *len )
 
 
     return 0;
+}
+
+static int read_frame( cmd_t cmd,
+                       uint8_t **data, unsigned *data_len )
+{
+    return read_frame_inner( cmd, NULL, 0, data, data_len );
+}
+
+static int read_frame_arg( cmd_t cmd,
+                           uint8_t arg,
+                           uint8_t **data, unsigned *data_len )
+{
+    return read_frame_inner( cmd, &arg, 1, data, data_len );
 }
 
 int read_dtc( fault_report_t **faults )
