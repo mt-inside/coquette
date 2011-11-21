@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include "com/com.h"
 #include "commands.h"
@@ -59,10 +60,9 @@ static int read_bit( void )
 
 int main( int argc, char **argv )
 {
-    (void)argc;
-    (void)argv;
+    assert( argc == 2 );
 
-    com_init( NULL );
+    com_init( argv[1] );
     handshake( ecu_ENGINE );
 
     read_bit( );

@@ -5,4 +5,3 @@ add a layer where I can supply an arbitrary set of registers to watch. it should
 consider adding a layer where i can "poll" / "select" a set of registers, and only get change notifications.
 test com impl (python expect programme & session files? )
 real com impl (win, remember 8N1)
-take tty name as cmd line arg and use.
