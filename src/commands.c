@@ -321,6 +321,8 @@ int peek_memory( uint16_t addr, uint8_t *out )
     unsigned len;
     uint8_t *data;
 
+    assert( addr >= c_memory_start && addr <= c_memory_end );
+
     read_frame_args( cmd_PEEK_MEMORY, &data, &len, 2, (addr & 0xff00) >> 8, addr & 0x00ff );
     assert( len == 1 );
 
