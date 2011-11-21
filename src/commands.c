@@ -5,7 +5,7 @@
 
 #include "commands.h"
 #include "constants.h"
-#include "com.h"
+#include "com/com.h"
 
 
 typedef enum
@@ -115,7 +115,7 @@ int read_register( engine_reg_t reg, uint16_t *out )
 {
     unsigned len;
     uint8_t *data;
-    read_frame( cmd_READ_REGISTER, reg, &data, &len );
+    //read_frame( cmd_READ_REGISTER, reg, &data, &len );
 
 
     free( data );
