@@ -3,6 +3,19 @@
 #include "com.h"
 
 
+int com_init( char *tty_dev_name )
+{
+    (void)tty_dev_name;
+
+    return 0;
+}
+
+int com_finalise( void )
+{
+    return 0;
+}
+
+
 int com_send_byte( uint8_t byte )
 {
     printf( "COM_STDIO > 0x%02x\n", byte );

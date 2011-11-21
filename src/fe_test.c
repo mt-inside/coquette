@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "com/com.h"
 #include "commands.h"
 
 
