@@ -226,8 +226,18 @@ int read_register( engine_reg_t reg, int *out )
     return 0;
 }
 
+engine_reg_t engine_bit_regs[] = { reg_engine_FLAGS0, reg_engine_FLAGS1, reg_engine_FLAGS2, reg_engine_FLAGS3 };
 int read_flag( engine_bit_t flag, int *out )
 {
+    int data;
+    engine_reg_t reg = engine_bit_regs[ flag / 8 ];
+    unsigned offset = flag % 8;
+
+    read_register( reg, &data );
+
+    *out = ( data & ( 1 << offset ) ) >> offset;
+
+    return 0;
 }
 
 static int read_register_1byte( engine_reg_t reg, int *out )
