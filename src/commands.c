@@ -10,7 +10,7 @@
 #include "com/com.h"
 
 
-uint8_t *handshakes[] =
+const uint8_t *handshakes[] =
 {
     c_handshake_ecu,
     c_handshake_at,
@@ -164,7 +164,8 @@ static int read_frame_args( cmd_t cmd,
 int handshake( ecu_t ecu )
 {
     unsigned i;
-    const uint8_t *handshake = handshakes[ecu], out;
+    const uint8_t *handshake = handshakes[ecu];
+    uint8_t out;
 
     for( i = 0; i < 3; ++i )
     {
