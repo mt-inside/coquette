@@ -1,0 +1,13 @@
+OS integration (COM port reading AND TCP serving) - C
+
+== API (send_bytes, read_bytes, etc) ==
+
+Consult interface - C
+
+== API (read_dtc, poke_memory, etc) ==
+
+comms mechanisms (TCP, dll, etc). To be async, request-response.
+
+== comms (TCP, RPC, etc) ==
+
+UI (whatever OS / language / toolkit)

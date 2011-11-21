@@ -1,0 +1,5 @@
+number format
+commands inc sensor read
+handshake init and response
+test com impl
+real com impl (inc config to 8N1)
