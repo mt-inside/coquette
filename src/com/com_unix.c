@@ -15,19 +15,21 @@ int com_init( char *tty_dev_name )
     int ret = 1;
     struct termios *tios;
 
-    s_tty = open( tty_dev_name, O_RDWR | O_EXLOCK );
+    s_tty = open( tty_dev_name, O_RDWR | O_NOCTTY | O_EXLOCK );
 
     if( s_tty != -1 )
     {
-        tios = malloc( sizeof( struct termios ) );
+        tios = calloc( sizeof( struct termios ), 1 );
 
-        assert( tcgetattr( s_tty, tios ) );
+        /* Magic runes that equate to 8N1 */
+        tios->c_cflag = CS8 | CRTSCTS | CLOCAL | CREAD;
+        tios->c_iflag = 0;
+        tios->c_oflag = 0;
+        tios->c_lflag = 0;
 
-        /* Set to 8N1 */
-        tios->c_cflag &= ~CSIZE;  /* clear 5,6,7,8 char size bits */
-        tios->c_cflag |= CS8;     /* 8 bit chars */
-        tios->c_cflag &= ~CSTOPB; /* Disable 2 stop bit => enable 1 */
-        tios->c_cflag &= ~PARENB; /* No parity */
+        /* No waiting for time or multiple characters */
+        tios->c_cc[VTIME] = 0;
+        tion->c_cc[VMIN ] = 0
 
         /* 9600 baud */
         assert( !cfsetspeed( tios, B9600 ) );
