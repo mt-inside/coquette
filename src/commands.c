@@ -20,12 +20,13 @@ uint8_t *handshakes[] =
 
 typedef enum
 {
+    /* cmd_ACTIVATION = 0x0a, - Writing is not supported! */
     cmd_STOP = 0x30,
-    cmd_READ_DTC = 0xd1,
-    /* cmd_CLEAR_DTC = 0xc1; - This is not supported */
-    cmd_READ_ECU_PART_NUMBER = 0xd0,
     cmd_READ_REGISTER = 0x5a,
-    cmd_PEEK_MEMORY = 0xc9 /* ROM or RAM. */
+    /* cmd_CLEAR_DTC = 0xc1, - Writing is not supported! */
+    cmd_PEEK_MEMORY = 0xc9, /* ROM or RAM. */
+    cmd_READ_ECU_PART_NUMBER = 0xd0,
+    cmd_READ_DTC = 0xd1
     /* TODO */
 } cmd_t;
 
