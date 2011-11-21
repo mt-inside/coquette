@@ -5,7 +5,7 @@
 
 int com_send_byte( uint8_t byte )
 {
-    printf( "COM_STDIO > %#x\n", byte );
+    printf( "COM_STDIO > 0x%02x\n", byte );
     return 1;
 }
 
