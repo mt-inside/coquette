@@ -1,14 +1,6 @@
 #include <stdint.h>
 
 
-typedef uint16_t (*scale_fn_t)(uint16_t);
-
-typedef struct
-{
-    int two_bytes;
-    scale_fn_t scale_fn;
-} reg_info_t;
-
 typedef enum
 {
     reg_TACHO = 0x00,
@@ -74,7 +66,7 @@ typedef enum
     bit_P_REG_CTRL_VALVE = 0x16,
     bit_RH_LEAN = 0x1e,
     bit_LH_LEAN = 0x1f
-} engine_bits_t;
+} engine_bit_t;
 
 typedef enum
 {
@@ -136,3 +128,5 @@ typedef struct
 
 extern int read_dtc( fault_report_t **faults );
 extern void faults_free( fault_report_t *faults );
+extern int read_register( engine_reg_t reg, int *out );
+extern int read_flag( engine_bit_t flag, int *out );

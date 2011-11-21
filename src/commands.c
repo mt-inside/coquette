@@ -2,8 +2,10 @@
 #include <assert.h>
 #include <string.h>
 #include <stddef.h>
+#include <stdarg.h>
 
 #include "commands.h"
+#include "scalers.h"
 #include "constants.h"
 #include "com/com.h"
 
@@ -18,6 +20,32 @@ typedef enum
     cmd_PEEK_MEMORY = 0xc9 /* ROM or RAM. */
     /* TODO */
 } cmd_t;
+
+typedef int (*scale_fn_t)( int in );
+typedef int (*reader_fn_t)( engine_reg_t reg, int *out );
+typedef struct
+{
+    reader_fn_t reader;
+    scale_fn_t scaler;
+} reg_info_t;
+
+static int read_register_1byte(  engine_reg_t reg, int *out );
+static int read_register_2bytes( engine_reg_t reg, int *out );
+
+/* TODO: add unit info */
+reg_info_t reg_infos[ ] =
+{
+    { &read_register_2bytes, &scale_tacho },
+    /* 0x01 */ { NULL, NULL },
+    { &read_register_2bytes, &scale_rpm_ref },
+    /* 0x03 */ { NULL, NULL },
+    { &read_register_2bytes, &scale_maf },
+    /* 0x05 */ { NULL, NULL },
+    { &read_register_2bytes, &scale_maf },
+    /* 0x07 */ { NULL, NULL },
+    { &read_register_1byte,  &scale_coolant_temp },
+};
+
 
 static int read_frame_inner( cmd_t cmd,
                              uint8_t *args,  unsigned arg_len,
@@ -66,12 +94,35 @@ static int read_frame( cmd_t cmd,
 {
     return read_frame_inner( cmd, NULL, 0, data, data_len );
 }
-
 static int read_frame_arg( cmd_t cmd,
                            uint8_t arg,
                            uint8_t **data, unsigned *data_len )
 {
     return read_frame_inner( cmd, &arg, 1, data, data_len );
+}
+static int read_frame_args( cmd_t cmd,
+                            uint8_t **data, unsigned *data_len,
+                            unsigned args_len, ... )
+{
+    int ret;
+    unsigned i;
+    va_list va_args;
+    uint8_t *args;
+
+    va_start( va_args, args_len );
+
+    args = malloc( args_len );
+    for( i = 0; i < args_len; ++i )
+    {
+        /* ... promotes uint8_t to int */
+        args[ i ] = (uint8_t)va_arg( va_args, int );
+    }
+    ret = read_frame_inner( cmd, args, args_len, data, data_len );
+
+    free( args );
+    va_end( va_args );
+
+    return ret;
 }
 
 int read_dtc( fault_report_t **faults )
@@ -133,12 +184,44 @@ int read_ecu_part_no( ecu_part_no_t **part_no )
 }
 
 /* TODO: deal with addressing aircon computer */
-int read_register( engine_reg_t reg, uint16_t *out )
+int read_register( engine_reg_t reg, int *out )
+{
+    reg_info_t reg_info = reg_infos[ reg ];
+
+    reg_info.reader( reg, out );
+    *out = reg_info.scaler( *out );
+
+    return 0;
+}
+
+int read_flag( engine_bit_t flag, int *out )
+{
+}
+
+static int read_register_1byte( engine_reg_t reg, int *out )
 {
     unsigned len;
     uint8_t *data;
-    //read_frame( cmd_READ_REGISTER, reg, &data, &len );
 
+    read_frame_arg( cmd_READ_REGISTER, reg, &data, &len );
+    assert( len == 1 );
+
+    *out = *data;
+
+    free( data );
+    return 0;
+}
+
+static int read_register_2bytes( engine_reg_t reg, int *out )
+{
+    unsigned len;
+    uint8_t *data;
+
+    /* assume both registers are adjacent */
+    read_frame_args( cmd_READ_REGISTER, &data, &len, 2, reg, reg + 1 );
+    assert( len == 2 );
+
+    *out = data[1] | data[0] << 8;
 
     free( data );
     return 0;
