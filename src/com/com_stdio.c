@@ -23,12 +23,12 @@ int com_send_bytes( uint8_t *bytes, unsigned count )
 
 int com_read_byte( uint8_t *byte )
 {
-    int x;
+    unsigned x;
 
     printf( "COM STDIO < 0x" );
 
     scanf( "%x", &x );
-    *byte = x; /* rely on truncation */
+    *byte = (uint8_t)x;
 
     return 1;
 }
