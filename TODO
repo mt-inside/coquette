@@ -1,7 +1,8 @@
-number format
+ECU number format
 how to disconn from ecu to handshake another? Because handshakes start with two command-ends, I wonder if just send a new handshake?
 commands to other cpus (each cmd take an ecu and remember / switch if different) ?
 add a layer where I can supply an arbitrary set of registers to watch. it should use as many reads as necc to get all those registers, and return them.
 consider adding a layer where i can "poll" / "select" a set of registers, and only get change notifications.
-test com impl
-real com impl (win / mac) (inc config to 8N1)
+test com impl (python expect programme & session files? )
+real com impl (win, remember 8N1)
+take tty name as cmd line arg and use.
