@@ -122,7 +122,7 @@ int read_ecu_part_no( ecu_part_no_t **part_no )
     assert( len == 22 );
 
     *part_no = malloc( sizeof( ecu_part_no_t ) );
-    // FIXME: no no no, need to work out how these numbers come off the wire.
+    /* FIXME: no no no, need to work out how these numbers come off the wire. */
     memcpy( *part_no + offsetof(ecu_part_no_t, part1),  data +  2, 2 );
     (*part_no)->part2 = 0x23710;
     memcpy( *part_no + offsetof(ecu_part_no_t, sw_ver), data + 19, 4 );
