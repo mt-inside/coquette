@@ -2,8 +2,11 @@
 
 const unsigned c_baud_rate = 9600;
 
-const uint8_t c_handshake_host[] = { 0xff, 0xff, 0xef };
-const uint8_t c_handshake_ecu = 0x10;
+const uint8_t c_handshake_ecu[] =     { 0xff, 0xff, 0xef };
+const uint8_t c_handshake_at[]  =     { 0xff, 0xff, 0xea };
+const uint8_t c_handshake_hicas[]  =  { 0xff, 0xff, 0xe4 };
+const uint8_t c_handshake_aircon[]  = { 0xff, 0xff, 0xdf };
+const uint8_t c_handshake_response = 0x10;
 
 const uint8_t c_end_of_request = 0xf0;
 const uint8_t c_response_frame_start = 0xff;

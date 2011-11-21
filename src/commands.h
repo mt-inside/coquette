@@ -3,6 +3,14 @@
 
 typedef enum
 {
+    ecu_ENGINE,
+    ecu_AT,
+    ecu_HICAS,
+    ecu_AIRCON
+} ecu_t;
+
+typedef enum
+{
     reg_TACHO = 0x00,
     /* 0x01 */
     reg_RPM_REF = 0x02,
@@ -137,6 +145,7 @@ typedef struct
 } ecu_part_no_t;
 
 
+extern int handshake( ecu_t ecu );
 extern int read_dtc( fault_report_t **faults );
 extern void faults_free( fault_report_t *faults );
 extern int read_register( engine_reg_t reg, int *out );

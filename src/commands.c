@@ -10,6 +10,14 @@
 #include "com/com.h"
 
 
+uint8_t *handshakes[] =
+{
+    c_handshake_ecu,
+    c_handshake_at,
+    c_handshake_hicas,
+    c_handshake_aircon
+};
+
 typedef enum
 {
     cmd_STOP = 0x30,
@@ -150,6 +158,22 @@ static int read_frame_args( cmd_t cmd,
     va_end( va_args );
 
     return ret;
+}
+
+int handshake( ecu_t ecu )
+{
+    unsigned i;
+    const uint8_t *handshake = handshakes[ecu], out;
+
+    for( i = 0; i < 3; ++i )
+    {
+        com_send_byte( handshake[i] );
+    }
+
+    com_read_byte( &out );
+    assert( out == c_handshake_response );
+
+    return 0;
 }
 
 int read_dtc( fault_report_t **faults )
