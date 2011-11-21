@@ -6,7 +6,8 @@
 int com_send_byte( uint8_t byte )
 {
     printf( "COM_STDIO > 0x%02x\n", byte );
-    return 1;
+
+    return 0;
 }
 
 int com_send_bytes( uint8_t *bytes, unsigned count )
@@ -18,8 +19,9 @@ int com_send_bytes( uint8_t *bytes, unsigned count )
         com_send_byte( bytes[i] );
     }
 
-    return count;
+    return 0;
 }
+
 
 int com_read_byte( uint8_t *byte )
 {
@@ -30,9 +32,8 @@ int com_read_byte( uint8_t *byte )
     scanf( "%x", &x );
     *byte = (uint8_t)x;
 
-    return 1;
+    return 0;
 }
-
 
 int com_read_bytes( uint8_t *bytes, unsigned count )
 {
@@ -43,5 +44,5 @@ int com_read_bytes( uint8_t *bytes, unsigned count )
         com_read_byte( &(bytes[i]) );
     }
 
-    return count;
+    return 0;
 }
