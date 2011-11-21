@@ -240,7 +240,6 @@ int read_register( engine_reg_t reg, int *out )
 {
     reg_info_t reg_info;
 
-    printf("reg: %d\n", reg);
     assert( reg < sizeof(reg_infos) / sizeof(reg_infos[0]) );
 
     reg_info = reg_infos[ reg ];
