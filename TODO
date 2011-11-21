@@ -1,4 +1,6 @@
 number format
+add a layer where I can supply an arbitrary set of registers to watch. it should use as many reads as necc to get all those registers, and return them.
+consider adding a layer where i can "poll" / "select" a set of registers, and only get change notifications.
 commands inc sensor read
 handshake init and response
 test com impl
