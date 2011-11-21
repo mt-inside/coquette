@@ -129,7 +129,7 @@ typedef struct _fault_report_t
 typedef struct
 {
     uint16_t part1;
-    uint16_t part2;
+    uint32_t part2;
     uint32_t sw_ver;
 } ecu_part_no_t;
 
