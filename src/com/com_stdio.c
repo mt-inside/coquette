@@ -40,7 +40,7 @@ int com_read_byte( uint8_t *byte )
 {
     unsigned x;
 
-    printf( "COM STDIO < 0x" );
+    printf( "COM_STDIO < 0x" );
 
     scanf( "%x", &x );
     *byte = (uint8_t)x;
