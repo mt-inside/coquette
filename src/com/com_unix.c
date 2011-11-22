@@ -55,21 +55,21 @@ int com_finalise( void )
 
 int com_send_byte( uint8_t byte )
 {
-    return( com_send_bytes( &byte, 1 ) );
+    return com_send_bytes( &byte, 1 );
 }
 
 int com_send_bytes( uint8_t *bytes, unsigned count )
 {
-    return( write( s_tty, bytes, count ) == count );
+    return write( s_tty, bytes, count ) != count;
 }
 
 
 int com_read_byte( uint8_t *byte )
 {
-    return( com_read_bytes( byte, 1 ) );
+    return com_read_bytes( byte, 1 );
 }
 
 int com_read_bytes( uint8_t *bytes, unsigned count )
 {
-    return( read( s_tty, bytes, count ) == count );
+    return !read( s_tty, bytes, count ) == count;
 }
