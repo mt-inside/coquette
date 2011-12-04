@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include "common.h"
 #include "com.h"
 
 
@@ -42,6 +43,8 @@ int com_init( char *tty_dev_name )
         free( tios );
 
         ret = 0;
+
+        LOG( "com_init done" );
     }
 
     return ret;

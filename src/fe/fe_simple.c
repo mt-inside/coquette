@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <unistd.h>
 
+#include "common.h"
 #include "com/com.h"
 #include "commands.h"
 
@@ -55,6 +56,7 @@ int main( int argc, char **argv )
 
     com_init( argv[1] );
     handshake( ecu_ENGINE );
+    LOG( "handshake done" );
 
     read_faults( );
 
@@ -66,6 +68,7 @@ int main( int argc, char **argv )
         sleep( 1 );
     }
 
+    LOG( "ending" );
     com_finalise( );
 
     return 0;
