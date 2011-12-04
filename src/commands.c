@@ -112,14 +112,21 @@ static int read_frame_inner( cmd_t cmd,
     unsigned i;
     uint8_t out;
 
-    com_send_byte( (uint8_t)cmd );
-    for( i = 0; i < arg_len; ++i ) com_send_byte( args[i] );
-    com_send_byte( c_end_of_request );
-
-    com_read_byte( &out );
-    assert( out == (uint8_t)~cmd );
+    if( arg_len == 0 ) com_send_byte( (uint8_t)cmd );
     for( i = 0; i < arg_len; ++i )
     {
+        com_send_byte( (uint8_t)cmd );
+        com_send_byte( args[i] );
+    }
+
+    com_send_byte( c_end_of_request );
+
+    if( arg_len == 0 ) { com_read_byte( &out ); assert( out == (uint8_t)~cmd ); }
+    for( i = 0; i < arg_len; ++i )
+    {
+        com_read_byte( &out );
+        assert( out == (uint8_t)~cmd );
+
         com_read_byte( &out );
         assert( out == args[i] );
     }
