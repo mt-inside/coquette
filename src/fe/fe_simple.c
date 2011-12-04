@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdlib.h>
 
 #include "common.h"
 #include "com/com.h"
@@ -20,6 +21,19 @@ static void sig_int_handler( int signum )
     s_ending = 1;
 }
 
+
+static int read_serial( void )
+{
+    ecu_part_no_t *part_no;
+
+    read_ecu_part_no( &part_no );
+
+    printf( "%hx %x-%x\n", part_no->part1, part_no->part2, part_no->sw_ver );
+
+    free( part_no );
+
+    return 0;
+}
 
 static int read_faults( void )
 {
@@ -50,6 +64,9 @@ static int read_regs( void )
     read_register( reg_engine_COOLANT_TEMP, &reg );
     printf( "coolant %d degC\n", reg );
 
+    read_register( reg_BATT_VOLT, &reg );
+    printf( "battery %d mV\n", reg );
+
     return 0;
 }
 
@@ -74,6 +91,7 @@ int main( int argc, char **argv )
     handshake( ecu_ENGINE );
     LOG( "handshake done" );
 
+    read_serial( );
     read_faults( );
 
     while( !s_ending )
