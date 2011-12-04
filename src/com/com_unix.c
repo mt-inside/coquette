@@ -29,7 +29,7 @@ int com_init( char *tty_dev_name )
 
         /* No waiting for time or multiple characters */
         tios->c_cc[VTIME] = 0;
-        tion->c_cc[VMIN ] = 0
+        tios->c_cc[VMIN ] = 0;
 
         /* 9600 baud */
         assert( !cfsetspeed( tios, B9600 ) );
