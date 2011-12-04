@@ -1,10 +1,24 @@
 #include <stdio.h>
 #include <assert.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "common.h"
 #include "com/com.h"
 #include "commands.h"
+
+
+static int s_ending = 0;
+
+
+static void sig_int_handler( int signum )
+{
+    assert( signum == SIGINT );
+
+    LOG( "caught SIGINT; cleaning up" );
+
+    s_ending = 1;
+}
 
 
 static int read_faults( void )
@@ -54,13 +68,15 @@ int main( int argc, char **argv )
 {
     assert( argc == 2 );
 
+    signal( SIGINT, &sig_int_handler );
+
     com_init( argv[1] );
     handshake( ecu_ENGINE );
     LOG( "handshake done" );
 
     read_faults( );
 
-    while( 1 )
+    while( !s_ending )
     {
         read_regs( );
         read_bit( );
