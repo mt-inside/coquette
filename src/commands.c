@@ -264,7 +264,8 @@ int read_ecu_part_no( ecu_part_no_t **part_no )
 
     memcpy( &((*part_no)->part1),  data +  1, 2 );
     (*part_no)->part2 = 0x23710;
-    memcpy( &((*part_no)->sw_ver), data + 18, 4 );
+    memcpy( &((*part_no)->sw_ver), data + 17, 5 );
+    (*part_no)->sw_ver[5] = '\0';
 
     free( data );
 
