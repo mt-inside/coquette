@@ -254,44 +254,14 @@ int read_ecu_part_no( ecu_part_no_t **part_no )
     read_frame( cmd_READ_ECU_PART_NUMBER, &data, &len );
     assert( len == 22 );
 
-    /*int i;
-    for( i = 0; i < 22; ++i )
-    {
-        printf( "trosl %u: %hhx\n", i, data[ i ] );
-    }*/
-
     *part_no = malloc( sizeof( ecu_part_no_t ) );
 
-    memcpy( &((*part_no)->part1),  data +  1, 2 );
+    memcpy( &((*part_no)->part1),  data + 1, 2 );
+
     (*part_no)->part2 = 0x23710;
 
-#if 1 /* maybe it's 8 bit ascii */
-    char string[6];
-
-    memcpy( &string, data + 17, 5 );
-    string[5] = '\0';
-
-    memcpy( &((*part_no)->sw_ver), string, 6 );
-#endif
-
-/* maybe it's bit-packed in some way. presumably reverse base 64 or something? */
-
-#if 0 /* maybe it's base 64 */
-    static const char b64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    uint32_t value;
-    char string[6];
-    unsigned i;
-
-    memcpy( &value, data + 18, 4 );
-    for( i = 0; i < 5; ++i )
-    {
-        string[i] = b64[ value & 0x3f ];
-        value >>= 6;
-    }
-    string[5] = '\0';
-
-    memcpy( &((*part_no)->sw_ver), string, 6 );
-#endif
+    memcpy( &((*part_no)->sw_ver), data + 17, 5 );
+    (*part_no)->sw_ver[5] = '\0';
 
     free( data );
 
