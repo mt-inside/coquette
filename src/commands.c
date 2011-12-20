@@ -254,17 +254,14 @@ int read_ecu_part_no( ecu_part_no_t **part_no )
     read_frame( cmd_READ_ECU_PART_NUMBER, &data, &len );
     assert( len == 22 );
 
-    /*int i;
-    for( i = 0; i < 22; ++i )
-    {
-        printf( "trosl %u: %hhx\n", i, data[ i ] );
-    }*/
-
     *part_no = malloc( sizeof( ecu_part_no_t ) );
 
-    memcpy( &((*part_no)->part1),  data +  1, 2 );
+    memcpy( &((*part_no)->part1),  data + 1, 2 );
+
     (*part_no)->part2 = 0x23710;
-    memcpy( &((*part_no)->sw_ver), data + 18, 4 );
+
+    memcpy( &((*part_no)->sw_ver), data + 17, 5 );
+    (*part_no)->sw_ver[5] = '\0';
 
     free( data );
 

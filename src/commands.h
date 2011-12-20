@@ -149,7 +149,7 @@ typedef struct
 {
     uint16_t part1;
     uint32_t part2;
-    uint32_t sw_ver;
+    char sw_ver[6];
 } ecu_part_no_t;
 
 
