@@ -31,19 +31,25 @@ static void stats_observer_update( observer_t *this, int value )
 
     this->value = value;
     if( value < obs->min ) obs->min = value;
-    if( value < obs->max ) obs->max = value;
+    if( value > obs->max ) obs->max = value;
     obs->mean = value; /* FIXME */
 }
 
-int stats_observer_get_min( stats_observer_t *obs )
+int stats_observer_get_min( observer_t *this )
 {
+    stats_observer_t *obs = (stats_observer_t *)this;
+
     return obs->min;
 }
-int stats_observer_get_max( stats_observer_t *obs )
+int stats_observer_get_max( observer_t *this )
 {
+    stats_observer_t *obs = (stats_observer_t *)this;
+
     return obs->max;
 }
-int stats_observer_get_mean( stats_observer_t *obs )
+int stats_observer_get_mean( observer_t *this )
 {
+    stats_observer_t *obs = (stats_observer_t *)this;
+
     return obs->mean;
 }
