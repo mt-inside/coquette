@@ -7,6 +7,9 @@
 #include "common.h"
 #include "com/com.h"
 #include "commands.h"
+#include "observer.h"
+#include "stats_observer.h"
+#include "watcher.h"
 
 
 static int s_ending = 0;
@@ -58,7 +61,7 @@ int main( int argc, char **argv )
 {
     assert( argc == 2 );
 
-    signal( SIGINT, &sig_int_handler );
+    //signal( SIGINT, &sig_int_handler );
 
     com_init( argv[1] );
     handshake( ecu_ENGINE );
