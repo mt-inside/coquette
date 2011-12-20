@@ -1,7 +1,14 @@
 Make big-endian safe. Extracting LSB by truncation, etc...
 ECU number format
 how to disconn from ecu to handshake another? Because handshakes start with two command-ends, I wonder if just send a new handshake?
-commands to other cpus (each cmd take an ecu and remember / switch if different) ?
-add a layer where I can supply an arbitrary set of registers to watch. it should use as many reads as necc to get all those registers, and return them.
-consider adding a layer where i can "poll" / "select" a set of registers, and only get change notifications.
-test com impl (python expect programme & session files? )
+
+TEST add a layer where I can supply an arbitrary set of registers to get. it should use as many reads as necc to get all those registers, and return them.
+TEST watcher class - given $n registers, uses arbitary getter to get them every $n seconds (streaming would require locking or copyinf of results) and updates all its observers. calls callback with array of observers
+TEST observers are stateful and have an update() and an API. E.g. get_value(), get_avg / derivative.
+more observers
+NOT YET. If needed, add another mechanism for polling. Needs to stream all the time the mass-value collector isn't running. Provide a predicate as grounds for callback (with copy of data). Cb could be (==0) or stateful (!=<last>) for detecting changes. consider adding a layer where i can "poll" / "select" a set of registers, and only get change notifications.
+  0-60 thing would be done as asking for poll on (speed==0), remembering time, replacing observer so it gets a clean state, then asking for poll on (speed==60) and snapshotting.
+ALTERNATIVE ARCHs include: stream on another thread with a predicate pipeline that raises callbacks (changed, 1sec elaped, etc). When predicate matched, copies current data and hands off to new thread (so processing can take arbitary time). Kinda need a circ buffer somewhere so work queue doesn't become infinite if CPU can't keep up. Have $n processing threads and a circ buffer of work to hand off to them.
+commands to other cpus (each cmd take an ecu and remember / switch if different? OR unified address space for registers (pair cpu & reg) - layer underneath to watch current ecu and switch if necc (sort first to reduce switching))
+Mac Serial comms - ioreg -c IOSerialBSDClient
+Derive cool stuff - instant and avg MPG, AFR (open and closed loop? ECU is always telling us MAF and fueling, only difference is how it determines fuel). Torque (from fuel and AFR?). Power (from torque and revs).
