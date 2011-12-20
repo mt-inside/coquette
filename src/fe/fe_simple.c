@@ -21,37 +21,64 @@ static void sig_int_handler( int signum )
     s_ending = 1;
 }
 
-static void stats_print_cb( observer_t *obs, void *ctxt )
+
+static int read_serial( void )
 {
-    printf( "min: %d\tcurrent: %d\tmax: %d\n",
-            stats_observer_get_min( obs ),
-            observer_get_current( obs ),
-            stats_observer_get_max( obs )
-          );
+    ecu_part_no_t *part_no;
+
+    read_ecu_part_no( &part_no );
+
+    printf( "%hx %x-%x\n", part_no->part1, part_no->part2, part_no->sw_ver );
+
+    free( part_no );
+
+    return 0;
 }
 
-static void init_watch( void )
+static int read_faults( void )
 {
-    const unsigned watch_count = 1;
-    watch_t **watches = malloc( sizeof(watch_t *) * watch_count );
-    unsigned i;
+    fault_report_t *faults, *fault;
 
-
-    for( i = 0, i < watch_count; ++i )
+    read_dtc( &faults );
+    fault = faults;
+    while( fault )
     {
-        watches[ i ] = malloc( sizeof(watch_t) );
+        printf( "Fault code %#x, last seen %d engine starts ago\n",
+                fault->code, fault->last_seen );
+
+        fault = fault->next;
     }
 
-    watches[0]->reg = engine_reg_COOLANT_TEMP;
-    watched[0]->obs = stats_observer_new( );
+    faults_free( faults );
 
+    return 0;
+}
 
-    watch(
-        watches,
-        sizeof(watches) / sizeof(watches[0]),
-        &print_cb,
-        NULL
-    );
+static int read_regs( void )
+{
+    int reg;
+
+    read_register( reg_TACHO, &reg );
+    printf( "engine %d rpm\n", reg );
+
+    read_register( reg_engine_COOLANT_TEMP, &reg );
+    printf( "coolant %d degC\n", reg );
+
+    read_register( reg_BATT_VOLT, &reg );
+    printf( "battery %d mV\n", reg );
+
+    return 0;
+}
+
+static int read_bit( void )
+{
+    int bit;
+
+    read_flag( bit_AC_ON_SWITCH, &bit );
+
+    printf( "AC switch: %s\n", bit ? "on" : "off" );
+
+    return 0;
 }
 
 int main( int argc, char **argv )
@@ -64,7 +91,16 @@ int main( int argc, char **argv )
     handshake( ecu_ENGINE );
     LOG( "handshake done" );
 
-    init_watch();
+    read_serial( );
+    read_faults( );
+
+    while( !s_ending )
+    {
+        read_regs( );
+        read_bit( );
+
+        sleep( 1 );
+    }
 
     LOG( "ending" );
     com_finalise( );
