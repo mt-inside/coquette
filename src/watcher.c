@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include "watcher.h"
 #include "commands.h"
 
