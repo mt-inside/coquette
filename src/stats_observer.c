@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 
 #include "stats_observer.h"
 #include "observer_internal.h"
@@ -29,6 +30,8 @@ static void stats_observer_update( observer_t *this, int value )
 {
     stats_observer_t *obs = (stats_observer_t *)this;
 
+    assert( obs->base.class = observer_subclass_STATS );
+
     this->value = value;
     if( value < obs->min ) obs->min = value;
     if( value < obs->max ) obs->max = value;
@@ -37,13 +40,19 @@ static void stats_observer_update( observer_t *this, int value )
 
 int stats_observer_get_min( stats_observer_t *obs )
 {
+    assert( obs->base.class = observer_subclass_STATS );
+
     return obs->min;
 }
 int stats_observer_get_max( stats_observer_t *obs )
 {
+    assert( obs->base.class = observer_subclass_STATS );
+
     return obs->max;
 }
 int stats_observer_get_mean( stats_observer_t *obs )
 {
+    assert( obs->base.class = observer_subclass_STATS );
+
     return obs->mean;
 }
