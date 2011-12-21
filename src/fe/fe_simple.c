@@ -28,7 +28,7 @@ static int read_serial( void )
 
     read_ecu_part_no( &part_no );
 
-    printf( "%hx %x-%x\n", part_no->part1, part_no->part2, part_no->sw_ver );
+    printf( "%hx %x-%s\n", part_no->part1, part_no->part2, part_no->sw_ver );
 
     free( part_no );
 
