@@ -7,8 +7,10 @@
 typedef struct _stats_observer_t stats_observer_t;
 
 extern stats_observer_t *stats_observer_new( );
-extern int stats_observer_get_min( observer_t *obs );
-extern int stats_observer_get_max( observer_t *obs );
-extern int stats_observer_get_mean( observer_t *obs );
+
+/* 0 period means forever */
+extern void stats_observer_get_stats( observer_t *this,
+                                      unsigned period,
+                                      int *min, int *max, int *mean, int *stdev );
 
 #endif /* defined _INCLUDED_STATS_OBSERVER_H */
