@@ -12,26 +12,20 @@
 #include "watcher.h"
 
 
-static int s_ending = 0;
-
-
-static void sig_int_handler( int signum )
-{
-    assert( signum == SIGINT );
-
-    LOG( "caught SIGINT; cleaning up" );
-
-    s_ending = 1;
-}
-
 static void stats_print_cb( observer_t *obs, void *ctxt )
 {
+    int min, max, mean, stdev;
+
     (void)ctxt;
 
-    printf( "min: %d\tcurrent: %d\tmax: %d\n",
-            stats_observer_get_min( obs ),
+    stats_observer_get_stats( obs, 0, &min, &max, &mean, &stdev );
+
+    printf( "current: %d\tmin: %d\tmean: %d\tmax: %d\tstdev: %d\n",
             observer_get_value( obs ),
-            stats_observer_get_max( obs )
+            min,
+            mean,
+            max,
+            stdev
           );
 }
 
@@ -74,8 +68,6 @@ static void init_watch( void )
 int main( int argc, char **argv )
 {
     assert( argc == 2 );
-
-    //signal( SIGINT, &sig_int_handler );
 
     com_init( argv[1] );
     handshake( ecu_ENGINE );
