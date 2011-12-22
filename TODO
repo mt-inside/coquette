@@ -2,6 +2,7 @@ Make big-endian safe. Extracting LSB by truncation, etc...
 ECU number format
 how to disconn from ecu to handshake another? Because handshakes start with two command-ends, I wonder if just send a new handshake?
 
+observer callbacks can get their reg from their obs struct. There should be a way to look this up to pretty name and unit enum.
 stats observer to calc inst + periodic min,max,avg,1st derivative, 2nd derivative
 more observers - 
 some kind of framework for unit conversion (engine speed in Hz, road spd in m/s, acceleration in G).
