@@ -33,7 +33,7 @@ static void stats_observer_update( observer_t *this, int value )
     const unsigned values_resize_quantum = 64;
     stats_observer_t *obs = (stats_observer_t *)this;
 
-    assert( obs->base.class = observer_subclass_STATS );
+    assert( obs->base.class == observer_subclass_STATS );
 
     this->value = value;
 
@@ -72,7 +72,7 @@ void stats_observer_get_stats( observer_t *this,
 {
     stats_observer_t *obs;
 
-    assert( this->class = observer_subclass_STATS );
+    assert( this->class == observer_subclass_STATS );
     obs = (stats_observer_t *)this;
 
     if( period == 0 ) period = obs->values_count;
