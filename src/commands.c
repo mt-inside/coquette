@@ -4,7 +4,6 @@
 #include <stddef.h>
 
 #include "commands.h"
-#include "scalers.h"
 #include "registers.h"
 #include "read_frame.h"
 #include "com/com.h"
