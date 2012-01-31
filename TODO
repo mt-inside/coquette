@@ -12,3 +12,6 @@ ALTERNATIVE ARCHs include: stream on another thread with a predicate pipeline th
 commands to other cpus (each cmd take an ecu and remember / switch if different? OR unified address space for registers (pair cpu & reg) - layer underneath to watch current ecu and switch if necc (sort first to reduce switching))
 Mac Serial comms - ioreg -c IOSerialBSDClient
 Derive cool stuff - instant and avg MPG, AFR (open and closed loop? ECU is always telling us MAF and fueling, only difference is how it determines fuel). Torque (from fuel and AFR?). Power (from torque and revs).
+
+make look like R34 / 35 GT-R, Defi ADVANCE ZD
+shift lights :) - some kind of shift observer
