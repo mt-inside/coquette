@@ -2,13 +2,24 @@
 #include <assert.h>
 #include <string.h>
 #include <stddef.h>
-#include <stdarg.h>
 
 #include "commands.h"
 #include "scalers.h"
-#include "constants.h"
+#include "registers.h"
+#include "read_frame.h"
 #include "com/com.h"
 
+
+const unsigned c_baud_rate = 9600;
+
+const uint8_t c_handshake_ecu[] =     { 0xff, 0xff, 0xef };
+const uint8_t c_handshake_at[]  =     { 0xff, 0xff, 0xea };
+const uint8_t c_handshake_hicas[]  =  { 0xff, 0xff, 0xe4 };
+const uint8_t c_handshake_aircon[]  = { 0xff, 0xff, 0xdf };
+const uint8_t c_handshake_response = 0x10;
+
+const uint16_t c_memory_start = 0x8000;
+const uint16_t c_memory_end = 0xffff;
 
 const uint8_t *handshakes[] =
 {
@@ -18,177 +29,6 @@ const uint8_t *handshakes[] =
     c_handshake_aircon
 };
 
-typedef enum
-{
-    /* cmd_ACTIVATION = 0x0a, - Writing is not supported! */
-    cmd_STOP = 0x30,
-    cmd_READ_REGISTER = 0x5a,
-    /* cmd_CLEAR_DTC = 0xc1, - Writing is not supported! */
-    cmd_PEEK_MEMORY = 0xc9, /* ROM or RAM. */
-    cmd_READ_ECU_PART_NUMBER = 0xd0,
-    cmd_READ_DTC = 0xd1
-} cmd_t;
-
-typedef int (*scale_fn_t)( int in );
-typedef int (*reader_fn_t)( engine_reg_t reg, int *out );
-typedef struct
-{
-    reader_fn_t reader;
-    scale_fn_t scaler;
-} reg_info_t;
-
-static int read_register_1byte(  engine_reg_t reg, int *out );
-static int read_register_2bytes( engine_reg_t reg, int *out );
-
-/* TODO: add unit info */
-reg_info_t reg_infos[ ] =
-{
-    { &read_register_2bytes, &scale_tacho },
-    /* 0x01 */ { NULL, NULL },
-    { &read_register_2bytes, &scale_rpm_ref },
-    /* 0x03 */ { NULL, NULL },
-    { &read_register_2bytes, &scale_maf },
-    /* 0x05 */ { NULL, NULL },
-    { &read_register_2bytes, &scale_maf },
-    /* 0x07 */ { NULL, NULL },
-    { &read_register_1byte,  &scale_temp },
-    { &read_register_1byte,  &scale_o2 },
-    { &read_register_1byte,  &scale_o2 },
-    { &read_register_1byte,  &scale_road_speed },
-    { &read_register_1byte,  &scale_batt_volt },
-    { &read_register_1byte,  &scale_tps },
-    /* 0x07 */ { NULL, NULL },
-    { &read_register_1byte,  &scale_temp },
-    /* 0x10 */ { NULL, NULL },
-    { &read_register_1byte,  &scale_temp },
-    { &read_register_1byte,  &scale_egt },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_2bytes, &scale_inj_time },
-    /* 0x15 */ { NULL, NULL },
-    { &read_register_1byte,  &scale_ign_time },
-    { &read_register_1byte,  &scale_aac_valve },
-    /* 0x18 */ { NULL, NULL },
-    /* 0x19 */ { NULL, NULL },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    /* 0x1f */ { NULL, NULL },
-    { &read_register_1byte,  &scale_id },
-    /* 0x20 */ { NULL, NULL },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_2bytes, &scale_inj_time },
-    /* 0x23 */ { NULL, NULL },
-    /* 0x24 */ { NULL, NULL },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    /* 0x2b */ { NULL, NULL },
-    /* 0x2c */ { NULL, NULL },
-    /* 0x2d */ { NULL, NULL },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id },
-    { &read_register_1byte,  &scale_id }
-};
-
-
-static int read_frame_inner( cmd_t cmd,
-                             uint8_t *args,  unsigned arg_len,
-                             uint8_t **data, unsigned *data_len )
-{
-    unsigned i;
-    uint8_t out;
-
-    if( arg_len == 0 ) com_send_byte( (uint8_t)cmd );
-    for( i = 0; i < arg_len; ++i )
-    {
-        com_send_byte( (uint8_t)cmd );
-        com_send_byte( args[i] );
-    }
-
-    com_send_byte( c_end_of_request );
-
-    if( arg_len == 0 ) { com_read_byte( &out ); assert( out == (uint8_t)~cmd ); }
-    for( i = 0; i < arg_len; ++i )
-    {
-        com_read_byte( &out );
-        assert( out == (uint8_t)~cmd );
-
-        com_read_byte( &out );
-        assert( out == args[i] );
-    }
-
-    com_read_byte( &out );
-    assert( out == c_response_frame_start );
-
-    com_read_byte( &out );
-    *data_len = out;
-    assert( *data_len > 0 );
-
-    *data = malloc( *data_len );
-    com_read_bytes( *data, *data_len );
-
-    /* ECU continues to steam... */
-
-    com_send_byte( cmd_STOP );
-
-    /* Read (hence don't return) to the end of this frame so that we're in a
-     * sane state for the next request */
-    out = 0;
-    do { com_read_byte( &out ); } while( out != c_end_of_response );
-
-
-    return 0;
-}
-
-static int read_frame( cmd_t cmd,
-                       uint8_t **data, unsigned *data_len )
-{
-    return read_frame_inner( cmd, NULL, 0, data, data_len );
-}
-static int read_frame_arg( cmd_t cmd,
-                           uint8_t arg,
-                           uint8_t **data, unsigned *data_len )
-{
-    return read_frame_inner( cmd, &arg, 1, data, data_len );
-}
-static int read_frame_args( cmd_t cmd,
-                            uint8_t **data, unsigned *data_len,
-                            unsigned args_len, ... )
-{
-    int ret;
-    unsigned i;
-    va_list va_args;
-    uint8_t *args;
-
-    va_start( va_args, args_len );
-
-    args = malloc( args_len );
-    for( i = 0; i < args_len; ++i )
-    {
-        /* ... promotes uint8_t to int */
-        args[ i ] = (uint8_t)va_arg( va_args, int );
-    }
-    ret = read_frame_inner( cmd, args, args_len, data, data_len );
-
-    free( args );
-    va_end( va_args );
-
-    return ret;
-}
 
 int handshake( ecu_t ecu )
 {
@@ -271,14 +111,12 @@ int read_ecu_part_no( ecu_part_no_t **part_no )
 /* TODO: deal with addressing aircon computer */
 int read_register( engine_reg_t reg, int *out )
 {
-    reg_info_t reg_info;
+    reg_info_t *reg_info = registers_get_reg_info( reg );
 
-    assert( reg < sizeof(reg_infos) / sizeof(reg_infos[0]) );
+    assert( reg_info );
 
-    reg_info = reg_infos[ reg ];
-
-    reg_info.reader( reg, out );
-    *out = reg_info.scaler( *out );
+    reg_info->reader( reg, out );
+    *out = reg_info->scaler( *out );
 
     return 0;
 }
@@ -294,35 +132,6 @@ int read_flag( engine_bit_t flag, int *out )
 
     *out = ( data & ( 1 << offset ) ) >> offset;
 
-    return 0;
-}
-
-static int read_register_1byte( engine_reg_t reg, int *out )
-{
-    unsigned len;
-    uint8_t *data;
-
-    read_frame_arg( cmd_READ_REGISTER, reg, &data, &len );
-    assert( len == 1 );
-
-    *out = *data;
-
-    free( data );
-    return 0;
-}
-
-static int read_register_2bytes( engine_reg_t reg, int *out )
-{
-    unsigned len;
-    uint8_t *data;
-
-    /* assume both registers are adjacent */
-    read_frame_args( cmd_READ_REGISTER, &data, &len, 2, reg, reg + 1 );
-    assert( len == 2 );
-
-    *out = data[1] | data[0] << 8;
-
-    free( data );
     return 0;
 }
 

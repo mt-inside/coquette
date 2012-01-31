@@ -1,3 +1,8 @@
+#ifndef _INCLUDED_SCALERS_H
+#define _INCLUDED_SCALERS_H
+
+typedef int (*scale_fn_t)( int in );
+
 extern int scale_id( int in );
 extern int scale_tacho( int in ); /* rpm */
 extern int scale_rpm_ref( int in ); /* rpm */
@@ -11,3 +16,5 @@ extern int scale_egt( int in ); /* mV */
 extern int scale_inj_time( int in ); /* mS */
 extern int scale_ign_time( int in ); /* deg (before TDC) */
 extern int scale_aac_valve( int in ); /* % */
+
+#endif /* defined _INCLUDED_SCALERS_H */
