@@ -96,7 +96,6 @@ static int read_frame_inner( cmd_t cmd,
 
     /* Read (hence don't return) to the end of this frame so that we're in a
      * sane state for the next request */
-    out = 0;
     do { com_read_byte( &out ); } while( out != c_end_of_response );
 
 
