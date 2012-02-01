@@ -7,6 +7,7 @@
 #include "commands.h"
 #include "registers.h"
 #include "observer.h"
+#include "utils.h"
 #include "com/com.h"
 #include "consult_constants.h"
 
@@ -18,11 +19,9 @@ typedef struct
 } stream_cb_ctxt_t;
 
 typedef void (*stream_cb_t)( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
-typedef void (*mapper_fn_t)( void *in, void *out );
 
 
 static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
-void *map( void *in, unsigned in_stride, unsigned out_stride, unsigned count, mapper_fn_t mapper );
 static void stream_reg_mapper_fn( void *in, void *out );
 static int stream_frame_inner( cmd_t cmd,
                                uint8_t *args,  unsigned arg_len,
@@ -82,20 +81,6 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
             observer_update( stream->observers[j], datum );
         }
     }
-}
-
-/* todo: move me */
-void *map( void *in, unsigned in_stride, unsigned out_stride, unsigned count, mapper_fn_t mapper )
-{
-    void *out = malloc( count * out_stride );
-    unsigned i;
-
-    for( i = 0; i < count; ++i )
-    {
-        mapper( (uint8_t *)in + i * in_stride, (uint8_t *)out + i * out_stride );
-    }
-
-    return out;
 }
 
 static void stream_reg_mapper_fn( void *in, void *out )
