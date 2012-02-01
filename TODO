@@ -1,17 +1,23 @@
+do the TODOs in stream_frame
+move observers in directory
+reg_infos to gain name, unit name, range
+observers themselves (e.g. stats_observer) to become IObservable (be constructed over an IObserver and call its update when one of their summaries changes)
+observables to report a complex T, not just uint8 (e.g. value + reg_info). IS THIS NECESSARY? WHEN YOU REGISTER FOR UPDATES YOU SHOULD HAVE A REG_INFO TO HAND
+watcher (should be called poller) can turn read_frame into an iobservable too. WATCHER CAN GO - IF YOU WNAT NOTIFICATIONS EG FOR A GUI YOU SHOULD USE STREAM. READ_FRAME IS FOR ONE-OFF READINGS. WATCHER JUST ALLOWS YOU TO DO THINGS WRONG
+observers should be iobservable and iobserver - updated by the stream, and only updating when it has something interesting to report
+
 Make big-endian safe. Extracting LSB by truncation, etc...
-ECU number format
 how to disconn from ecu to handshake another? Because handshakes start with two command-ends, I wonder if just send a new handshake?
 
 observer callbacks can get their reg from their obs struct. There should be a way to look this up to pretty name and unit enum.
 stats observer to calc inst + periodic min,max,avg,1st derivative, 2nd derivative
-more observers - 
+Derive cool stuff - instant and avg MPG, AFR (open and closed loop? ECU is always telling us MAF and fueling, only difference is how it determines fuel). Torque (from fuel and AFR?). Power (from torque and revs).
 some kind of framework for unit conversion (engine speed in Hz, road spd in m/s, acceleration in G).
-NOT YET. If needed, add another mechanism for polling. Needs to stream all the time the mass-value collector isn't running. Provide a predicate as grounds for callback (with copy of data). Cb could be (==0) or stateful (!=<last>) for detecting changes. consider adding a layer where i can "poll" / "select" a set of registers, and only get change notifications.
-  0-60 thing would be done as asking for poll on (speed==0), remembering time, replacing observer so it gets a clean state, then asking for poll on (speed==60) and snapshotting.
-ALTERNATIVE ARCHs include: stream on another thread with a predicate pipeline that raises callbacks (changed, 1sec elaped, etc). When predicate matched, copies current data and hands off to new thread (so processing can take arbitary time). Kinda need a circ buffer somewhere so work queue doesn't become infinite if CPU can't keep up. Have $n processing threads and a circ buffer of work to hand off to them.
 commands to other cpus (each cmd take an ecu and remember / switch if different? OR unified address space for registers (pair cpu & reg) - layer underneath to watch current ecu and switch if necc (sort first to reduce switching))
 Mac Serial comms - ioreg -c IOSerialBSDClient
-Derive cool stuff - instant and avg MPG, AFR (open and closed loop? ECU is always telling us MAF and fueling, only difference is how it determines fuel). Torque (from fuel and AFR?). Power (from torque and revs).
 
 make look like R34 / 35 GT-R, Defi ADVANCE ZD
 shift lights :) - some kind of shift observer
+0-60 observer
+gauge observer - current value and 10 sec peak
+log observer...
