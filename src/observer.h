@@ -10,6 +10,6 @@ typedef enum
 
 extern void observer_init( observer_t *this, observer_subclass_t type );
 extern void observer_update( observer_t *this, int value );
-extern int observer_get_value( observer_t *this );
+extern int observer_get_value( observer_t *this ); /* all observers support getting their current value */
 
 #endif /* defined _INCLUDED_OBSERVER_H */

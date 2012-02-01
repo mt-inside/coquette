@@ -4,16 +4,12 @@
 
 #include "read_frame.h"
 #include "com/com.h"
+#include "consult_constants.h"
 
 
 static int read_frame_inner( cmd_t cmd,
                              uint8_t *args,  unsigned arg_len,
                              uint8_t **data, unsigned *data_len );
-
-
-const uint8_t c_end_of_request = 0xf0;
-const uint8_t c_response_frame_start = 0xff;
-const uint8_t c_end_of_response = 0xcf;
 
 
 int read_frame( cmd_t cmd,
@@ -54,6 +50,8 @@ int read_frame_args( cmd_t cmd,
     return ret;
 }
 
+/* TODO this assumes args are 1 byte each so can't be used e.g. to read ROM
+ * data. Need an arg_stride argument */
 static int read_frame_inner( cmd_t cmd,
                              uint8_t *args,  unsigned arg_len,
                              uint8_t **data, unsigned *data_len )
