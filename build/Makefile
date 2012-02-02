@@ -1,12 +1,19 @@
 .DEFAULT: coquette
+.PHONY: clean
 
 # Source directory
-SRC := ../src
+SRC_ROOT := ../src
 
 # Front end
-FE := ${SRC}/fe/fe_avg.c
+FE := ${SRC_ROOT}/fe/fe_avg.c
 # "Serial" implimentation
-COM := ${SRC}/com/com_stdio.c
+COM := ${SRC_ROOT}/com/com_stdio.c
 
-coquette: ${SRC}/*.[ch] ${FE} ${COM}
-	${CC} -o $@ -pg -g3 -O0 -Wall -Wextra -pedantic -Werror -I${SRC} $^ -lm
+SRC_DIRS := ${SRC_ROOT} ${SRC_ROOT}/observers
+SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.[ch])) ${FE} ${COM}
+
+coquette: ${SRC_FILES}
+	${CC} -o $@ -pg -g3 -O0 -Wall -Wextra -pedantic -Werror $(foreach dir,$(SRC_DIRS),-I$(dir)) $^ -lm
+
+clean:
+	rm -f coquette

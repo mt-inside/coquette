@@ -5,8 +5,6 @@
 
 #include "stream_frame.h"
 #include "commands.h"
-#include "registers.h"
-#include "observer.h"
 #include "utils.h"
 #include "com/com.h"
 #include "consult_constants.h"

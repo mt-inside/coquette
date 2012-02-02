@@ -7,8 +7,7 @@
 #include "common.h"
 #include "com/com.h"
 #include "commands.h"
-#include "observer.h"
-#include "stats_observer.h"
+#include "observers/stats_observer.h"
 #include "watcher.h"
 
 

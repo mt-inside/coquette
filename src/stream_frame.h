@@ -2,7 +2,7 @@
 #define _INCLUDED_STREAM_FRAME_H
 
 #include "registers.h"
-#include "observer.h"
+#include "observers/observer.h"
 
 
 typedef struct

@@ -2,7 +2,7 @@
 #define _INCLUDED_WATCHER_H
 
 #include "commands.h"
-#include "observer.h"
+#include "observers/observer.h"
 
 
 typedef struct
