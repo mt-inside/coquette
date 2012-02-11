@@ -1,16 +1,12 @@
-do the TODOs in stream_frame
-move observers in directory
+do the TODOs in stream_frame.c etc
 reg_infos to gain name, unit name, range
-observers themselves (e.g. stats_observer) to become IObservable (be constructed over an IObserver and call its update when one of their summaries changes)
 observables to report a complex T, not just uint8 (e.g. value + reg_info). IS THIS NECESSARY? WHEN YOU REGISTER FOR UPDATES YOU SHOULD HAVE A REG_INFO TO HAND
-watcher (should be called poller) can turn read_frame into an iobservable too. WATCHER CAN GO - IF YOU WNAT NOTIFICATIONS EG FOR A GUI YOU SHOULD USE STREAM. READ_FRAME IS FOR ONE-OFF READINGS. WATCHER JUST ALLOWS YOU TO DO THINGS WRONG
-observers should be iobservable and iobserver - updated by the stream, and only updating when it has something interesting to report
+when observers notify you of new data they currently just raise an event and you have to ask them for data yourself. This makes it a bit all-or-nothing (though I think observers should stay small and only represent one piece of data)
 
 Make big-endian safe. Extracting LSB by truncation, etc...
 how to disconn from ecu to handshake another? Because handshakes start with two command-ends, I wonder if just send a new handshake?
 
 observer callbacks can get their reg from their obs struct. There should be a way to look this up to pretty name and unit enum.
-stats observer to calc inst + periodic min,max,avg,1st derivative, 2nd derivative
 Derive cool stuff - instant and avg MPG, AFR (open and closed loop? ECU is always telling us MAF and fueling, only difference is how it determines fuel). Torque (from fuel and AFR?). Power (from torque and revs).
 some kind of framework for unit conversion (engine speed in Hz, road spd in m/s, acceleration in G).
 commands to other cpus (each cmd take an ecu and remember / switch if different? OR unified address space for registers (pair cpu & reg) - layer underneath to watch current ecu and switch if necc (sort first to reduce switching))
@@ -19,5 +15,5 @@ Mac Serial comms - ioreg -c IOSerialBSDClient
 make look like R34 / 35 GT-R, Defi ADVANCE ZD
 shift lights :) - some kind of shift observer
 0-60 observer
-gauge observer - current value and 10 sec peak
+gauge observer - current value and 10 sec peak - stats observer does this (may need to be able to set window size - in seconds)
 log observer...

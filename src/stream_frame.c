@@ -48,6 +48,7 @@ int stream_registers( stream_t **streams, unsigned streams_len )
 
 static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
 {
+    static int first_time = 1;
     static uint8_t *old_data;
     static unsigned old_data_len;
 
@@ -59,8 +60,20 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
     int datum;
 
 
-    assert( data_len == old_data_len );
-    if( !memcmp( data, old_data, data_len ) ) return;
+    if( !first_time )
+    {
+        assert( data_len == old_data_len );
+        if( !memcmp( data, old_data, data_len ) ) return;
+    }
+    else
+    {
+        old_data = malloc( sizeof(uint8_t) * data_len );
+        first_time = 0;
+    }
+
+    old_data_len = data_len;
+    memcpy( old_data, data, data_len );
+
 
     offset = 0;
     for( i = 0; i < streams_len; ++i )
@@ -70,10 +83,12 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
 
         datum = 0;
         memcpy( &datum, data + offset, reg_info->width );
+        datum = reg_info->scaler( datum );
+
         offset += reg_info->width;
 
-        /* FIXME: only if changed */
-        /* FIXME: apply scaling */
+        /* FIXME: only if changed - currently calls them all if at least one has
+         * changed */
         for( j = 0; j < stream->observers_len; ++j )
         {
             observer_update( stream->observers[j], datum );
@@ -83,10 +98,10 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
 
 static void stream_reg_mapper_fn( void *in, void *out )
 {
-    stream_t *s = (stream_t *)in;
+    stream_t **s = (stream_t **)in;
     uint8_t *r = (uint8_t *)out;
 
-    *r = s->reg; /* also truncates enum type to uint8_t */
+    *r = (*s)->reg; /* also truncates enum type to uint8_t */
 }
 
 /* TODO this assumes args are 1 byte each so can't be used e.g. to read ROM
@@ -138,6 +153,9 @@ static int stream_frame_inner( cmd_t cmd,
 
     while( 1 )
     {
+        /* do i get a response frame start every loop? - I'm assuming I don't */
+        /* do i get a data len every loop? - I'm assuming I don't */
+
         /* I assume this blocks until this many bytes have come off the serial
          * port, and thus that this loop doesn't spin */
         com_read_bytes( data, data_len );

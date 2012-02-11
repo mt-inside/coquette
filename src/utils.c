@@ -11,7 +11,7 @@ void *map( void *in, unsigned in_stride, unsigned out_stride, unsigned count, ma
 
     for( i = 0; i < count; ++i )
     {
-        mapper( (uint8_t *)in + i * in_stride, (uint8_t *)out + i * out_stride );
+        mapper( (char *)in + i * in_stride, (char *)out + i * out_stride );
     }
 
     return out;

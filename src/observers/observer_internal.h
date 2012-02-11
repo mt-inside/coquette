@@ -4,11 +4,25 @@
 #include "observer.h"
 
 
+typedef void (*observer_update_fn_t)( struct _observer_t *this );
+
+
 struct _observer_t
 {
     observer_subclass_t class;
-    void (*update_fn)( struct _observer_t *this, int value ); /* move me off this struct to a normal function that takes a observer_t */
+    observer_update_fn_t update_fn;
+    observer_cb_t cb;
+    void *ctxt;
     int value;
 };
+
+
+extern void observer_init(
+    observer_t *this,
+    observer_subclass_t class,
+    observer_update_fn_t update_fn,
+    observer_cb_t cb,
+    void *ctxt
+);
 
 #endif /* defined _INCLUDED_OBSERVER_INTERNAL_H */

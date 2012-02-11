@@ -8,7 +8,7 @@
 #include "com/com.h"
 #include "commands.h"
 #include "observers/stats_observer.h"
-#include "watcher.h"
+#include "stream_frame.h"
 
 
 static void stats_print_cb( observer_t *obs, void *ctxt )
@@ -39,24 +39,24 @@ static void init_watch( void )
     {
         streams[i] = malloc( sizeof(stream_t) );
         streams[i]->observers = malloc( sizeof(observer_t *) );
-        streams[i]->observer_count = 1;
+        streams[i]->observers_len = 1;
     }
 
 
     streams[0]->reg = reg_engine_COOLANT_TEMP;
-    streams[0]->observers[0] = (observer_t *)stats_observer_new( );
+    streams[0]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
 
     streams[1]->reg = reg_TACHO;
-    streams[1]->observers[0] = (observer_t *)stats_observer_new( );
+    streams[1]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
 
     streams[2]->reg = reg_ROAD_SPEED;
-    streams[2]->observers[0] = (observer_t *)stats_observer_new( );
+    streams[2]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
 
     streams[3]->reg = reg_BATT_VOLT;
-    streams[3]->observers[0] = (observer_t *)stats_observer_new( );
+    streams[3]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
 
     streams[4]->reg = reg_TPS;
-    streams[4]->observers[0] = (observer_t *)stats_observer_new( );
+    streams[4]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
 
 
     stream_registers(

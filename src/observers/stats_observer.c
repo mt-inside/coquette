@@ -16,33 +16,33 @@ struct _stats_observer_t
     unsigned values_count;
 };
 
-static void stats_observer_update( observer_t *this, int value );
+static void stats_observer_update( observer_t *this );
 
-stats_observer_t *stats_observer_new( )
+stats_observer_t *stats_observer_new( observer_cb_t cb, void *ctxt )
 {
     stats_observer_t *obs = calloc( sizeof( stats_observer_t ), 1 );
 
-    observer_init( (observer_t *)obs, observer_subclass_STATS );
-    obs->base.update_fn = &stats_observer_update;
+    observer_init( (observer_t *)obs, observer_subclass_STATS, &stats_observer_update, cb, ctxt );
 
     return obs;
 }
 
-static void stats_observer_update( observer_t *this, int value )
+static void stats_observer_update( observer_t *this )
 {
     const unsigned values_resize_quantum = 64;
     stats_observer_t *obs = (stats_observer_t *)this;
 
     assert( obs->base.class == observer_subclass_STATS );
 
-    this->value = value;
-
     if( obs->values_count == obs->values_size )
     {
         obs->values_size += values_resize_quantum;
         obs->values = realloc( obs->values, obs->values_size * sizeof( int ) );
     }
-    obs->values[ obs->values_count++ ] = value;
+    obs->values[ obs->values_count++ ] = this->value;
+
+    /* For now, assume we always have new stats available */
+    this->cb( this, this->ctxt );
 }
 
 void get_stats_for_range( int *start, unsigned count,

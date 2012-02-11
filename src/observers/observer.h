@@ -8,7 +8,9 @@ typedef enum
     observer_subclass_STATS
 } observer_subclass_t;
 
-extern void observer_init( observer_t *this, observer_subclass_t type );
+/* needed by derived classes' new()s */
+typedef void (*observer_cb_t)( observer_t *obs, void *ctxt );
+
 extern void observer_update( observer_t *this, int value );
 extern int observer_get_value( observer_t *this ); /* all observers support getting their current value */
 
