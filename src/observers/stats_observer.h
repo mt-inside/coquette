@@ -6,7 +6,7 @@
 
 typedef struct _stats_observer_t stats_observer_t;
 
-extern stats_observer_t *stats_observer_new( );
+extern stats_observer_t *stats_observer_new( observer_cb_t cb, void *ctxt );
 
 /* 0 period means forever */
 extern void stats_observer_get_stats( observer_t *this,
