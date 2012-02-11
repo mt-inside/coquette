@@ -20,34 +20,34 @@ static void stats_observer_update( observer_t *this );
 
 stats_observer_t *stats_observer_new( observer_cb_t cb, void *ctxt )
 {
-    stats_observer_t *obs = calloc( sizeof( stats_observer_t ), 1 );
+    stats_observer_t *this = calloc( sizeof( stats_observer_t ), 1 );
 
-    observer_init( (observer_t *)obs, observer_subclass_STATS, &stats_observer_update, cb, ctxt );
+    observer_init( (observer_t *)this, observer_subclass_STATS, &stats_observer_update, cb, ctxt );
 
-    return obs;
+    return this;
 }
 
-static void stats_observer_update( observer_t *this )
+static void stats_observer_update( observer_t *obs )
 {
     const unsigned values_resize_quantum = 64;
-    stats_observer_t *obs = (stats_observer_t *)this;
+    stats_observer_t *this = (stats_observer_t *)obs;
 
-    assert( obs->base.class == observer_subclass_STATS );
+    assert( obs->class == observer_subclass_STATS );
 
-    if( obs->values_count == obs->values_size )
+    if( this->values_count == this->values_size )
     {
-        obs->values_size += values_resize_quantum;
-        obs->values = realloc( obs->values, obs->values_size * sizeof( int ) );
+        this->values_size += values_resize_quantum;
+        this->values = realloc( this->values, this->values_size * sizeof( int ) );
     }
-    obs->values[ obs->values_count++ ] = this->value;
+    this->values[ this->values_count++ ] = obs->value;
 
     /* For now, assume we always have new stats available */
-    this->cb( this, this->ctxt );
+    obs->cb( obs, obs->ctxt );
 }
 
-void get_stats_for_range( int *start, unsigned count,
-                          int *min_out, int *max_out,
-                          int *mean_out, int *stdev_out )
+static void get_stats_for_range( int *start, unsigned count,
+                                 int *min_out, int *max_out,
+                                 int *mean_out, int *stdev_out )
 {
     unsigned i;
     int min = INT_MAX, max = INT_MIN, sum = 0, sum_sqr = 0, mean, variance;
@@ -66,19 +66,18 @@ void get_stats_for_range( int *start, unsigned count,
     *mean_out = mean; *stdev_out = (int)round( sqrt( variance ) );
 }
 
-void stats_observer_get_stats( observer_t *this,
+void stats_observer_get_stats( observer_t *obs,
                                unsigned period,
                                int *min, int *max, int *mean, int *stdev )
 {
-    stats_observer_t *obs;
+    stats_observer_t *this = (stats_observer_t *)obs;
 
-    assert( this->class == observer_subclass_STATS );
-    obs = (stats_observer_t *)this;
+    assert( obs->class == observer_subclass_STATS );
 
-    if( period == 0 ) period = obs->values_count;
-    if( period > obs->values_count ) period = obs->values_count;
+    if( period == 0 ) period = this->values_count;
+    if( period > this->values_count ) period = this->values_count;
 
-    get_stats_for_range( obs->values + (obs->values_count - period),
+    get_stats_for_range( this->values + (this->values_count - period),
                          period,
                          min, max, mean, stdev );
 
