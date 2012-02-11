@@ -4,6 +4,12 @@
 #include "observer.h"
 
 
+typedef enum
+{
+    observer_subclass_STATS
+} observer_subclass_t;
+
+
 typedef void (*observer_update_fn_t)( struct _observer_t *this );
 
 

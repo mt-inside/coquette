@@ -3,11 +3,6 @@
 
 typedef struct _observer_t observer_t;
 
-typedef enum
-{
-    observer_subclass_STATS
-} observer_subclass_t;
-
 /* needed by derived classes' new()s */
 typedef void (*observer_cb_t)( observer_t *obs, void *ctxt );
 
