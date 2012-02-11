@@ -44,19 +44,19 @@ static void init_watch( void )
 
 
     streams[0]->reg = reg_engine_COOLANT_TEMP;
-    streams[0]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
+    streams[0]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb, NULL );
 
     streams[1]->reg = reg_TACHO;
-    streams[1]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
+    streams[1]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb, NULL );
 
     streams[2]->reg = reg_ROAD_SPEED;
-    streams[2]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
+    streams[2]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb, NULL );
 
     streams[3]->reg = reg_BATT_VOLT;
-    streams[3]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
+    streams[3]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb, NULL );
 
     streams[4]->reg = reg_TPS;
-    streams[4]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb );
+    streams[4]->observers[0] = (observer_t *)stats_observer_new( &stats_print_cb, NULL );
 
 
     stream_registers(
