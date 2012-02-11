@@ -3,6 +3,10 @@
 #include "watcher.h"
 #include "commands.h"
 
+#if 0
+This is a utility to pivot between top-down call-driven approach and bottom-up data-streaming approach.
+This is bad and wrong - we should be using stream_frame all the way through
+
 int watch(
     watch_t **watches,
     unsigned no_watches,
@@ -31,3 +35,4 @@ int watch(
 
     return 0;
 }
+#endif

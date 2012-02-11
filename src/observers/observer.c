@@ -6,6 +6,8 @@
 void observer_init( observer_t *this, observer_subclass_t class )
 {
     this->class = class;
+
+    this->cb = cb;
 }
 
 void observer_update( observer_t *this, int value )
