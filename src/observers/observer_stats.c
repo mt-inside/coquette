@@ -3,12 +3,12 @@
 #include <limits.h>
 #include <math.h>
 
-#include "stats_observer.h"
+#include "observer_stats.h"
 #include "observer_internal.h"
 #include "observer.h"
 
 
-struct _stats_observer_t
+struct _observer_stats_t
 {
     observer_t base;
     int *values;
@@ -16,21 +16,21 @@ struct _stats_observer_t
     unsigned values_count;
 };
 
-static void stats_observer_update( observer_t *this );
+static void observer_stats_update( observer_t *this );
 
-stats_observer_t *stats_observer_new( observer_cb_t cb, void *ctxt )
+observer_stats_t *observer_stats_new( observer_cb_t cb, void *ctxt )
 {
-    stats_observer_t *this = calloc( sizeof( stats_observer_t ), 1 );
+    observer_stats_t *this = calloc( sizeof( observer_stats_t ), 1 );
 
-    observer_init( (observer_t *)this, observer_subclass_STATS, &stats_observer_update, cb, ctxt );
+    observer_init( (observer_t *)this, observer_subclass_STATS, &observer_stats_update, cb, ctxt );
 
     return this;
 }
 
-static void stats_observer_update( observer_t *obs )
+static void observer_stats_update( observer_t *obs )
 {
     const unsigned values_resize_quantum = 64;
-    stats_observer_t *this = (stats_observer_t *)obs;
+    observer_stats_t *this = (observer_stats_t *)obs;
 
     assert( obs->class == observer_subclass_STATS );
 
@@ -66,11 +66,11 @@ static void get_stats_for_range( int *start, unsigned count,
     *mean_out = mean; *stdev_out = (int)round( sqrt( variance ) );
 }
 
-void stats_observer_get_stats( observer_t *obs,
+void observer_stats_get_stats( observer_t *obs,
                                unsigned period,
                                int *min, int *max, int *mean, int *stdev )
 {
-    stats_observer_t *this = (stats_observer_t *)obs;
+    observer_stats_t *this = (observer_stats_t *)obs;
 
     assert( obs->class == observer_subclass_STATS );
 
