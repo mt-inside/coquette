@@ -69,7 +69,7 @@ int main( int argc, char **argv )
 {
     assert( argc == 2 );
 
-    com_init( argv[1] );
+    assert( !com_init( argv[1] ) );
     handshake( ecu_ENGINE );
     LOG( "handshake done" );
 
