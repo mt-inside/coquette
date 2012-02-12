@@ -8,7 +8,7 @@ SRC_ROOT := ../src
 FE := ${SRC_ROOT}/fe/fe_avg_stream.c
 FE_OBJECT_FILE := $(patsubst %.c,%.o,$(FE))
 
-# "Serial" implimentation
+# "Serial" implementation
 COM := ${SRC_ROOT}/com/com_replay.c
 
 SRC_DIRS := ${SRC_ROOT} ${SRC_ROOT}/observers
