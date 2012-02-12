@@ -12,7 +12,7 @@ typedef enum
 } observer_subclass_t;
 
 
-typedef void (*observer_update_fn_t)( struct _observer_t *this );
+typedef void (*observer_update_fn_t)( struct _observer_t *obs );
 
 
 struct _observer_t
@@ -26,7 +26,7 @@ struct _observer_t
 
 
 extern void observer_init(
-    observer_t *this,
+    observer_t *obs,
     observer_subclass_t class,
     observer_update_fn_t update_fn,
     observer_cb_t cb,

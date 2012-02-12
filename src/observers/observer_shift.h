@@ -16,6 +16,6 @@ extern observer_shift_t *observer_shift_new(
  * warn_start < x < warn_end    => 1-3 - warning
  * warn_end   < x               => 4   - shift right now
  */
-extern void observer_shift_get_shift( observer_t *this, unsigned *warn_level );
+extern void observer_shift_get_shift( observer_t *obs, unsigned *warn_level );
 
 #endif /* defined _INCLUDED_OBSERVER_SHIFT_H */
