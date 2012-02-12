@@ -31,4 +31,4 @@ libcoquette.so: ${LIB_OBJECT_FILES}
 	${CC} ${LDFLAGS} -shared -Wl,-soname,$@ -fPIC -o $@ $^ ${LIBS}
 
 clean:
-	rm -f ${LIB_OBJECT_FILES} ${FE} coquette libcoquette.so
+	rm -f ${LIB_OBJECT_FILES} ${FE_OBJECT_FILE} coquette libcoquette.so
