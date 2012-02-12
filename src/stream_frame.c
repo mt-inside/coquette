@@ -14,6 +14,7 @@ typedef struct
 {
     stream_t **streams;
     unsigned streams_len;
+    unsigned data_len;
 } stream_cb_ctxt_t;
 
 typedef void (*stream_cb_t)( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
@@ -29,10 +30,22 @@ static int stream_frame_inner( cmd_t cmd,
 int stream_registers( stream_t **streams, unsigned streams_len )
 {
     stream_cb_ctxt_t *cb_ctxt = malloc( sizeof(stream_cb_ctxt_t) );
-    uint8_t *args = map( streams, sizeof(stream_t *), sizeof(uint8_t), streams_len, &stream_reg_mapper_fn );
+
+    uint8_t args[20]; /* consult protocol maximum arg size for read_register */
+    unsigned args_offset = 0;
+    for( i = 0; i < streams_len; ++i )
+    {
+        reg_info_t *reg_info = registers_get_reg_info( streams[i]->reg );
+        for( j = 0; j < reg_info->width; ++j )
+        {
+            assert( args_offset < 20 );
+            args[args_offset++] = streams[i]->reg + j;
+        }
+    }
 
     cb_ctxt->streams = streams;
     cb_ctxt->streams_len = streams_len;
+    cb_ctxt->data_len = args_offset;
 
     stream_frame_inner(
         cmd_READ_REGISTER,
@@ -59,6 +72,8 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
     unsigned i, j;
     int datum;
 
+
+    assert( data_len == ctxt->data_len );
 
     if( !first_time )
     {
@@ -94,14 +109,6 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
             observer_update( stream->observers[j], datum );
         }
     }
-}
-
-static void stream_reg_mapper_fn( void *in, void *out )
-{
-    stream_t **s = (stream_t **)in;
-    uint8_t *r = (uint8_t *)out;
-
-    *r = (*s)->reg; /* also truncates enum type to uint8_t */
 }
 
 /* TODO this assumes args are 1 byte each so can't be used e.g. to read ROM
