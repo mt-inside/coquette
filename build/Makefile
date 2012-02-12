@@ -6,20 +6,29 @@ SRC_ROOT := ../src
 
 # Front end
 FE := ${SRC_ROOT}/fe/fe_avg_stream.c
+FE_OBJECT_FILE := $(patsubst %.c,%.o,$(FE))
+
 # "Serial" implimentation
 COM := ${SRC_ROOT}/com/com_replay.c
 
 SRC_DIRS := ${SRC_ROOT} ${SRC_ROOT}/observers
-SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.[ch])) ${COM}
+SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c)) ${COM}
+LIB_OBJECT_FILES := $(patsubst %.c,%.o,$(SRC_FILES))
 
 CFLAGS := -pg -g3 -O0 -Wall -Wextra -pedantic -Werror
+LDFLAGS := -pg -g3
 
-coquette: ${SRC_FILES} ${FE}
-	${CC} -o $@ ${CFLAGS} $(foreach dir,$(SRC_DIRS),-I$(dir)) $^ -lm
+INCLUDES := $(foreach dir,$(SRC_DIRS),-I$(dir)) 
+LIBS := -lm
 
-#need a shared compile stage to build objects (where lib target sets -fPIC), then two link stages
-lib: ${SRC_FILES}
-	${CC} -shared -Wl,-soname,libcoquette.so -fPIC -o libcoquette.so ${CFLAGS} $(foreach dir,$(SRC_DIRS),-I$(dir)) $^ -lm
+%.o: %.c
+	${CC} ${CFLAGS} ${INCLUDES}-c -o $@ $^
+
+coquette: ${LIB_OBJECT_FILES} ${FE_OBJECT_FILE}
+	${CC} ${LDFLAGS} -o $@ $^ ${LIBS}
+
+libcoquette.so: ${LIB_OBJECT_FILES}
+	${CC} ${LDFLAGS} -shared -Wl,-soname,$@ -fPIC -o $@ $^ ${LIBS}
 
 clean:
-	rm -f coquette
+	rm -f ${LIB_OBJECT_FILES} ${FE} coquette libcoquette.so
