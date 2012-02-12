@@ -1,5 +1,12 @@
+front end that uses curses / qt and has 0-60, shift, stats
+stats_observer
+- move args (period) to ctor
+- do proper update notifications
+- look at on-line algorithms too
 do the TODOs in stream_frame.c etc
 reg_infos to gain name, unit name, range
+observabled to push their new values (complex type (maybe >1 number like stats) (with units too)) in the update call, as it's silly that you just get a unit type notification then have to ask for the value.
+observers should say which registers they want to watch (if there's a choice they should take it in their ctor). Stream_t doesn't need a reg then, it just asks the observers.
 observables to report a complex T, not just uint8 (e.g. value + reg_info). IS THIS NECESSARY? WHEN YOU REGISTER FOR UPDATES YOU SHOULD HAVE A REG_INFO TO HAND
 when observers notify you of new data they currently just raise an event and you have to ask them for data yourself. This makes it a bit all-or-nothing (though I think observers should stay small and only represent one piece of data)
 
@@ -13,7 +20,5 @@ commands to other cpus (each cmd take an ecu and remember / switch if different?
 Mac Serial comms - ioreg -c IOSerialBSDClient
 
 make look like R34 / 35 GT-R, Defi ADVANCE ZD
-shift lights :) - some kind of shift observer
-0-60 observer
 gauge observer - current value and 10 sec peak - stats observer does this (may need to be able to set window size - in seconds)
 log observer...
