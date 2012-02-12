@@ -21,7 +21,6 @@ typedef void (*stream_cb_t)( void *stream_cb_ctxt, uint8_t *data, unsigned data_
 
 
 static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
-static void stream_reg_mapper_fn( void *in, void *out );
 static int stream_frame_inner( cmd_t cmd,
                                uint8_t *args,  unsigned arg_len,
                                stream_cb_t cb, void *stream_cb_ctxt );
@@ -30,12 +29,15 @@ static int stream_frame_inner( cmd_t cmd,
 int stream_registers( stream_t **streams, unsigned streams_len )
 {
     stream_cb_ctxt_t *cb_ctxt = malloc( sizeof(stream_cb_ctxt_t) );
-
+    reg_info_t *reg_info;
+    unsigned i, j;
     uint8_t args[20]; /* consult protocol maximum arg size for read_register */
     unsigned args_offset = 0;
+
+
     for( i = 0; i < streams_len; ++i )
     {
-        reg_info_t *reg_info = registers_get_reg_info( streams[i]->reg );
+        reg_info = registers_get_reg_info( streams[i]->reg );
         for( j = 0; j < reg_info->width; ++j )
         {
             assert( args_offset < 20 );
