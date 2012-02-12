@@ -42,7 +42,7 @@ static void observer_shift_update( observer_t *obs )
     observer_shift_t *this = (observer_shift_t *)obs;
     int w;
 
-    assert( this->base.class == observer_subclass_SHIFT );
+    assert( obs->class == observer_subclass_SHIFT );
 
     /* mmm, branch free... */
     w = (int)ceil((double)(obs->value - this->warn_start) / ((this->warn_end - this->warn_start) / 3));
@@ -63,7 +63,7 @@ void obsserver_shift_get_shift( observer_t *obs, unsigned *warn_level )
 {
     observer_shift_t *this = (observer_shift_t *)obs;
 
-    assert( this->base.class == observer_subclass_SHIFT );
+    assert( obs->class == observer_subclass_SHIFT );
 
     *warn_level = this->warn_level;
 }
