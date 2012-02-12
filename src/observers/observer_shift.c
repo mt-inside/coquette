@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <assert.h>
-#include <limits.h>
 #include <math.h>
 
 #include "observer_shift.h"
