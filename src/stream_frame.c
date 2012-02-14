@@ -159,7 +159,7 @@ static void *stream_frame_thread( void *ctxt )
     void *cb_ctxt    = thread_args->cb_ctxt;
 
     unsigned i, data_len;
-    uint8_t *data;
+    uint8_t *data = NULL;
     uint8_t out;
 
 
@@ -187,22 +187,19 @@ static void *stream_frame_thread( void *ctxt )
         assert( out == args[i] );
     }
 
-    com_read_byte( &out );
-    assert( out == c_response_frame_start );
-
 
     /* Stream data */
-
-    com_read_byte( &out );
-    data_len = out;
-    assert( data_len > 0 );
-
-    data = malloc( data_len );
-
     while( s_state != 2 )
     {
-        /* do i get a response frame start every loop? - I'm assuming I don't */
-        /* do i get a data len every loop? - I'm assuming I don't */
+        com_read_byte( &out );
+        assert( out == c_response_frame_start );
+
+        com_read_byte( &out );
+        data_len = out;
+        assert( data_len > 0 );
+
+        if( !data ) data = malloc( data_len );
+        data = malloc( data_len );
 
         /* I assume this blocks until this many bytes have come off the serial
          * port, and thus that this loop doesn't spin */
