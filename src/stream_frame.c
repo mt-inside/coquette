@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <pthread.h>
 
 #include "stream_frame.h"
 #include "commands.h"
@@ -19,20 +20,29 @@ typedef struct
 
 typedef void (*stream_cb_t)( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
 
+typedef struct
+{
+    uint8_t *regs;
+    unsigned regs_len;
+    stream_cb_t cb;
+    void *cb_ctxt;
+} stream_thread_args_t;
+
 
 static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
-static int stream_frame_inner( cmd_t cmd,
-                               uint8_t *args,  unsigned arg_len,
-                               stream_cb_t cb, void *stream_cb_ctxt );
+static void *stream_frame_thread( void *ctxt );
 
 
 int stream_registers( stream_t **streams, unsigned streams_len )
 {
+    stream_thread_args_t *thread_args =
+        malloc( sizeof(stream_thread_args_t) );
     stream_cb_ctxt_t *cb_ctxt = malloc( sizeof(stream_cb_ctxt_t) );
     reg_info_t *reg_info;
     unsigned i, j;
     uint8_t args[20]; /* consult protocol maximum arg size for read_register */
     unsigned args_offset = 0;
+    pthread_t thread;
 
 
     for( i = 0; i < streams_len; ++i )
@@ -45,17 +55,23 @@ int stream_registers( stream_t **streams, unsigned streams_len )
         }
     }
 
-    cb_ctxt->streams = streams;
+    /* fixme make me in the thread function */
+    cb_ctxt->streams     = streams;
     cb_ctxt->streams_len = streams_len;
-    cb_ctxt->data_len = args_offset;
+    cb_ctxt->data_len    = args_offset;
 
-    stream_frame_inner(
-        cmd_READ_REGISTER,
-        args,
-        streams_len,
-        &stream_cb,
-        cb_ctxt
+    thread_args->regs     = args;
+    thread_args->regs_len = streams_len;
+    thread_args->cb       = &stream_cb;
+    thread_args->cb_ctxt  = cb_ctxt;
+
+    pthread_create(
+        &thread,
+        NULL,
+        &stream_frame_thread,
+        thread_args
     );
+    /* TODO: shutting this down */
 
     return 0;
 }
@@ -113,12 +129,15 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
     }
 }
 
-/* TODO this assumes args are 1 byte each so can't be used e.g. to read ROM
- * data. Need an arg_stride argument */
-static int stream_frame_inner( cmd_t cmd,
-                               uint8_t *args,  unsigned arg_len,
-                               stream_cb_t cb, void *stream_cb_ctxt )
+
+static void *stream_frame_thread( void *ctxt )
 {
+    stream_thread_args_t *thread_args = (stream_thread_args_t *)ctxt;
+    uint8_t *args    = thread_args->regs;
+    unsigned arg_len = thread_args->regs_len;
+    stream_cb_t cb   = thread_args->cb;
+    void *cb_ctxt    = thread_args->cb_ctxt;
+
     unsigned i, data_len;
     uint8_t *data;
     uint8_t out;
@@ -126,10 +145,10 @@ static int stream_frame_inner( cmd_t cmd,
 
     /* Send command and arguments */
 
-    if( arg_len == 0 ) com_send_byte( (uint8_t)cmd );
+    if( arg_len == 0 ) com_send_byte( (uint8_t)cmd_READ_REGISTER );
     for( i = 0; i < arg_len; ++i )
     {
-        com_send_byte( (uint8_t)cmd );
+        com_send_byte( (uint8_t)cmd_READ_REGISTER );
         com_send_byte( args[i] );
     }
 
@@ -138,11 +157,11 @@ static int stream_frame_inner( cmd_t cmd,
 
     /* Check response */
 
-    if( arg_len == 0 ) { com_read_byte( &out ); assert( out == (uint8_t)~cmd ); }
+    if( arg_len == 0 ) { com_read_byte( &out ); assert( out == (uint8_t)~cmd_READ_REGISTER ); }
     for( i = 0; i < arg_len; ++i )
     {
         com_read_byte( &out );
-        assert( out == (uint8_t)~cmd );
+        assert( out == (uint8_t)~cmd_READ_REGISTER );
 
         com_read_byte( &out );
         assert( out == args[i] );
@@ -160,6 +179,7 @@ static int stream_frame_inner( cmd_t cmd,
 
     data = malloc( data_len );
 
+    /* TODO: close me on shutdown */
     while( 1 )
     {
         /* do i get a response frame start every loop? - I'm assuming I don't */
@@ -169,7 +189,7 @@ static int stream_frame_inner( cmd_t cmd,
          * port, and thus that this loop doesn't spin */
         com_read_bytes( data, data_len );
 
-        cb( stream_cb_ctxt, data, data_len );
+        cb( cb_ctxt, data, data_len );
     }
 
     com_send_byte( cmd_STOP );

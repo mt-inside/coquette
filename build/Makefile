@@ -19,7 +19,7 @@ CFLAGS := -pg -g3 -O0 -Wall -Wextra -pedantic -Werror
 LDFLAGS := -pg -g3
 
 INCLUDES := $(foreach dir,$(SRC_DIRS),-I$(dir)) 
-LIBS := -lm
+LIBS := -lm -lpthread
 
 %.o: %.c
 	${CC} ${CFLAGS} ${INCLUDES}-c -o $@ $^
