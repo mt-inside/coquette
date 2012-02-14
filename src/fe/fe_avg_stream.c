@@ -28,7 +28,7 @@ static void stats_print_cb( observer_t *obs, void *ctxt )
           );
 }
 
-static void init_watch( void )
+static void init_streaming( void )
 {
     const unsigned stream_count = 5;
     stream_t **streams = malloc( sizeof(stream_t *) * stream_count );
@@ -59,10 +59,20 @@ static void init_watch( void )
     streams[4]->observers[0] = (observer_t *)observer_stats_new( &stats_print_cb, NULL );
 
 
-    stream_registers(
+    /* spawns streaming thread and returns */
+    stream_registers_start(
         streams,
         stream_count
     );
+}
+
+static void quit( void )
+{
+    LOG( "ending" );
+
+    stream_registers_end( );
+
+    com_finalise( );
 }
 
 int main( int argc, char **argv )
@@ -70,13 +80,17 @@ int main( int argc, char **argv )
     assert( argc == 2 );
 
     assert( !com_init( argv[1] ) );
+
     handshake( ecu_ENGINE );
+
     LOG( "handshake done" );
 
-    init_watch();
+    init_streaming();
 
-    LOG( "ending" );
-    com_finalise( );
+    /* block this thread */
+    getchar();
+
+    quit();
 
     return 0;
 }

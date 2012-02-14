@@ -29,11 +29,16 @@ typedef struct
 } stream_thread_args_t;
 
 
+/* TODO: lock around me */
+static int s_state = 0; /* 0 - not running, 1 - running, 2 - exiting */
+static pthread_t s_thread;
+
+
 static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
 static void *stream_frame_thread( void *ctxt );
 
 
-int stream_registers( stream_t **streams, unsigned streams_len )
+int stream_registers_start( stream_t **streams, unsigned streams_len )
 {
     stream_thread_args_t *thread_args =
         malloc( sizeof(stream_thread_args_t) );
@@ -42,8 +47,9 @@ int stream_registers( stream_t **streams, unsigned streams_len )
     unsigned i, j;
     uint8_t args[20]; /* consult protocol maximum arg size for read_register */
     unsigned args_offset = 0;
-    pthread_t thread;
 
+
+    assert( s_state == 0 );
 
     for( i = 0; i < streams_len; ++i )
     {
@@ -66,14 +72,28 @@ int stream_registers( stream_t **streams, unsigned streams_len )
     thread_args->cb_ctxt  = cb_ctxt;
 
     pthread_create(
-        &thread,
+        &s_thread,
         NULL,
         &stream_frame_thread,
         thread_args
     );
-    /* TODO: shutting this down */
+
+    s_state = 1;
+
 
     return 0;
+}
+
+void stream_registers_end( void )
+{
+    void *retval;
+
+    assert( s_state == 1 );
+
+    s_state = 2;
+    pthread_join( s_thread, &retval );
+
+    s_state = 0;
 }
 
 
@@ -179,8 +199,7 @@ static void *stream_frame_thread( void *ctxt )
 
     data = malloc( data_len );
 
-    /* TODO: close me on shutdown */
-    while( 1 )
+    while( s_state != 2 )
     {
         /* do i get a response frame start every loop? - I'm assuming I don't */
         /* do i get a data len every loop? - I'm assuming I don't */
@@ -199,5 +218,5 @@ static void *stream_frame_thread( void *ctxt )
     do { com_read_byte( &out ); } while( out != c_end_of_response );
 
 
-    return 0;
+    return NULL;
 }

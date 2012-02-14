@@ -13,6 +13,7 @@ typedef struct
 } stream_t;
 
 
-extern int stream_registers( stream_t **streams, unsigned streams_len );
+extern int stream_registers_start( stream_t **streams, unsigned streams_len );
+extern void stream_registers_end( void );
 
 #endif /* defined _INCLUDED_STREAM_FRAME_H */
