@@ -1,8 +1,12 @@
-front end that uses curses / qt and has 0-60, shift, stats
+streamframe should only call the observers if they've changed. It currently notifies all if at least one has changed
+observers should be able to say if they want all data or just changed ones; stats is totally invalid unless it gets all data
+it would be much easier for observers to have this logic tbh.
+change state int in stream frame to enum
 stats_observer
 - move args (period) to ctor
 - do proper update notifications
 - look at on-line algorithms too
+- stdev looks suspect - had a dataset with range 1 stdev 7. Unit test!
 do the TODOs in stream_frame.c etc
 reg_infos to gain name, unit name, range
 observabled to push their new values (complex type (maybe >1 number like stats) (with units too)) in the update call, as it's silly that you just get a unit type notification then have to ask for the value.

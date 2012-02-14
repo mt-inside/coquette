@@ -140,8 +140,6 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
 
         offset += reg_info->width;
 
-        /* FIXME: only if changed - currently calls them all if at least one has
-         * changed */
         for( j = 0; j < stream->observers_len; ++j )
         {
             observer_update( stream->observers[j], datum );
