@@ -67,7 +67,7 @@ int stream_registers_start( stream_t **streams, unsigned streams_len )
     cb_ctxt->data_len    = args_offset;
 
     thread_args->regs     = args;
-    thread_args->regs_len = streams_len;
+    thread_args->regs_len = args_offset;
     thread_args->cb       = &stream_cb;
     thread_args->cb_ctxt  = cb_ctxt;
 
