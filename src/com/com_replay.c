@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 
 #include "com.h"
 
@@ -40,6 +41,8 @@ int com_send_bytes( uint8_t *bytes, unsigned count )
 int com_read_byte( uint8_t *byte )
 {
     unsigned x;
+
+    sleep(1);
 
     fscanf( s_file, "%x ", &x );
     *byte = (uint8_t)x;
