@@ -15,20 +15,20 @@ SRC_DIRS := ${SRC_ROOT} ${SRC_ROOT}/observers
 SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c)) ${COM}
 LIB_OBJECT_FILES := $(patsubst %.c,%.o,$(SRC_FILES))
 
-CFLAGS := -pg -g3 -O0 -Wall -Wextra -pedantic -Werror
+CFLAGS := -pg -g3 -O0 -Wall -Wextra -pedantic -Werror -fPIC
 LDFLAGS := -pg -g3
 
 INCLUDES := $(foreach dir,$(SRC_DIRS),-I$(dir)) 
 LIBS := -lm -lpthread
 
 %.o: %.c
-	${CC} ${CFLAGS} ${INCLUDES}-c -o $@ $^
+	${CC} ${CFLAGS} ${INCLUDES} -c -o $@ $^
 
 coquette: ${LIB_OBJECT_FILES} ${FE_OBJECT_FILE}
 	${CC} ${LDFLAGS} -o $@ $^ ${LIBS}
 
 libcoquette.so: ${LIB_OBJECT_FILES}
-	${CC} ${LDFLAGS} -shared -Wl,-soname,$@ -fPIC -o $@ $^ ${LIBS}
+	${CC} ${LDFLAGS} -shared -Wl,-soname,$@ -o $@ $^ ${LIBS}
 
 clean:
 	rm -f ${LIB_OBJECT_FILES} ${FE_OBJECT_FILE} coquette libcoquette.so
