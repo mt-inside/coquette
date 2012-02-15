@@ -43,9 +43,9 @@ int stream_registers_start( stream_t **streams, unsigned streams_len )
     stream_thread_args_t *thread_args =
         malloc( sizeof(stream_thread_args_t) );
     stream_cb_ctxt_t *cb_ctxt = malloc( sizeof(stream_cb_ctxt_t) );
+    uint8_t *args = malloc( 20 ); /* consult protocol maximum arg size for read_register */
     reg_info_t *reg_info;
     unsigned i, j;
-    uint8_t args[20]; /* consult protocol maximum arg size for read_register */
     unsigned args_offset = 0;
 
 
