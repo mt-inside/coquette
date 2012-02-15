@@ -2,10 +2,24 @@
 #include "main_form.h"
 
 extern "C" {
+#include "observers/observer_value.h"
 #include "observers/observer_stats.h"
 #include "observers/observer_shift.h"
 #include "observers/observer_zerosixty.h"
 #include "stream_frame.h"
+}
+
+static void value_label_cb( observer_t *obs, void *ctxt )
+{
+    QLabel *label = (QLabel *)ctxt;
+    char str[256];
+
+    sprintf( str,
+             "%d",
+             observer_get_value( obs )
+           );
+
+    label->setText( str );
 }
 
 static void stats_label_cb( observer_t *obs, void *ctxt )
@@ -17,7 +31,7 @@ static void stats_label_cb( observer_t *obs, void *ctxt )
     observer_stats_get_stats( obs, 0, &min, &max, &mean, &stdev );
 
     sprintf( str,
-             "current: %d\tmin: %d\tmean: %d\tmax: %d\tstdev: %d\n",
+             "current: %d\tmin: %d\tmean: %d\tmax: %d\tstdev: %d",
              observer_get_value( obs ),
              min,
              mean,
@@ -58,7 +72,7 @@ static void zerosixty_label_cb( observer_t *obs, void *ctxt )
     observer_zerosixty_get_zerosixty( obs, &zerosixty );
     foo = (double)zerosixty / 1000000.0f;
 
-    sprintf( str, "%lfs", foo );
+    sprintf( str, "%00.00lfs", foo );
 
     label->setText( str );
 }
@@ -69,8 +83,6 @@ main_form::main_form( QWidget *parent )
 
     setupUi( this );
 
-    connect( pushButtonLol, SIGNAL( clicked() ), this, SLOT( lol() ) );
-
 
     const unsigned stream_count = 3;
     stream_t **streams = (stream_t **)malloc( sizeof(stream_t *) * stream_count );
@@ -80,33 +92,29 @@ main_form::main_form( QWidget *parent )
     for( i = 0; i < stream_count; ++i )
     {
         streams[i] = (stream_t *)malloc( sizeof(stream_t) );
-        streams[i]->observers = (observer_t **)malloc( sizeof(observer_t *) );
-        streams[i]->observers_len = 1;
     }
 
 
     streams[0]->reg = reg_engine_COOLANT_TEMP;
-    streams[0]->observers[0] = (observer_t *)observer_stats_new( &stats_label_cb, (void *)labelCoolantTemp );
+    streams[0]->observers = (observer_t **)malloc( 1 * sizeof(observer_t *) );
+    streams[0]->observers_len = 1;
+    streams[0]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelCoolantTemp );
 
     streams[1]->reg = reg_TACHO;
-    streams[1]->observers[0] = (observer_t *)observer_shift_new( &shift_label_cb, (void *)labelShift, 6000, 7000 );
+    streams[1]->observers = (observer_t **)malloc( 2 * sizeof(observer_t *) );
+    streams[1]->observers_len = 2;
+    streams[1]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelEngineSpeed );
+    streams[1]->observers[1] = (observer_t *)observer_shift_new( &shift_label_cb, (void *)labelShift, 6000, 7000 );
 
     streams[2]->reg = reg_ROAD_SPEED;
-    streams[2]->observers[0] = (observer_t *)observer_zerosixty_new( &zerosixty_label_cb, (void *)labelZerosixty, 60 );
+    streams[2]->observers = (observer_t **)malloc( 2 * sizeof(observer_t *) );
+    streams[2]->observers_len = 2;
+    streams[2]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelRoadSpeed );
+    streams[2]->observers[1] = (observer_t *)observer_zerosixty_new( &zerosixty_label_cb, (void *)labelZerosixty, 60 );
 
 
     stream_registers_start(
         streams,
         stream_count
     );
-}
-
-void main_form::lol( )
-{
-    labelCoolantTemp->setText( "totes clickede-moi" );
-}
-
-void main_form::update_stats( )
-{
-    labelCoolantTemp->setText( "trololo" );
 }
