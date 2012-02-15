@@ -1,4 +1,6 @@
 valgrind me!
+move fe_qt into fe/ dir
+make a com "interface" (abstract type and function defs) then have some kind of virtual dispatch so that coms can be interchanged (init your com_t * to be com_unix_new( ) where com_t contain
 streamframe should only call the observers if they've changed. It currently notifies all if at least one has changed
 observers should be able to say if they want all data or just changed ones; stats is totally invalid unless it gets all data
 it would be much easier for observers to have this logic tbh.
