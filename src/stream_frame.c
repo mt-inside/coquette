@@ -213,5 +213,10 @@ static void *stream_frame_thread( void *ctxt )
     do { com_read_byte( &out ); } while( out != c_end_of_response );
 
 
+    free( thread_args->regs );
+    free( thread_args->cb_ctxt );
+    free( thread_args );
+    free( data );
+
     return NULL;
 }
