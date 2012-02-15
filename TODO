@@ -1,3 +1,7 @@
+rename TACHO to ENGINE_SPEED
+some way of de-duping the stream. Stream should probably do it. E.g. if I make a shift and a value over ENGINE_SPEED, it should only appear in the stream once.
+- a multiplexing observer would be a hack - it's transport dependant.
+- ideally would have a consult comm service to which you could add and remove observers. Regs would be added to stream only if not already streaming. Any change to regs would stop and restart stream.
 valgrind me!
 move fe_qt into fe/ dir
 make a com "interface" (abstract type and function defs) then have some kind of virtual dispatch so that coms can be interchanged (init your com_t * to be com_unix_new( ) where com_t contain
