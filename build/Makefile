@@ -1,5 +1,7 @@
-.DEFAULT: coquette
+.DEFAULT: all
 .PHONY: clean
+
+all: coquette libcoquette.so
 
 # Source directory
 SRC_ROOT := ../src
