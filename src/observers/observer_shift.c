@@ -59,7 +59,7 @@ static void observer_shift_update( observer_t *obs )
     this->warn_level_old = this->warn_level;
 }
 
-void obsserver_shift_get_shift( observer_t *obs, unsigned *warn_level )
+void observer_shift_get_shift( observer_t *obs, unsigned *warn_level )
 {
     observer_shift_t *this = (observer_shift_t *)obs;
 

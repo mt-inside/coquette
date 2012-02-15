@@ -92,7 +92,7 @@ static void observer_zerosixty_update( observer_t *obs )
     this->zerosixty_old = this->zerosixty;
 }
 
-void obsserver_zerosixty_get_zerosixty( observer_t *obs, unsigned *zerosixty )
+void observer_zerosixty_get_zerosixty( observer_t *obs, unsigned *zerosixty )
 {
     observer_zerosixty_t *this = (observer_zerosixty_t *)obs;
 
