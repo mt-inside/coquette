@@ -45,7 +45,7 @@ static void observer_shift_update( observer_t *obs )
     assert( obs->class == observer_subclass_SHIFT );
 
     /* mmm, branch free... */
-    w = (int)ceil((double)(obs->value - this->warn_start) / ((this->warn_end - this->warn_start) / 3));
+    w = (int)ceil((double)((signed)obs->value - (signed)this->warn_start) / (((signed)this->warn_end - (signed)this->warn_start) / 3));
     w = MAX( w, 0 );
     w = MIN( w, 4 );
 
