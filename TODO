@@ -10,6 +10,8 @@ stats_observer
 - do proper update notifications
 - look at on-line algorithms too
 - stdev looks suspect - had a dataset with range 1 stdev 7. Unit test!
+- means have been seen to be bollocks too. Are these both because it's
+  calculating population estimates, not sample stats?
 do the TODOs in stream_frame.c etc
 reg_infos to gain name, unit name, range
 observabled to push their new values (complex type (maybe >1 number like stats) (with units too)) in the update call, as it's silly that you just get a unit type notification then have to ask for the value.
