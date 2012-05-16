@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <errno.h>
 
 #include "common.h"
 #include "com.h"
@@ -16,33 +17,42 @@ int com_init( char *tty_dev_name )
     int ret = 1;
     struct termios *tios;
 
-    s_tty = open( tty_dev_name, O_RDWR | O_NOCTTY | O_EXLOCK );
+    s_tty = open( tty_dev_name, O_RDWR | O_NOCTTY | O_NDELAY );
 
     if( s_tty != -1 )
     {
         tios = calloc( sizeof( struct termios ), 1 );
 
+        tcgetattr( s_tty, tios );
+
         /* Magic runes that equate to 8N1 */
-        tios->c_cflag = CS8 | CRTSCTS | CLOCAL | CREAD;
-        tios->c_iflag = 0;
-        tios->c_oflag = 0;
-        tios->c_lflag = 0;
+        tios->c_cflag |= ( CS8 );
+        tios->c_cflag &= ~( PARENB | CSTOPB | CSIZE );
+        //tios->c_cflag |= ( CRTSCTS | CLOCAL | CREAD );
+        //tios->c_cflag &= ~( ICANON | ECHO | ECHOE | ISIG );
+
+        //tios->c_oflag &= ~OPOST;
 
         /* No waiting for time or multiple characters */
-        tios->c_cc[VTIME] = 0;
-        tios->c_cc[VMIN ] = 0;
+        //tios->c_cc[VTIME] = 0;
+        //tios->c_cc[VMIN ] = 0;
 
         /* 9600 baud */
         assert( !cfsetspeed( tios, B9600 ) );
 
         /* raw: no buffering? necessary? */
-        cfmakeraw( tios );
+        //cfmakeraw( tios );
 
-        assert( tcsetattr( s_tty, TCSANOW, tios ) );
+        if( tcsetattr( s_tty, TCSANOW, tios ) )
+        {
+            perror( "failed to tcsetattr" );
+        }
+        else
+        {
+            ret = 0;
+        }
 
         free( tios );
-
-        ret = 0;
 
         LOG( "com_init done" );
     }
@@ -74,5 +84,5 @@ int com_read_byte( uint8_t *byte )
 
 int com_read_bytes( uint8_t *bytes, unsigned count )
 {
-    return !read( s_tty, bytes, count ) == count;
+    return read( s_tty, bytes, count ) != count;
 }

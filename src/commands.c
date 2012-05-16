@@ -37,7 +37,7 @@ int handshake( ecu_t ecu )
 
     for( i = 0; i < 3; ++i )
     {
-        com_send_byte( handshake[i] );
+        assert( com_send_byte( handshake[i] ) );
     }
 
     com_read_byte( &out );
