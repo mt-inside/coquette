@@ -28,20 +28,20 @@ int com_init( char *tty_dev_name )
         /* Magic runes that equate to 8N1 */
         tios->c_cflag |= ( CS8 );
         tios->c_cflag &= ~( PARENB | CSTOPB | CSIZE );
-        //tios->c_cflag |= ( CRTSCTS | CLOCAL | CREAD );
-        //tios->c_cflag &= ~( ICANON | ECHO | ECHOE | ISIG );
+        /* tios->c_cflag |= ( CRTSCTS | CLOCAL | CREAD ); */
+        /* tios->c_cflag &= ~( ICANON | ECHO | ECHOE | ISIG ); */
 
-        //tios->c_oflag &= ~OPOST;
+        /* tios->c_oflag &= ~OPOST; */
 
         /* No waiting for time or multiple characters */
-        //tios->c_cc[VTIME] = 0;
-        //tios->c_cc[VMIN ] = 0;
+        /* tios->c_cc[VTIME] = 0; */
+        /* tios->c_cc[VMIN ] = 0; */
 
         /* 9600 baud */
         assert( !cfsetspeed( tios, B9600 ) );
 
         /* raw: no buffering? necessary? */
-        //cfmakeraw( tios );
+        /* cfmakeraw( tios ); */
 
         if( tcsetattr( s_tty, TCSANOW, tios ) )
         {
