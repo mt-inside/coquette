@@ -52,9 +52,9 @@ static void shift_label_cb( observer_t *obs, void *ctxt )
 
     switch( warn_level )
     {
-         case 0: sprintf( str, "" ); break;
-         case 1: sprintf( str, "X" ); break;
-         case 2: sprintf( str, "X X" ); break;
+         case 0: sprintf( str, "     " ); break;
+         case 1: sprintf( str, "X    " ); break;
+         case 2: sprintf( str, "X X  " ); break;
          case 3: sprintf( str, "X X X" ); break;
          case 4: sprintf( str, "SHIFT" ); break;
     }
@@ -72,7 +72,7 @@ static void zerosixty_label_cb( observer_t *obs, void *ctxt )
     observer_zerosixty_get_zerosixty( obs, &zerosixty );
     foo = (double)zerosixty / 1000000.0f;
 
-    sprintf( str, "%00.00lfs", foo );
+    sprintf( str, "%0.00lfs", foo );
 
     label->setText( str );
 }
