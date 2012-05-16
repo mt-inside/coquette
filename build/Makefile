@@ -46,6 +46,8 @@ LDFLAGS += -pg -g3
 INCLUDES := $(foreach dir,$(SRC_SEARCH_DIRS),-I$(dir))
 LIBS := -lm -lpthread
 
+all: ${EXE_NAME} ${LIB_NAME}
+
 %.o: %.c
 	${CC} ${CFLAGS} ${INCLUDES} -c -o $@ $<
 
