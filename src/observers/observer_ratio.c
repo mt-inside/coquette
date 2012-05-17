@@ -12,6 +12,7 @@ struct _observer_ratio_t
 {
     observer_t base;
     int value_old;
+    int first_time;
     int min;
     int max;
 };
@@ -26,7 +27,7 @@ observer_ratio_t *observer_ratio_new(
 
     observer_init( (observer_t *)this, observer_subclass_RATIO, &observer_ratio_update, cb, ctxt );
 
-    this->value_old = this->min = this->max = 0;
+    this->first_time = 1;
 
     return this;
 }
@@ -36,6 +37,12 @@ static void observer_ratio_update( observer_t *obs )
     observer_ratio_t *this = (observer_ratio_t *)obs;
 
     assert( obs->class == observer_subclass_RATIO );
+
+    if( this->first_time )
+    {
+        this->min = this->max = this->value_old = obs->value;
+        this->first_time = 0;
+    }
 
     if( obs->value != this->value_old )
     {
