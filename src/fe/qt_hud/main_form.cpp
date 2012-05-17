@@ -45,7 +45,7 @@ static void stats_label_cb( observer_base_t *obs, void *ctxt )
     int min, max, mean, stdev;
     char str[256];
 
-    observer_stats_get_stats( obs, 0, &min, &max, &mean, &stdev );
+    observer_stats_get_stats( obs, &min, &max, &mean, &stdev );
 
     sprintf( str,
              "current: %d\tmin: %d\tmean: %d\tmax: %d\tstdev: %d",
@@ -111,6 +111,8 @@ main_form::main_form( QWidget *parent )
         streams[i] = (stream_t *)malloc( sizeof(stream_t) );
     }
 
+
+    (void)stats_label_cb;
 
     streams[0]->reg = reg_engine_COOLANT_TEMP;
     streams[0]->observers_len = 1;

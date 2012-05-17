@@ -8,7 +8,8 @@ streamframe should only call the observers if they've changed. It currently noti
 observers should be able to say if they want all data or just changed ones; stats is totally invalid unless it gets all data
 it would be much easier for observers to have this logic tbh.
 stats_observer
-- move args (period) to ctor
+- use circ buffer and only store last $period data, remember to handle 0 period
+  (still needs the growing buffer)
 - do proper update notifications
 - look at on-line algorithms too
 - stdev looks suspect - had a dataset with range 1 stdev 7. Unit test!

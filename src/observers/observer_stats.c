@@ -11,6 +11,7 @@
 struct _observer_stats_t
 {
     observer_base_t base;
+    unsigned period;
     int *values;
     unsigned values_size;
     unsigned values_count;
@@ -18,11 +19,14 @@ struct _observer_stats_t
 
 static void observer_stats_update( observer_base_t *this );
 
-observer_stats_t *observer_stats_new( observer_cb_t cb, void *ctxt )
+observer_stats_t *observer_stats_new( observer_cb_t cb, void *ctxt,
+                                      unsigned period )
 {
     observer_stats_t *this = calloc( sizeof( observer_stats_t ), 1 );
 
     observer_base_init( (observer_base_t *)this, observer_subclass_STATS, &observer_stats_update, cb, ctxt );
+
+    this->period = period;
 
     return this;
 }
@@ -67,13 +71,14 @@ static void get_stats_for_range( int *start, unsigned count,
 }
 
 void observer_stats_get_stats( observer_base_t *obs,
-                               unsigned period,
                                int *min, int *max, int *mean, int *stdev )
 {
     observer_stats_t *this = (observer_stats_t *)obs;
+    unsigned period;
 
     assert( obs->class == observer_subclass_STATS );
 
+    period = this->period;
     if( period == 0 ) period = this->values_count;
     if( period > this->values_count ) period = this->values_count;
 
