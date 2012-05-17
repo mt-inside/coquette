@@ -18,7 +18,8 @@ stats_observer
 do the TODOs in stream_frame.c etc
 reg_infos to gain name, unit name, range
 observabled to push their new values (complex type (maybe >1 number like stats) (with units too)) in the update call, as it's silly that you just get a unit type notification then have to ask for the value.
-observers should say which registers they want to watch (if there's a choice they should take it in their ctor). Stream_t doesn't need a reg then, it just asks the observers.
+observers should say which registers they want to watch (if there's a choice they should take it in their ctor). Stream_t doesn't need a reg then, it just asks the observers. When the register dedup is done this will work just fine.
+following on, one shouldn't have to put together a big array for stream_frame. Some kind of steam_info_t / obs_collection_t to which I can obs_add(). That means I wouldn't have to tell it the observer len or malloc that array. Splitting this info into two arrays, grouping by register, won't be neccessary when the register dedup is done.
 observables to report a complex T, not just uint8 (e.g. value + reg_info). IS THIS NECESSARY? WHEN YOU REGISTER FOR UPDATES YOU SHOULD HAVE A REG_INFO TO HAND
 when observers notify you of new data they currently just raise an event and you have to ask them for data yourself. This makes it a bit all-or-nothing (though I think observers should stay small and only represent one piece of data)
 mock ecu for testing (maybe a gui with sliders for the values)
