@@ -3,12 +3,10 @@ some way of de-duping the stream. Stream should probably do it. E.g. if I make a
 - a multiplexing observer would be a hack - it's transport dependant.
 - ideally would have a consult comm service to which you could add and remove observers. Regs would be added to stream only if not already streaming. Any change to regs would stop and restart stream.
 valgrind me!
-move fe_qt into fe/ dir
 make a com "interface" (abstract type and function defs) then have some kind of virtual dispatch so that coms can be interchanged (init your com_t * to be com_unix_new( ) where com_t contain
 streamframe should only call the observers if they've changed. It currently notifies all if at least one has changed
 observers should be able to say if they want all data or just changed ones; stats is totally invalid unless it gets all data
 it would be much easier for observers to have this logic tbh.
-change state int in stream frame to enum
 stats_observer
 - move args (period) to ctor
 - do proper update notifications

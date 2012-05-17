@@ -28,9 +28,16 @@ typedef struct
     void *cb_ctxt;
 } stream_thread_args_t;
 
+typedef enum
+{
+    state_NOT_RUNNING,
+    state_RUNNING,
+    state_EXITING
+} state_t;
+
 
 /* TODO: lock around me */
-static int s_state = 0; /* 0 - not running, 1 - running, 2 - exiting */
+static state_t s_state = state_NOT_RUNNING;
 static pthread_t s_thread;
 
 
@@ -49,7 +56,7 @@ int stream_registers_start( stream_t **streams, unsigned streams_len )
     unsigned args_offset = 0;
 
 
-    assert( s_state == 0 );
+    assert( s_state == state_NOT_RUNNING );
 
     for( i = 0; i < streams_len; ++i )
     {
@@ -78,7 +85,7 @@ int stream_registers_start( stream_t **streams, unsigned streams_len )
         thread_args
     );
 
-    s_state = 1;
+    s_state = state_RUNNING;
 
 
     return 0;
@@ -88,12 +95,12 @@ void stream_registers_end( void )
 {
     void *retval;
 
-    assert( s_state == 1 );
+    assert( s_state == state_RUNNING );
 
-    s_state = 2;
+    s_state = state_EXITING;
     pthread_join( s_thread, &retval );
 
-    s_state = 0;
+    s_state = state_NOT_RUNNING;
 }
 
 
@@ -187,8 +194,10 @@ static void *stream_frame_thread( void *ctxt )
 
 
     /* Stream data */
-    while( s_state != 2 )
+    while( s_state != state_EXITING )
     {
+        assert( s_state == state_RUNNING );
+
         com_read_byte( &out );
         assert( out == c_response_frame_start );
 
