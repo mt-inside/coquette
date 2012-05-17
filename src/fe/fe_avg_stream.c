@@ -11,7 +11,7 @@
 #include "stream_frame.h"
 
 
-static void stats_print_cb( observer_t *obs, void *ctxt )
+static void stats_print_cb( observer_base_t *obs, void *ctxt )
 {
     int min, max, mean, stdev;
 
@@ -20,7 +20,7 @@ static void stats_print_cb( observer_t *obs, void *ctxt )
     observer_stats_get_stats( obs, 0, &min, &max, &mean, &stdev );
 
     printf( "current: %d\tmin: %d\tmean: %d\tmax: %d\tstdev: %d\n",
-            observer_get_value( obs ),
+            observer_base_get_value( obs ),
             min,
             mean,
             max,
@@ -38,25 +38,25 @@ static void init_streaming( void )
     for( i = 0; i < stream_count; ++i )
     {
         streams[i] = malloc( sizeof(stream_t) );
-        streams[i]->observers = malloc( sizeof(observer_t *) );
+        streams[i]->observers = malloc( sizeof(observer_base_t *) );
         streams[i]->observers_len = 1;
     }
 
 
     streams[0]->reg = reg_engine_COOLANT_TEMP;
-    streams[0]->observers[0] = (observer_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[0]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
 
     streams[1]->reg = reg_TACHO;
-    streams[1]->observers[0] = (observer_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[1]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
 
     streams[2]->reg = reg_ROAD_SPEED;
-    streams[2]->observers[0] = (observer_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[2]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
 
     streams[3]->reg = reg_BATT_VOLT;
-    streams[3]->observers[0] = (observer_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[3]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
 
     streams[4]->reg = reg_TPS;
-    streams[4]->observers[0] = (observer_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[4]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
 
 
     /* spawns streaming thread and returns */

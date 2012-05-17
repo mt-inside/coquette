@@ -10,20 +10,20 @@ extern "C" {
 #include "stream_frame.h"
 }
 
-static void value_label_cb( observer_t *obs, void *ctxt )
+static void value_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
     char str[256];
 
     sprintf( str,
              "%d",
-             observer_get_value( obs )
+             observer_base_get_value( obs )
            );
 
     label->setText( str );
 }
 
-static void ratio_label_cb( observer_t *obs, void *ctxt )
+static void ratio_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
     float ratio;
@@ -39,7 +39,7 @@ static void ratio_label_cb( observer_t *obs, void *ctxt )
     label->setText( str );
 }
 
-static void stats_label_cb( observer_t *obs, void *ctxt )
+static void stats_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
     int min, max, mean, stdev;
@@ -49,7 +49,7 @@ static void stats_label_cb( observer_t *obs, void *ctxt )
 
     sprintf( str,
              "current: %d\tmin: %d\tmean: %d\tmax: %d\tstdev: %d",
-             observer_get_value( obs ),
+             observer_base_get_value( obs ),
              min,
              mean,
              max,
@@ -59,7 +59,7 @@ static void stats_label_cb( observer_t *obs, void *ctxt )
     label->setText( str );
 }
 
-static void shift_label_cb( observer_t *obs, void *ctxt )
+static void shift_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
     char str[256];
@@ -79,7 +79,7 @@ static void shift_label_cb( observer_t *obs, void *ctxt )
     label->setText( str );
 }
 
-static void zerosixty_label_cb( observer_t *obs, void *ctxt )
+static void zerosixty_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
     char str[256];
@@ -114,25 +114,25 @@ main_form::main_form( QWidget *parent )
 
     streams[0]->reg = reg_engine_COOLANT_TEMP;
     streams[0]->observers_len = 1;
-    streams[0]->observers = (observer_t **)malloc( streams[0]->observers_len * sizeof(observer_t *) );
-    streams[0]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelCoolantTemp );
+    streams[0]->observers = (observer_base_t **)malloc( streams[0]->observers_len * sizeof(observer_base_t *) );
+    streams[0]->observers[0] = (observer_base_t *)observer_value_new( &value_label_cb, (void *)labelCoolantTemp );
 
     streams[1]->reg = reg_TACHO;
     streams[1]->observers_len = 2;
-    streams[1]->observers = (observer_t **)malloc( streams[1]->observers_len * sizeof(observer_t *) );
-    streams[1]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelEngineSpeed );
-    streams[1]->observers[1] = (observer_t *)observer_shift_new( &shift_label_cb, (void *)labelShift, 6000, 7000 );
+    streams[1]->observers = (observer_base_t **)malloc( streams[1]->observers_len * sizeof(observer_base_t *) );
+    streams[1]->observers[0] = (observer_base_t *)observer_value_new( &value_label_cb, (void *)labelEngineSpeed );
+    streams[1]->observers[1] = (observer_base_t *)observer_shift_new( &shift_label_cb, (void *)labelShift, 6000, 7000 );
 
     streams[2]->reg = reg_ROAD_SPEED;
     streams[2]->observers_len = 2;
-    streams[2]->observers = (observer_t **)malloc( streams[2]->observers_len * sizeof(observer_t *) );
-    streams[2]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelRoadSpeed );
-    streams[2]->observers[1] = (observer_t *)observer_zerosixty_new( &zerosixty_label_cb, (void *)labelZerosixty, 60 );
+    streams[2]->observers = (observer_base_t **)malloc( streams[2]->observers_len * sizeof(observer_base_t *) );
+    streams[2]->observers[0] = (observer_base_t *)observer_value_new( &value_label_cb, (void *)labelRoadSpeed );
+    streams[2]->observers[1] = (observer_base_t *)observer_zerosixty_new( &zerosixty_label_cb, (void *)labelZerosixty, 60 );
 
     streams[3]->reg = reg_TPS;
     streams[3]->observers_len = 1;
-    streams[3]->observers = (observer_t **)malloc( streams[3]->observers_len * sizeof(observer_t *) );
-    streams[3]->observers[0] = (observer_t *)observer_ratio_new( &ratio_label_cb, (void *)labelTpsPc );
+    streams[3]->observers = (observer_base_t **)malloc( streams[3]->observers_len * sizeof(observer_base_t *) );
+    streams[3]->observers[0] = (observer_base_t *)observer_ratio_new( &ratio_label_cb, (void *)labelTpsPc );
 
 
     stream_registers_start(

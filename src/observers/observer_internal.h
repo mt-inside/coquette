@@ -1,7 +1,9 @@
+/* Header file to include if you want to subclass observer_base_t */
+
 #ifndef _INCLUDED_OBSERVER_INTERNAL_H
 #define _INCLUDED_OBSERVER_INTERNAL_H
 
-#include "observer.h"
+#include "observer_base.h"
 
 
 typedef enum
@@ -13,11 +15,10 @@ typedef enum
     observer_subclass_RATIO
 } observer_subclass_t;
 
+typedef void (*observer_update_fn_t)( struct _observer_base_t *obs );
 
-typedef void (*observer_update_fn_t)( struct _observer_t *obs );
 
-
-struct _observer_t
+struct _observer_base_t
 {
     observer_subclass_t class;
     observer_update_fn_t update_fn;
@@ -27,8 +28,8 @@ struct _observer_t
 };
 
 
-extern void observer_init(
-    observer_t *obs,
+extern void observer_base_init(
+    observer_base_t *obs,
     observer_subclass_t class,
     observer_update_fn_t update_fn,
     observer_cb_t cb,

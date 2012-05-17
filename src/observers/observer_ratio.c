@@ -2,22 +2,22 @@
 #include <assert.h>
 #include <math.h>
 
-#include "observer_ratio.h"
+#include "observer_base.h"
 #include "observer_internal.h"
-#include "observer.h"
+#include "observer_ratio.h"
 #include "utils.h"
 
 
 struct _observer_ratio_t
 {
-    observer_t base;
+    observer_base_t base;
     int value_old;
     int first_time;
     int min;
     int max;
 };
 
-static void observer_ratio_update( observer_t *this );
+static void observer_ratio_update( observer_base_t *this );
 
 observer_ratio_t *observer_ratio_new(
     observer_cb_t cb, void *ctxt
@@ -25,14 +25,14 @@ observer_ratio_t *observer_ratio_new(
 {
     observer_ratio_t *this = calloc( sizeof( observer_ratio_t ), 1 );
 
-    observer_init( (observer_t *)this, observer_subclass_RATIO, &observer_ratio_update, cb, ctxt );
+    observer_base_init( (observer_base_t *)this, observer_subclass_RATIO, &observer_ratio_update, cb, ctxt );
 
     this->first_time = 1;
 
     return this;
 }
 
-static void observer_ratio_update( observer_t *obs )
+static void observer_ratio_update( observer_base_t *obs )
 {
     observer_ratio_t *this = (observer_ratio_t *)obs;
 
@@ -55,7 +55,7 @@ static void observer_ratio_update( observer_t *obs )
     this->value_old = obs->value;
 }
 
-void observer_ratio_get_ratio( observer_t *obs, float *ratio )
+void observer_ratio_get_ratio( observer_base_t *obs, float *ratio )
 {
     observer_ratio_t *this = (observer_ratio_t *)obs;
 

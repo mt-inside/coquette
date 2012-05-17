@@ -2,9 +2,9 @@
 #include <assert.h>
 #include <sys/time.h>
 
-#include "observer_zerosixty.h"
+#include "observer_base.h"
 #include "observer_internal.h"
-#include "observer.h"
+#include "observer_zerosixty.h"
 #include "utils.h"
 
 
@@ -17,7 +17,7 @@ typedef enum
 
 struct _observer_zerosixty_t
 {
-    observer_t base;
+    observer_base_t base;
     zerosixty_state_t state;
     struct timeval *start_time;
     unsigned target;
@@ -25,13 +25,13 @@ struct _observer_zerosixty_t
     unsigned zerosixty_old; /* microseconds */
 };
 
-static void observer_zerosixty_update( observer_t *this );
+static void observer_zerosixty_update( observer_base_t *this );
 
 observer_zerosixty_t *observer_zerosixty_new( observer_cb_t cb, void *ctxt, unsigned target )
 {
     observer_zerosixty_t *this = calloc( sizeof( observer_zerosixty_t ), 1 );
 
-    observer_init( (observer_t *)this, observer_subclass_ZEROSIXTY, &observer_zerosixty_update, cb, ctxt );
+    observer_base_init( (observer_base_t *)this, observer_subclass_ZEROSIXTY, &observer_zerosixty_update, cb, ctxt );
 
     this->state = zerosixty_state_WAITING_ZERO;
     this->start_time = malloc( sizeof(struct timeval) );
@@ -42,7 +42,7 @@ observer_zerosixty_t *observer_zerosixty_new( observer_cb_t cb, void *ctxt, unsi
     return this;
 }
 
-static void observer_zerosixty_update( observer_t *obs )
+static void observer_zerosixty_update( observer_base_t *obs )
 {
     observer_zerosixty_t *this = (observer_zerosixty_t *)obs;
 
@@ -98,7 +98,7 @@ static void observer_zerosixty_update( observer_t *obs )
     this->zerosixty_old = this->zerosixty;
 }
 
-void observer_zerosixty_get_zerosixty( observer_t *obs, unsigned *zerosixty )
+void observer_zerosixty_get_zerosixty( observer_base_t *obs, unsigned *zerosixty )
 {
     observer_zerosixty_t *this = (observer_zerosixty_t *)obs;
 

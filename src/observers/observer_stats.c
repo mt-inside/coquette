@@ -3,31 +3,31 @@
 #include <limits.h>
 #include <math.h>
 
-#include "observer_stats.h"
+#include "observer_base.h"
 #include "observer_internal.h"
-#include "observer.h"
+#include "observer_stats.h"
 
 
 struct _observer_stats_t
 {
-    observer_t base;
+    observer_base_t base;
     int *values;
     unsigned values_size;
     unsigned values_count;
 };
 
-static void observer_stats_update( observer_t *this );
+static void observer_stats_update( observer_base_t *this );
 
 observer_stats_t *observer_stats_new( observer_cb_t cb, void *ctxt )
 {
     observer_stats_t *this = calloc( sizeof( observer_stats_t ), 1 );
 
-    observer_init( (observer_t *)this, observer_subclass_STATS, &observer_stats_update, cb, ctxt );
+    observer_base_init( (observer_base_t *)this, observer_subclass_STATS, &observer_stats_update, cb, ctxt );
 
     return this;
 }
 
-static void observer_stats_update( observer_t *obs )
+static void observer_stats_update( observer_base_t *obs )
 {
     const unsigned values_resize_quantum = 64;
     observer_stats_t *this = (observer_stats_t *)obs;
@@ -66,7 +66,7 @@ static void get_stats_for_range( int *start, unsigned count,
     *mean_out = mean; *stdev_out = (int)round( sqrt( variance ) );
 }
 
-void observer_stats_get_stats( observer_t *obs,
+void observer_stats_get_stats( observer_base_t *obs,
                                unsigned period,
                                int *min, int *max, int *mean, int *stdev )
 {

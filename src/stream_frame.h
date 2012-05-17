@@ -2,13 +2,13 @@
 #define _INCLUDED_STREAM_FRAME_H
 
 #include "registers.h"
-#include "observers/observer.h"
+#include "observers/observer_base.h"
 
 
 typedef struct
 {
     engine_reg_t reg;
-    observer_t **observers;
+    observer_base_t **observers;
     unsigned observers_len;
 } stream_t;
 

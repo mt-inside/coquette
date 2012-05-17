@@ -2,22 +2,22 @@
 #include <assert.h>
 #include <math.h>
 
-#include "observer_shift.h"
+#include "observer_base.h"
 #include "observer_internal.h"
-#include "observer.h"
+#include "observer_shift.h"
 #include "utils.h"
 
 
 struct _observer_shift_t
 {
-    observer_t base;
+    observer_base_t base;
     unsigned warn_start;
     unsigned warn_end;
     unsigned warn_level;
     unsigned warn_level_old;
 };
 
-static void observer_shift_update( observer_t *this );
+static void observer_shift_update( observer_base_t *this );
 
 observer_shift_t *observer_shift_new(
     observer_cb_t cb, void *ctxt,
@@ -26,7 +26,7 @@ observer_shift_t *observer_shift_new(
 {
     observer_shift_t *this = calloc( sizeof( observer_shift_t ), 1 );
 
-    observer_init( (observer_t *)this, observer_subclass_SHIFT, &observer_shift_update, cb, ctxt );
+    observer_base_init( (observer_base_t *)this, observer_subclass_SHIFT, &observer_shift_update, cb, ctxt );
 
     this->warn_start = warn_start;
     this->warn_end   = warn_end;
@@ -37,7 +37,7 @@ observer_shift_t *observer_shift_new(
     return this;
 }
 
-static void observer_shift_update( observer_t *obs )
+static void observer_shift_update( observer_base_t *obs )
 {
     observer_shift_t *this = (observer_shift_t *)obs;
     int w;
@@ -59,7 +59,7 @@ static void observer_shift_update( observer_t *obs )
     this->warn_level_old = this->warn_level;
 }
 
-void observer_shift_get_shift( observer_t *obs, unsigned *warn_level )
+void observer_shift_get_shift( observer_base_t *obs, unsigned *warn_level )
 {
     observer_shift_t *this = (observer_shift_t *)obs;
 
