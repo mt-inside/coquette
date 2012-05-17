@@ -10,6 +10,4 @@ extern observer_value_t *observer_value_new(
     observer_cb_t, void *ctxt
 );
 
-extern void observer_value_get_value( observer_t *obs, int *value );
-
 #endif /* defined _INCLUDED_OBSERVER_VALUE_H */

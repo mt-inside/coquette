@@ -42,10 +42,3 @@ static void observer_value_update( observer_t *obs )
 
     this->value_old = obs->value;
 }
-
-void observer_value_get_value( observer_t *obs, int *value )
-{
-    assert( obs->class == observer_subclass_VALUE );
-
-    *value = obs->value;
-}
