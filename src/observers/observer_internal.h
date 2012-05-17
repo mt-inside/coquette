@@ -8,11 +8,11 @@
 
 typedef enum
 {
-    observer_subclass_VALUE,
+    observer_subclass_RATIO,
     observer_subclass_SHIFT,
     observer_subclass_STATS,
-    observer_subclass_ZEROSIXTY,
-    observer_subclass_RATIO
+    observer_subclass_VALUE,
+    observer_subclass_ZEROSIXTY
 } observer_subclass_t;
 
 typedef void (*observer_update_fn_t)( struct _observer_base_t *obs );

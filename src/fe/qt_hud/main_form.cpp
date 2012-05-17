@@ -2,11 +2,11 @@
 #include "main_form.h"
 
 extern "C" {
-#include "observers/observer_value.h"
-#include "observers/observer_stats.h"
-#include "observers/observer_shift.h"
-#include "observers/observer_zerosixty.h"
 #include "observers/observer_ratio.h"
+#include "observers/observer_shift.h"
+#include "observers/observer_stats.h"
+#include "observers/observer_value.h"
+#include "observers/observer_zerosixty.h"
 #include "stream_frame.h"
 }
 
