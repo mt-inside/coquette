@@ -1,3 +1,4 @@
+fix the structure of the observers, observer->observer_base etc
 rename TACHO to ENGINE_SPEED
 some way of de-duping the stream. Stream should probably do it. E.g. if I make a shift and a value over ENGINE_SPEED, it should only appear in the stream once.
 - a multiplexing observer would be a hack - it's transport dependant.
