@@ -6,6 +6,7 @@ extern "C" {
 #include "observers/observer_stats.h"
 #include "observers/observer_shift.h"
 #include "observers/observer_zerosixty.h"
+#include "observers/observer_ratio.h"
 #include "stream_frame.h"
 }
 
@@ -17,6 +18,22 @@ static void value_label_cb( observer_t *obs, void *ctxt )
     sprintf( str,
              "%d",
              observer_get_value( obs )
+           );
+
+    label->setText( str );
+}
+
+static void ratio_label_cb( observer_t *obs, void *ctxt )
+{
+    QLabel *label = (QLabel *)ctxt;
+    float ratio;
+    char str[256];
+
+    observer_ratio_get_ratio( obs, &ratio );
+
+    sprintf( str,
+             "%.0f",
+             ratio * 100
            );
 
     label->setText( str );
@@ -84,7 +101,7 @@ main_form::main_form( QWidget *parent )
     setupUi( this );
 
 
-    const unsigned stream_count = 3;
+    const unsigned stream_count = 4;
     stream_t **streams = (stream_t **)malloc( sizeof(stream_t *) * stream_count );
     unsigned i;
 
@@ -96,21 +113,26 @@ main_form::main_form( QWidget *parent )
 
 
     streams[0]->reg = reg_engine_COOLANT_TEMP;
-    streams[0]->observers = (observer_t **)malloc( 1 * sizeof(observer_t *) );
     streams[0]->observers_len = 1;
+    streams[0]->observers = (observer_t **)malloc( streams[0]->observers_len * sizeof(observer_t *) );
     streams[0]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelCoolantTemp );
 
     streams[1]->reg = reg_TACHO;
-    streams[1]->observers = (observer_t **)malloc( 2 * sizeof(observer_t *) );
     streams[1]->observers_len = 2;
+    streams[1]->observers = (observer_t **)malloc( streams[1]->observers_len * sizeof(observer_t *) );
     streams[1]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelEngineSpeed );
     streams[1]->observers[1] = (observer_t *)observer_shift_new( &shift_label_cb, (void *)labelShift, 6000, 7000 );
 
     streams[2]->reg = reg_ROAD_SPEED;
-    streams[2]->observers = (observer_t **)malloc( 2 * sizeof(observer_t *) );
     streams[2]->observers_len = 2;
+    streams[2]->observers = (observer_t **)malloc( streams[2]->observers_len * sizeof(observer_t *) );
     streams[2]->observers[0] = (observer_t *)observer_value_new( &value_label_cb, (void *)labelRoadSpeed );
     streams[2]->observers[1] = (observer_t *)observer_zerosixty_new( &zerosixty_label_cb, (void *)labelZerosixty, 60 );
+
+    streams[3]->reg = reg_TPS;
+    streams[3]->observers_len = 1;
+    streams[3]->observers = (observer_t **)malloc( streams[3]->observers_len * sizeof(observer_t *) );
+    streams[3]->observers[0] = (observer_t *)observer_ratio_new( &ratio_label_cb, (void *)labelTpsPc );
 
 
     stream_registers_start(
