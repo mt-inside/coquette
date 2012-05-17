@@ -1,0 +1,7 @@
+Building on Windows:
+Use MinGW; qt does. Qt 4.8 ships with MinGW 4.4, this is sufficient.
+Use a Qt command prompt. Seem to be a standard one with Qt and Qt's MinGW on the path
+Build libcoquette.dll using the standard Makefile with mingw32-make (clean doesn't work under cmd.exe)
+In qt_hud, run qmake && mingw32-make. This will make qt_coquette.exe.
+Ship: qt_coquette.exe libcoquette.dll libgcc_s_dw2-1.sll mingw10.dll pthreadGC2.dll QtCore[d]4.dll QtGui[d]4.dll
+If you change the library, remember to re-deploy the dll as well as just rebuilding and re-deploying the exe.
