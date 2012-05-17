@@ -37,27 +37,9 @@
    <widget class="QLabel" name="labelZerosixty">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>130</x>
       <y>110</y>
-      <width>71</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>8.88s</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>111</width>
+      <width>100</width>
       <height>21</height>
      </rect>
     </property>
@@ -67,15 +49,33 @@
      </font>
     </property>
     <property name="text">
-     <string>Last 0-60</string>
+     <string>88.88s</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>120</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Last 0-60:</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelRoadSpeed">
     <property name="geometry">
      <rect>
-      <x>480</x>
+      <x>420</x>
       <y>0</y>
-      <width>161</width>
+      <width>220</width>
       <height>81</height>
      </rect>
     </property>
@@ -94,9 +94,9 @@
    <widget class="QLabel" name="labelEngineSpeed">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>420</x>
       <y>120</y>
-      <width>211</width>
+      <width>220</width>
       <height>81</height>
      </rect>
     </property>
@@ -115,9 +115,9 @@
    <widget class="QLabel" name="labelCoolantTemp">
     <property name="geometry">
      <rect>
-      <x>394</x>
+      <x>420</x>
       <y>240</y>
-      <width>251</width>
+      <width>220</width>
       <height>91</height>
      </rect>
     </property>
@@ -136,9 +136,9 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>556</x>
+      <x>420</x>
       <y>80</y>
-      <width>81</width>
+      <width>220</width>
       <height>21</height>
      </rect>
     </property>
@@ -157,9 +157,9 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>566</x>
+      <x>420</x>
       <y>200</y>
-      <width>71</width>
+      <width>220</width>
       <height>21</height>
      </rect>
     </property>
@@ -178,9 +178,9 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>420</x>
       <y>320</y>
-      <width>81</width>
+      <width>220</width>
       <height>41</height>
      </rect>
     </property>
@@ -199,9 +199,9 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>546</x>
+      <x>420</x>
       <y>440</y>
-      <width>91</width>
+      <width>220</width>
       <height>41</height>
      </rect>
     </property>
@@ -220,9 +220,9 @@
    <widget class="QLabel" name="labelTpsPc">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>420</x>
       <y>360</y>
-      <width>251</width>
+      <width>220</width>
       <height>91</height>
      </rect>
     </property>
