@@ -65,6 +65,9 @@ int main( int argc, char **argv )
     com_init( argv[1] );
     handshake( ecu_ENGINE );
 
+    (void)read_faults;
+    (void)read_regs;
+    (void)read_mem;
     read_bit( );
 
     com_finalise( );
