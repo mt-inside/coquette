@@ -141,8 +141,7 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
         stream_t *stream = streams[i];
         reg_info_t *reg_info = registers_get_reg_info( stream->reg );
 
-        datum = 0;
-        memcpy( &datum, data + offset, reg_info->width );
+        datum = reg_info->reader( data + offset );
         datum = reg_info->scaler( datum );
 
         offset += reg_info->width;
