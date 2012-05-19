@@ -46,7 +46,7 @@ static void ratio_dial_cb( observer_base_t *obs, void *ctxt )
 
     observer_ratio_get_ratio( obs, &ratio );
 
-    dial->setValue( ratio );
+    dial->value( ratio );
 }
 
 static void stats_label_cb( observer_base_t *obs, void *ctxt )

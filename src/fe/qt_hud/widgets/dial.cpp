@@ -3,9 +3,11 @@
 #include "dial.h"
 
 
-Dial::Dial(QWidget *parent)
+Dial::Dial(QWidget *parent, int startAngle, int maxArcLength)
     : QWidget(parent)
 {
+    _start  = startAngle;
+    _length = maxArcLength;
     setBackgroundRole(QPalette::Base);
 }
 
@@ -20,25 +22,42 @@ QSize Dial::sizeHint() const
     return QSize(400, 200);
 }
 
-void Dial::setValue( float value )
+void Dial::startAngle( int value )
 {
-    this->value = value;
+    _start = value;
+    update( );
+}
+
+void Dial::maxArcLength( int value )
+{
+    _length = value;
+    update( );
+}
+
+void Dial::value( float value )
+{
+    _value = value;
     update( );
 }
 
 
+static void drawArc(QPainter &painter, QRect &rect, int start, int length)
+{
+    painter.drawArc(rect, (-90 - start) * 16, length * 16 * -1);
+}
 void Dial::paintEvent(QPaintEvent *)
 {
-    QPen pen = QPen( Qt::blue, 10, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin );
+    QPen penValue = QPen( Qt::blue,  10, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin );
+    QPen penMarks = QPen( Qt::black, 10, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin );
     QRect rect(10, 10, 100, 100);
-    int startAngle = (-120 + 10) * 16; /* 0 at 3 o'clock, -ve for clockwise fomr there */
-    int arcLength = ((int)(this->value * 300.0f) + 10) * -1 * 16; /* -ve for clockwise drawing */
+    int arcLength = (int)(_value * (float)_length);
     QPainter painter(this);
 
-    painter.setPen(pen);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    painter.drawArc(rect, startAngle, arcLength);
+    painter.setPen(penMarks); drawArc(painter, rect, _start - 5, 5);
+    painter.setPen(penValue); drawArc(painter, rect, _start, arcLength);
+    painter.setPen(penMarks); drawArc(painter, rect, _start + _length, 5);
 
     /* Useful to see the extents of the widget for now */
     painter.setRenderHint(QPainter::Antialiasing, false);
