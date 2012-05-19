@@ -62,8 +62,8 @@ static void stats_label_cb( observer_base_t *obs, void *ctxt )
 static void shift_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
-    char str[256];
     unsigned warn_level;
+    char str[256];
 
     observer_shift_get_shift( obs, &warn_level );
 
@@ -82,14 +82,12 @@ static void shift_label_cb( observer_base_t *obs, void *ctxt )
 static void zerosixty_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
-    char str[256];
     unsigned zerosixty;
-    double foo;
+    char str[256];
 
     observer_zerosixty_get_zerosixty( obs, &zerosixty );
-    foo = (double)zerosixty / 1000000.0f;
 
-    sprintf( str, "%0.00lfs", foo );
+    sprintf( str, "%0.00lfs", (double)zerosixty / 1000000.0f );
 
     label->setText( str );
 }
