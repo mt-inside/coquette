@@ -1,6 +1,8 @@
 #ifndef _INCLUDED_REGISTERS_H
 #define _INCLUDED_REGISTERS_H
 
+#include <stdint.h>
+
 #include "scalers.h"
 
 
@@ -68,13 +70,13 @@ typedef enum
 } engine_reg_t;
 
 
-typedef int (*reader_fn_t)( engine_reg_t reg, int *out ); /* FIXME: these shouldn't call COM, they should be passed something and munge it */
+typedef int (*reader_fn_t)( uint8_t *data ); /* FIXME: these shouldn't call COM, they should be passed something and munge it */
 
 
 typedef struct
 {
     unsigned width;
-    reader_fn_t reader;
+    reader_fn_t reader; /* Converts raw data into an int */
     scale_fn_t scaler;
 } reg_info_t;
 

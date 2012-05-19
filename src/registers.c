@@ -2,11 +2,10 @@
 #include <stdlib.h>
 
 #include "registers.h"
-#include "read_frame.h"
 
 
-static int read_register_1byte( engine_reg_t reg, int *out );
-static int read_register_2bytes( engine_reg_t reg, int *out );
+static int read_register_1byte(  uint8_t *data );
+static int read_register_2bytes( uint8_t *data );
 
 
 /* TODO: add unit info */
@@ -82,31 +81,12 @@ reg_info_t *registers_get_reg_info( engine_reg_t reg )
 }
 
 
-static int read_register_1byte( engine_reg_t reg, int *out )
+static int read_register_1byte( uint8_t *data )
 {
-    unsigned len;
-    uint8_t *data;
-
-    read_frame_arg( cmd_READ_REGISTER, reg, &data, &len );
-    assert( len == 1 );
-
-    *out = *data;
-
-    free( data );
-    return 0;
+    return *data;
 }
 
-static int read_register_2bytes( engine_reg_t reg, int *out )
+static int read_register_2bytes( uint8_t *data )
 {
-    unsigned len;
-    uint8_t *data;
-
-    /* assume both registers are adjacent */
-    read_frame_args( cmd_READ_REGISTER, &data, &len, 2, reg, reg + 1 );
-    assert( len == 2 );
-
-    *out = data[1] | data[0] << 8;
-
-    free( data );
-    return 0;
+    return data[1] | data[0] << 8;
 }

@@ -111,11 +111,24 @@ int read_ecu_part_no( ecu_part_no_t **part_no )
 int read_register( engine_reg_t reg, int *out )
 {
     reg_info_t *reg_info = registers_get_reg_info( reg );
+    uint8_t *data;
+    unsigned len;
 
     assert( reg_info );
 
-    reg_info->reader( reg, out );
+    if( reg_info->width == 1 )
+        read_frame_arg( cmd_READ_REGISTER, reg, &data, &len );
+    else if( reg_info->width == 2 )
+        read_frame_args( cmd_READ_REGISTER, &data, &len, 2, reg, reg + 1 );
+    else
+        assert( 0 );
+
+    assert( len == reg_info->width );
+
+    *out = reg_info->reader( data );
     *out = reg_info->scaler( *out );
+
+    free( data );
 
     return 0;
 }
