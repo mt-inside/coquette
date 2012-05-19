@@ -50,7 +50,7 @@ int stream_registers_start( stream_t **streams, unsigned streams_len )
     stream_thread_args_t *thread_args =
         malloc( sizeof(stream_thread_args_t) );
     stream_cb_ctxt_t *cb_ctxt = malloc( sizeof(stream_cb_ctxt_t) );
-    uint8_t *args = malloc( 20 ); /* consult protocol maximum arg size for read_register */
+    uint8_t *args = malloc( c_max_streaming_regs );
     reg_info_t *reg_info;
     unsigned i, j;
     unsigned args_offset = 0;
@@ -63,7 +63,7 @@ int stream_registers_start( stream_t **streams, unsigned streams_len )
         reg_info = registers_get_reg_info( streams[i]->reg );
         for( j = 0; j < reg_info->width; ++j )
         {
-            assert( args_offset < 20 );
+            assert( args_offset < c_max_streaming_regs );
             args[args_offset++] = streams[i]->reg + j;
         }
     }

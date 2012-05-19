@@ -8,4 +8,6 @@ extern const uint8_t c_end_of_request;
 extern const uint8_t c_response_frame_start;
 extern const uint8_t c_end_of_response;
 
+extern const unsigned c_max_streaming_regs;
+
 #endif /* defined _INCLUDED_CONSULT_CONSTANTS_H */
