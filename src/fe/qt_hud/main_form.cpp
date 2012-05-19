@@ -39,6 +39,16 @@ static void ratio_label_cb( observer_base_t *obs, void *ctxt )
     label->setText( str );
 }
 
+static void ratio_dial_cb( observer_base_t *obs, void *ctxt )
+{
+    Dial *dial = (Dial *)ctxt;
+    float ratio;
+
+    observer_ratio_get_ratio( obs, &ratio );
+
+    dial->setValue( ratio );
+}
+
 static void stats_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
@@ -130,9 +140,10 @@ main_form::main_form( QWidget *parent )
     streams[2]->observers[1] = (observer_base_t *)observer_zerosixty_new( &zerosixty_label_cb, (void *)labelZerosixty, 60 );
 
     streams[3]->reg = reg_TPS;
-    streams[3]->observers_len = 1;
+    streams[3]->observers_len = 2;
     streams[3]->observers = (observer_base_t **)malloc( streams[3]->observers_len * sizeof(observer_base_t *) );
     streams[3]->observers[0] = (observer_base_t *)observer_ratio_new( &ratio_label_cb, (void *)labelTpsPc );
+    streams[3]->observers[1] = (observer_base_t *)observer_ratio_new( &ratio_dial_cb, (void *)dialTps );
 
 
     stream_registers_start(
