@@ -131,7 +131,7 @@ main_form::main_form( QWidget *parent )
     streams[1]->observers_len = 2;
     streams[1]->observers = (observer_base_t **)malloc( streams[1]->observers_len * sizeof(observer_base_t *) );
     streams[1]->observers[0] = (observer_base_t *)observer_value_new( &value_label_cb, (void *)labelEngineSpeed );
-    streams[1]->observers[1] = (observer_base_t *)observer_shift_new( &shift_label_cb, (void *)labelShift, 6000, 7000 );
+    streams[1]->observers[1] = (observer_base_t *)observer_shift_new( &shift_label_cb, (void *)labelShift, 2000, 3000 );
 
     streams[2]->reg = reg_ROAD_SPEED;
     streams[2]->observers_len = 2;
