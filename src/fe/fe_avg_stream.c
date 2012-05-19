@@ -17,7 +17,7 @@ static void stats_print_cb( observer_base_t *obs, void *ctxt )
 
     (void)ctxt;
 
-    observer_stats_get_stats( obs, 0, &min, &max, &mean, &stdev );
+    observer_stats_get_stats( obs, &min, &max, &mean, &stdev );
 
     printf( "current: %d\tmin: %d\tmean: %d\tmax: %d\tstdev: %d\n",
             observer_base_get_value( obs ),
@@ -44,19 +44,19 @@ static void init_streaming( void )
 
 
     streams[0]->reg = reg_engine_COOLANT_TEMP;
-    streams[0]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[0]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
 
     streams[1]->reg = reg_TACHO;
-    streams[1]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[1]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
 
     streams[2]->reg = reg_ROAD_SPEED;
-    streams[2]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[2]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
 
     streams[3]->reg = reg_BATT_VOLT;
-    streams[3]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[3]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
 
     streams[4]->reg = reg_TPS;
-    streams[4]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL );
+    streams[4]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
 
 
     /* spawns streaming thread and returns */
