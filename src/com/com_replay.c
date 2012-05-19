@@ -44,7 +44,7 @@ int com_read_byte( uint8_t *byte )
 {
     unsigned x;
 
-    sleep(1);
+    usleep(100 * 1000);
 
     fscanf( s_file, "%x ", &x );
     *byte = (uint8_t)x;
