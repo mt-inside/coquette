@@ -88,5 +88,5 @@ static int read_register_1byte( uint8_t *data )
 
 static int read_register_2bytes( uint8_t *data )
 {
-    return data[1] | data[0] << 8;
+    return data[0] << 8 | data[1];
 }
