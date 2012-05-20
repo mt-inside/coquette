@@ -7,10 +7,24 @@
 #include "common.h"
 #include "com/com.h"
 #include "commands.h"
-#include "observers/observer_stats.h"
+#include "observers/observer_integral.h"
 #include "observers/observer_shift.h"
+#include "observers/observer_stats.h"
 #include "stream_frame.h"
 
+
+static void integral_print_cb( observer_base_t *obs, void *ctxt )
+{
+    int64_t integral;
+
+    (void)ctxt;
+
+    observer_integral_get_integral( obs, &integral );
+
+    printf( "distance travelled: %ld\n",
+            integral
+          );
+}
 
 static void shift_print_cb( observer_base_t *obs, void *ctxt )
 {
@@ -46,14 +60,15 @@ static void init_streaming( void )
 {
     stream_t *stream = malloc( sizeof(stream_t) );
 
-    stream->observers_len = 5;
+    stream->observers_len = 6;
     stream->observers = malloc( sizeof(observer_base_t *) * stream->observers_len );
 
     stream->observers[0] = (observer_base_t *)observer_stats_new( reg_engine_COOLANT_TEMP, &stats_print_cb, NULL, 0 );
     stream->observers[1] = (observer_base_t *)observer_stats_new( reg_TACHO,               &stats_print_cb, NULL, 0 );
     stream->observers[2] = (observer_base_t *)observer_shift_new( reg_TACHO,               &shift_print_cb, NULL, 2000, 3000 );
     stream->observers[3] = (observer_base_t *)observer_stats_new( reg_ROAD_SPEED,          &stats_print_cb, NULL, 0 );
-    stream->observers[4] = (observer_base_t *)observer_stats_new( reg_TPS,                 &stats_print_cb, NULL, 0 );
+    stream->observers[4] = (observer_base_t *)observer_integral_new( reg_ROAD_SPEED, &integral_print_cb, NULL );
+    stream->observers[5] = (observer_base_t *)observer_stats_new( reg_TPS,                 &stats_print_cb, NULL, 0 );
 
 
     /* spawns streaming thread and returns */
