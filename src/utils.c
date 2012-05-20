@@ -16,3 +16,13 @@ void *map( void *in, unsigned in_stride, unsigned out_stride, unsigned count, ma
 
     return out;
 }
+
+int timeval_to_usec( struct timeval *tv )
+{
+    return (tv->tv_sec * 1000000) + tv->tv_usec;
+}
+
+int timeval_to_msec( struct timeval *tv )
+{
+    return (tv->tv_sec * 1000) + (tv->tv_usec / 1000);
+}

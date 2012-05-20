@@ -77,7 +77,7 @@ static void observer_zerosixty_update( observer_base_t *obs )
                 struct timeval tv_now, tv_diff;
                 gettimeofday( &tv_now, NULL );
                 timersub( &tv_now, this->start_time, &tv_diff );
-                this->zerosixty = (tv_diff.tv_sec * (1000000)) + tv_diff.tv_usec;
+                this->zerosixty = timeval_to_usec( &tv_diff );
 
                 this->state = zerosixty_state_WAITING_ZERO;
             }
