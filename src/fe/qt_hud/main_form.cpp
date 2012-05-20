@@ -126,3 +126,8 @@ main_form::main_form( QWidget *parent )
 
     stream_registers_start( stream );
 }
+
+main_form::~main_form()
+{
+    stream_registers_end();
+}

@@ -12,6 +12,7 @@ int main( int argc, char *argv[] )
 {
     QApplication app( argc, argv );
     main_form *main_window;
+    int rc;
 
     assert( argc == 2 );
 
@@ -19,10 +20,12 @@ int main( int argc, char *argv[] )
     handshake( ecu_ENGINE );
 
     main_window = new main_form;
+    main_window->setAttribute( Qt::WA_DeleteOnClose );
     main_window->show( );
 
-    return app.exec( );
+    rc = app.exec( );
 
-    /* TODO: register some kind of qt atexit and call com_finalise /
-     * stream_frame_stop / etc */
+    com_finalise( );
+
+    return rc;
 }

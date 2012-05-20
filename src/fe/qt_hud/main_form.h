@@ -9,6 +9,7 @@ class main_form : public QMainWindow, private Ui::main_form
 
     public:
         main_form( QWidget *parent = 0 );
+        virtual ~main_form( );
 };
 
 #endif /* defined _INCLUDED_MAIN_FORM_H */
