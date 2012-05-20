@@ -97,7 +97,7 @@ static void zerosixty_label_cb( observer_base_t *obs, void *ctxt )
 
     observer_zerosixty_get_zerosixty( obs, &zerosixty );
 
-    sprintf( str, "%0.00lfs", (double)zerosixty / 1000000.0f );
+    sprintf( str, "%.2lfs", (double)zerosixty / 1000000.0f );
 
     label->setText( str );
 }
