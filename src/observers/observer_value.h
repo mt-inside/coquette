@@ -7,6 +7,7 @@
 typedef struct _observer_value_t observer_value_t;
 
 extern observer_value_t *observer_value_new(
+    engine_reg_t reg,
     observer_cb_t, void *ctxt
 );
 

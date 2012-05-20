@@ -4,6 +4,7 @@
 #define _INCLUDED_OBSERVER_INTERNAL_H
 
 #include "observer_base.h"
+#include "registers.h"
 
 
 typedef enum
@@ -24,6 +25,7 @@ struct _observer_base_t
     observer_update_fn_t update_fn;
     observer_cb_t cb;
     void *ctxt;
+    engine_reg_t reg;
     int value;
 };
 
@@ -33,7 +35,8 @@ extern void observer_base_init(
     observer_subclass_t class,
     observer_update_fn_t update_fn,
     observer_cb_t cb,
-    void *ctxt
+    void *ctxt,
+    engine_reg_t reg
 );
 
 #endif /* defined _INCLUDED_OBSERVER_INTERNAL_H */

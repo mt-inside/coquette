@@ -9,12 +9,26 @@
 #include "utils.h"
 #include "com/com.h"
 #include "consult_constants.h"
+#include "queue.h"
 
+
+typedef struct _obs_list_t
+{
+    observer_base_t *obs;
+    SLIST_ENTRY(_obs_list_t) next;
+} obs_list_item_t;
+typedef struct _obs_list_list_item_t
+{
+    engine_reg_t reg;
+    SLIST_HEAD(, _obs_list_t) obs_list;
+    STAILQ_ENTRY(_obs_list_list_item_t) next;
+} obs_list_list_item_t;
+STAILQ_HEAD(_obs_list_list_t, _obs_list_list_item_t);
+typedef struct _obs_list_list_t obs_list_list_t;
 
 typedef struct
 {
-    stream_t **streams;
-    unsigned streams_len;
+    obs_list_list_t *streams;
     unsigned data_len;
 } stream_cb_ctxt_t;
 
@@ -45,7 +59,7 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
 static void *stream_frame_thread( void *ctxt );
 
 
-int stream_registers_start( stream_t **streams, unsigned streams_len )
+int stream_registers_start( stream_t *stream )
 {
     stream_thread_args_t *thread_args =
         malloc( sizeof(stream_thread_args_t) );
@@ -54,24 +68,57 @@ int stream_registers_start( stream_t **streams, unsigned streams_len )
     reg_info_t *reg_info;
     unsigned i, j;
     unsigned args_offset = 0;
+    obs_list_list_t *list_list = malloc( sizeof(obs_list_list_t) );
+    obs_list_list_item_t *lli;
+    obs_list_item_t *li;
 
 
     assert( s_state == state_NOT_RUNNING );
 
-    for( i = 0; i < streams_len; ++i )
+    /* Really crappy O(n^2) algorithm for putting this data structure together
+     */
+    STAILQ_INIT( list_list );
+    for( i = 0; i < stream->observers_len; ++i )
     {
-        reg_info = registers_get_reg_info( streams[i]->reg );
-        for( j = 0; j < reg_info->width; ++j )
+        observer_base_t *obs = stream->observers[i];
+        engine_reg_t new_reg = observer_base_get_reg( obs );
+
+        STAILQ_FOREACH(lli, list_list, next)
         {
-            assert( args_offset < c_max_streaming_regs );
-            args[args_offset++] = streams[i]->reg + j;
+            if( lli->reg == new_reg )
+            {
+                li = malloc( sizeof(obs_list_item_t) );
+                SLIST_INSERT_HEAD(&lli->obs_list, li, next);
+
+                li->obs = obs;
+
+                break;
+            }
+        }
+        if( !lli )
+        {
+            lli = malloc( sizeof(obs_list_list_item_t) );
+            STAILQ_INSERT_TAIL(list_list, lli, next);
+
+            SLIST_INIT( &lli->obs_list );
+            lli->reg = new_reg;
+
+            li = malloc( sizeof(obs_list_item_t) );
+            SLIST_INSERT_HEAD(&lli->obs_list, li, next);
+            li->obs = obs;
+
+            reg_info = registers_get_reg_info( new_reg );
+            assert( args_offset + reg_info->width <= c_max_streaming_regs );
+            for( j = 0; j < reg_info->width; ++j )
+            {
+                args[args_offset++] = new_reg + j;
+            }
         }
     }
 
     /* fixme make me in the thread function */
-    cb_ctxt->streams     = streams;
-    cb_ctxt->streams_len = streams_len;
-    cb_ctxt->data_len    = args_offset;
+    cb_ctxt->streams  = list_list;
+    cb_ctxt->data_len = args_offset;
 
     thread_args->regs     = args;
     thread_args->regs_len = args_offset;
@@ -111,10 +158,10 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
     static unsigned old_data_len;
 
     stream_cb_ctxt_t *ctxt = (stream_cb_ctxt_t *)stream_cb_ctxt;
-    stream_t **streams = ctxt->streams;
-    unsigned streams_len = ctxt->streams_len;
+    obs_list_list_t *list_list = ctxt->streams;
+    obs_list_list_item_t *lli;
+    obs_list_item_t *li;
     unsigned offset;
-    unsigned i, j;
     int datum;
 
 
@@ -136,23 +183,44 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
 
 
     offset = 0;
-    for( i = 0; i < streams_len; ++i )
+    STAILQ_FOREACH( lli, list_list, next)
     {
-        stream_t *stream = streams[i];
-        reg_info_t *reg_info = registers_get_reg_info( stream->reg );
+        reg_info_t *reg_info = registers_get_reg_info( lli->reg );
 
         datum = reg_info->reader( data + offset );
         datum = reg_info->scaler( datum );
 
         offset += reg_info->width;
 
-        for( j = 0; j < stream->observers_len; ++j )
+        SLIST_FOREACH( li, &lli->obs_list, next)
         {
-            observer_base_update( stream->observers[j], datum );
+            observer_base_update( li->obs, datum );
         }
     }
 }
 
+static void cb_ctxt_free( stream_cb_ctxt_t *ctxt )
+{
+    obs_list_list_item_t *lli, *llit;
+    obs_list_item_t *li, *lit;
+
+    STAILQ_FOREACH_SAFE(lli, ctxt->streams, next, llit)
+    {
+        SLIST_FOREACH_SAFE(li, &lli->obs_list, next, lit)
+        {
+            free( li );
+        }
+        free( lli );
+    }
+    free( ctxt->streams );
+    free( ctxt );
+}
+static void thread_args_free( stream_thread_args_t *ta )
+{
+    cb_ctxt_free( (stream_cb_ctxt_t *)ta->cb_ctxt );
+    free( ta->regs );
+    free( ta );
+}
 
 static void *stream_frame_thread( void *ctxt )
 {
@@ -221,10 +289,9 @@ static void *stream_frame_thread( void *ctxt )
     do { com_read_byte( &out ); } while( out != c_end_of_response );
 
 
-    free( thread_args->regs );
-    free( thread_args->cb_ctxt );
-    free( thread_args );
+    thread_args_free( thread_args );
     free( data );
 
     return NULL;
 }
+

@@ -20,13 +20,14 @@ struct _observer_shift_t
 static void observer_shift_update( observer_base_t *this );
 
 observer_shift_t *observer_shift_new(
+    engine_reg_t reg,
     observer_cb_t cb, void *ctxt,
     unsigned warn_start, unsigned warn_end
 )
 {
     observer_shift_t *this = calloc( sizeof( observer_shift_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_SHIFT, &observer_shift_update, cb, ctxt );
+    observer_base_init( (observer_base_t *)this, observer_subclass_SHIFT, &observer_shift_update, cb, ctxt, reg );
 
     this->warn_start = warn_start;
     this->warn_end   = warn_end;

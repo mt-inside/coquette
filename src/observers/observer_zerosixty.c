@@ -27,11 +27,15 @@ struct _observer_zerosixty_t
 
 static void observer_zerosixty_update( observer_base_t *this );
 
-observer_zerosixty_t *observer_zerosixty_new( observer_cb_t cb, void *ctxt, unsigned target )
+observer_zerosixty_t *observer_zerosixty_new(
+    engine_reg_t reg,
+    observer_cb_t cb, void *ctxt,
+    unsigned target
+)
 {
     observer_zerosixty_t *this = calloc( sizeof( observer_zerosixty_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_ZEROSIXTY, &observer_zerosixty_update, cb, ctxt );
+    observer_base_init( (observer_base_t *)this, observer_subclass_ZEROSIXTY, &observer_zerosixty_update, cb, ctxt, reg );
 
     this->state = zerosixty_state_WAITING_ZERO;
     this->start_time = malloc( sizeof(struct timeval) );

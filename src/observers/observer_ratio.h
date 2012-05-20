@@ -7,6 +7,7 @@
 typedef struct _observer_ratio_t observer_ratio_t;
 
 extern observer_ratio_t *observer_ratio_new(
+    engine_reg_t reg,
     observer_cb_t, void *ctxt
 );
 

@@ -7,6 +7,7 @@
 typedef struct _observer_shift_t observer_shift_t;
 
 extern observer_shift_t *observer_shift_new(
+    engine_reg_t reg,
     observer_cb_t, void *ctxt,
     unsigned warn_start, unsigned warn_end
 );

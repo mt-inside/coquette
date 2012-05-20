@@ -13,7 +13,8 @@
 typedef struct _observer_stats_t observer_stats_t;
 
 /* 0 period means forever */
-extern observer_stats_t *observer_stats_new( observer_cb_t cb, void *ctxt,
+extern observer_stats_t *observer_stats_new( engine_reg_t reg,
+                                             observer_cb_t cb, void *ctxt,
                                              unsigned period );
 
 extern void observer_stats_get_stats( observer_base_t *obs,

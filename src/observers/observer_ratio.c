@@ -20,12 +20,13 @@ struct _observer_ratio_t
 static void observer_ratio_update( observer_base_t *this );
 
 observer_ratio_t *observer_ratio_new(
+    engine_reg_t reg,
     observer_cb_t cb, void *ctxt
 )
 {
     observer_ratio_t *this = calloc( sizeof( observer_ratio_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_RATIO, &observer_ratio_update, cb, ctxt );
+    observer_base_init( (observer_base_t *)this, observer_subclass_RATIO, &observer_ratio_update, cb, ctxt, reg );
 
     this->first_time = 1;
 

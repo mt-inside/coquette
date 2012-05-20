@@ -19,12 +19,13 @@ struct _observer_stats_t
 
 static void observer_stats_update( observer_base_t *this );
 
-observer_stats_t *observer_stats_new( observer_cb_t cb, void *ctxt,
+observer_stats_t *observer_stats_new( engine_reg_t reg,
+                                      observer_cb_t cb, void *ctxt,
                                       unsigned period )
 {
     observer_stats_t *this = calloc( sizeof( observer_stats_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_STATS, &observer_stats_update, cb, ctxt );
+    observer_base_init( (observer_base_t *)this, observer_subclass_STATS, &observer_stats_update, cb, ctxt, reg );
 
     this->period = period;
 

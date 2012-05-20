@@ -30,40 +30,19 @@ static void stats_print_cb( observer_base_t *obs, void *ctxt )
 
 static void init_streaming( void )
 {
-    const unsigned stream_count = 5;
-    stream_t **streams = malloc( sizeof(stream_t *) * stream_count );
-    unsigned i;
+    stream_t *stream = malloc( sizeof(stream_t) );
 
+    stream->observers_len = 4;
+    stream->observers = malloc( sizeof(observer_base_t *) * stream->observers_len );
 
-    for( i = 0; i < stream_count; ++i )
-    {
-        streams[i] = malloc( sizeof(stream_t) );
-        streams[i]->observers = malloc( sizeof(observer_base_t *) );
-        streams[i]->observers_len = 1;
-    }
-
-
-    streams[0]->reg = reg_engine_COOLANT_TEMP;
-    streams[0]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
-
-    streams[1]->reg = reg_TACHO;
-    streams[1]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
-
-    streams[2]->reg = reg_ROAD_SPEED;
-    streams[2]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
-
-    streams[3]->reg = reg_BATT_VOLT;
-    streams[3]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
-
-    streams[4]->reg = reg_TPS;
-    streams[4]->observers[0] = (observer_base_t *)observer_stats_new( &stats_print_cb, NULL, 0 );
+    stream->observers[0] = (observer_base_t *)observer_stats_new( reg_engine_COOLANT_TEMP, &stats_print_cb, NULL, 0 );
+    stream->observers[1] = (observer_base_t *)observer_stats_new( reg_TACHO,               &stats_print_cb, NULL, 0 );
+    stream->observers[2] = (observer_base_t *)observer_stats_new( reg_ROAD_SPEED,          &stats_print_cb, NULL, 0 );
+    stream->observers[3] = (observer_base_t *)observer_stats_new( reg_TPS,                 &stats_print_cb, NULL, 0 );
 
 
     /* spawns streaming thread and returns */
-    stream_registers_start(
-        streams,
-        stream_count
-    );
+    stream_registers_start( stream );
 }
 
 static void quit( void )
