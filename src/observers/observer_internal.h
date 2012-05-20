@@ -17,7 +17,7 @@ typedef enum
     observer_subclass_ZEROSIXTY
 } observer_subclass_t;
 
-typedef void (*observer_update_fn_t)( struct _observer_base_t *obs );
+typedef void (*observer_update_fn_t)( struct _observer_base_t *obs, int first_time );
 
 
 struct _observer_base_t
@@ -28,6 +28,7 @@ struct _observer_base_t
     void *ctxt;
     engine_reg_t reg;
     int value;
+    int first_time;
 };
 
 

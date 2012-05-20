@@ -17,7 +17,7 @@ struct _observer_shift_t
     unsigned warn_level_old;
 };
 
-static void observer_shift_update( observer_base_t *this );
+static void observer_shift_update( observer_base_t *this, int first_time );
 
 observer_shift_t *observer_shift_new(
     engine_reg_t reg,
@@ -32,13 +32,10 @@ observer_shift_t *observer_shift_new(
     this->warn_start = warn_start;
     this->warn_end   = warn_end;
 
-    this->warn_level = 0;
-    this->warn_level_old = 0;
-
     return this;
 }
 
-static void observer_shift_update( observer_base_t *obs )
+static void observer_shift_update( observer_base_t *obs, int first_time )
 {
     observer_shift_t *this = (observer_shift_t *)obs;
     int w;
@@ -52,7 +49,7 @@ static void observer_shift_update( observer_base_t *obs )
 
     this->warn_level = w;
 
-    if( this->warn_level != this->warn_level_old )
+    if( this->warn_level != this->warn_level_old || first_time )
     {
         obs->cb( obs, obs->ctxt );
     }

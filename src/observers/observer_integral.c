@@ -21,7 +21,7 @@ struct _observer_integral_t
     int64_t integral_old;
 };
 
-static void observer_integral_update( observer_base_t *this );
+static void observer_integral_update( observer_base_t *this, int first_time );
 
 observer_integral_t *observer_integral_new(
     engine_reg_t reg,
@@ -32,14 +32,12 @@ observer_integral_t *observer_integral_new(
 
     observer_base_init( (observer_base_t *)this, observer_subclass_INTEGRAL, &observer_integral_update, cb, ctxt, reg );
 
-    this->value_old = 0;
-    this->integral = this->integral_old = 0;
-    gettimeofday( &this->time_old, NULL );
+    this->integral = 0;
 
     return this;
 }
 
-static void observer_integral_update( observer_base_t *obs )
+static void observer_integral_update( observer_base_t *obs, int first_time )
 {
     observer_integral_t *this = (observer_integral_t *)obs;
 
@@ -47,10 +45,14 @@ static void observer_integral_update( observer_base_t *obs )
 
     struct timeval tv_now, tv_diff;
     gettimeofday( &tv_now, NULL );
-    timersub( &tv_now, &this->time_old, &tv_diff );
-    this->integral += (int64_t)((this->value_old + obs->value) / 2) * (int64_t)timeval_to_usec( &tv_diff );
 
-    if( this->integral != this->integral_old )
+    if( !first_time )
+    {
+        timersub( &tv_now, &this->time_old, &tv_diff );
+        this->integral += (int64_t)((this->value_old + obs->value) / 2) * (int64_t)timeval_to_usec( &tv_diff );
+    }
+
+    if( this->integral != this->integral_old || first_time )
     {
         obs->cb( obs, obs->ctxt );
     }

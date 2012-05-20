@@ -14,7 +14,7 @@ struct _observer_value_t
     int value_old;
 };
 
-static void observer_value_update( observer_base_t *this );
+static void observer_value_update( observer_base_t *this, int first_time );
 
 observer_value_t *observer_value_new(
     engine_reg_t reg,
@@ -25,18 +25,16 @@ observer_value_t *observer_value_new(
 
     observer_base_init( (observer_base_t *)this, observer_subclass_VALUE, &observer_value_update, cb, ctxt, reg );
 
-    this->value_old = 0;
-
     return this;
 }
 
-static void observer_value_update( observer_base_t *obs )
+static void observer_value_update( observer_base_t *obs, int first_time )
 {
     observer_value_t *this = (observer_value_t *)obs;
 
     assert( obs->class == observer_subclass_VALUE );
 
-    if( obs->value != this->value_old )
+    if( obs->value != this->value_old || first_time )
     {
         obs->cb( obs, obs->ctxt );
     }

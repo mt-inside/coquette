@@ -12,12 +12,11 @@ struct _observer_ratio_t
 {
     observer_base_t base;
     int value_old;
-    int first_time;
     int min;
     int max;
 };
 
-static void observer_ratio_update( observer_base_t *this );
+static void observer_ratio_update( observer_base_t *this, int first_time );
 
 observer_ratio_t *observer_ratio_new(
     engine_reg_t reg,
@@ -28,23 +27,26 @@ observer_ratio_t *observer_ratio_new(
 
     observer_base_init( (observer_base_t *)this, observer_subclass_RATIO, &observer_ratio_update, cb, ctxt, reg );
 
-    this->first_time = 1;
-
     return this;
 }
 
-static void observer_ratio_update( observer_base_t *obs )
+static void observer_ratio_update( observer_base_t *obs, int first_time )
 {
     observer_ratio_t *this = (observer_ratio_t *)obs;
 
     assert( obs->class == observer_subclass_RATIO );
 
-    if( this->first_time )
+    if( first_time )
     {
+        /* it is a subtlety that value_old is assigned to here.
+         * Morally it shouldn't be. Thus we'd enter the next block and the
+         * event would be raised. However on callback there would be a division
+         * by 0. This way, the event won't be raised until max != min. */
         this->min = this->max = this->value_old = obs->value;
-        this->first_time = 0;
     }
 
+    /* Ratio makes no sense if there is only one data point (it's undefined
+     * because max==min, so don't raise this first time */
     if( obs->value != this->value_old )
     {
         if     ( obs->value < this->min ) this->min = obs->value;

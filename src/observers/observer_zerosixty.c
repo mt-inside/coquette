@@ -1,3 +1,5 @@
+#include "common.h"
+
 #include <stdlib.h>
 #include <assert.h>
 #include <sys/time.h>
@@ -25,7 +27,7 @@ struct _observer_zerosixty_t
     unsigned zerosixty_old; /* microseconds */
 };
 
-static void observer_zerosixty_update( observer_base_t *this );
+static void observer_zerosixty_update( observer_base_t *this, int first_time );
 
 observer_zerosixty_t *observer_zerosixty_new(
     engine_reg_t reg,
@@ -40,17 +42,16 @@ observer_zerosixty_t *observer_zerosixty_new(
     this->state = zerosixty_state_WAITING_ZERO;
     this->start_time = malloc( sizeof(struct timeval) );
     this->target = target;
-    this->zerosixty = 0;
-    this->zerosixty_old = 0;
 
     return this;
 }
 
-static void observer_zerosixty_update( observer_base_t *obs )
+static void observer_zerosixty_update( observer_base_t *obs, int first_time )
 {
     observer_zerosixty_t *this = (observer_zerosixty_t *)obs;
 
     assert( obs->class == observer_subclass_ZEROSIXTY );
+    NOT_USED(first_time);
 
 
     switch( this->state )
@@ -88,6 +89,8 @@ static void observer_zerosixty_update( observer_base_t *obs )
     }
 
 
+    /* Zero-sixty makes no sense from just one datum as the value can't have
+     * changed, so don't raise this event first time */
     if( this->zerosixty != this->zerosixty_old )
     {
         obs->cb( obs, obs->ctxt );

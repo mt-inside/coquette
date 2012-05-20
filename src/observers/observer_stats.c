@@ -1,3 +1,5 @@
+#include "common.h"
+
 #include <stdlib.h>
 #include <assert.h>
 #include <limits.h>
@@ -17,7 +19,7 @@ struct _observer_stats_t
     unsigned values_count;
 };
 
-static void observer_stats_update( observer_base_t *this );
+static void observer_stats_update( observer_base_t *this, int first_time );
 
 observer_stats_t *observer_stats_new( engine_reg_t reg,
                                       observer_cb_t cb, void *ctxt,
@@ -32,10 +34,12 @@ observer_stats_t *observer_stats_new( engine_reg_t reg,
     return this;
 }
 
-static void observer_stats_update( observer_base_t *obs )
+static void observer_stats_update( observer_base_t *obs, int first_time )
 {
     const unsigned values_resize_quantum = 64;
     observer_stats_t *this = (observer_stats_t *)obs;
+
+    NOT_USED(first_time);
 
     assert( obs->class == observer_subclass_STATS );
 
@@ -46,10 +50,12 @@ static void observer_stats_update( observer_base_t *obs )
     }
     this->values[ this->values_count++ ] = obs->value;
 
-    /* For now, assume we always have new stats available */
+    /* TODO: For now, assume we always have new stats available */
     obs->cb( obs, obs->ctxt );
 }
 
+/* TODO: move to an on-line algorithm as it'll be faster, use less space and be
+ * easier to spot when the stats have changed. */
 static void get_stats_for_range( int *start, unsigned count,
                                  int *min_out, int *max_out,
                                  int *mean_out, int *stdev_out )

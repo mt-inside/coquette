@@ -2,6 +2,8 @@
 
 #define LOG( x ) printf( x "\n" )
 
+#define NOT_USED( x ) (void)(x)
+
 #ifdef WIN32
 
 #include "Windows.h"
