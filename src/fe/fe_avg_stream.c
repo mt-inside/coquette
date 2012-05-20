@@ -8,8 +8,22 @@
 #include "com/com.h"
 #include "commands.h"
 #include "observers/observer_stats.h"
+#include "observers/observer_shift.h"
 #include "stream_frame.h"
 
+
+static void shift_print_cb( observer_base_t *obs, void *ctxt )
+{
+    unsigned level;
+
+    (void)ctxt;
+
+    observer_shift_get_shift( obs, &level );
+
+    printf( "shift level: %d\n",
+            level
+          );
+}
 
 static void stats_print_cb( observer_base_t *obs, void *ctxt )
 {
@@ -32,13 +46,14 @@ static void init_streaming( void )
 {
     stream_t *stream = malloc( sizeof(stream_t) );
 
-    stream->observers_len = 4;
+    stream->observers_len = 5;
     stream->observers = malloc( sizeof(observer_base_t *) * stream->observers_len );
 
     stream->observers[0] = (observer_base_t *)observer_stats_new( reg_engine_COOLANT_TEMP, &stats_print_cb, NULL, 0 );
     stream->observers[1] = (observer_base_t *)observer_stats_new( reg_TACHO,               &stats_print_cb, NULL, 0 );
-    stream->observers[2] = (observer_base_t *)observer_stats_new( reg_ROAD_SPEED,          &stats_print_cb, NULL, 0 );
-    stream->observers[3] = (observer_base_t *)observer_stats_new( reg_TPS,                 &stats_print_cb, NULL, 0 );
+    stream->observers[2] = (observer_base_t *)observer_shift_new( reg_TACHO,               &shift_print_cb, NULL, 2000, 3000 );
+    stream->observers[3] = (observer_base_t *)observer_stats_new( reg_ROAD_SPEED,          &stats_print_cb, NULL, 0 );
+    stream->observers[4] = (observer_base_t *)observer_stats_new( reg_TPS,                 &stats_print_cb, NULL, 0 );
 
 
     /* spawns streaming thread and returns */
