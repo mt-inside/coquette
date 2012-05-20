@@ -40,7 +40,7 @@ LIB_OBJECT_FILES := $(notdir $(LIB_OBJECT_FILES))
 
 vpath %.c $(SRC_ALL_DIRS)
 
-CFLAGS += -pg -g3 -O0 -Wall -Wextra -pedantic -Werror
+CFLAGS += -std=c99 -pg -g3 -O0 -Wall -Wextra -pedantic -Werror -D_BSD_SOURCE
 LDFLAGS += -pg -g3
 
 INCLUDES := $(foreach dir,$(SRC_SEARCH_DIRS),-I$(dir))
