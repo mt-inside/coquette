@@ -70,7 +70,7 @@ typedef enum
 } engine_reg_t;
 
 
-typedef int (*reader_fn_t)( uint8_t *data ); /* FIXME: these shouldn't call COM, they should be passed something and munge it */
+typedef int (*reader_fn_t)( uint8_t *data );
 
 
 typedef struct
