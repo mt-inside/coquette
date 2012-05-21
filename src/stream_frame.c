@@ -157,10 +157,6 @@ void stream_registers_end( void )
 
 static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
 {
-    static int first_time = 1;
-    static uint8_t *old_data;
-    static unsigned old_data_len;
-
     stream_cb_ctxt_t *ctxt = (stream_cb_ctxt_t *)stream_cb_ctxt;
     obs_list_list_t *list_list = ctxt->streams;
     obs_list_list_item_t *lli;
@@ -170,21 +166,6 @@ static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len )
 
 
     assert( data_len == ctxt->data_len );
-
-    if( !first_time )
-    {
-        assert( data_len == old_data_len );
-        if( !memcmp( data, old_data, data_len ) ) return;
-    }
-    else
-    {
-        old_data = malloc( sizeof(uint8_t) * data_len );
-        first_time = 0;
-    }
-
-    old_data_len = data_len;
-    memcpy( old_data, data, data_len );
-
 
     offset = 0;
     STAILQ_FOREACH( lli, list_list, next)
