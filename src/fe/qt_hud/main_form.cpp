@@ -108,12 +108,12 @@ static void shift_label_cb( observer_base_t *obs, void *ctxt )
 static void zerosixty_label_cb( observer_base_t *obs, void *ctxt )
 {
     QLabel *label = (QLabel *)ctxt;
-    unsigned zerosixty;
+    float zerosixty;
     char str[256];
 
     observer_zerosixty_get_zerosixty( obs, &zerosixty );
 
-    sprintf( str, "%.2lfs", (double)zerosixty / 1000000.0f );
+    sprintf( str, "%.2fs", zerosixty );
 
     label->setText( str );
 }
