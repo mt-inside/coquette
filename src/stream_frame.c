@@ -235,9 +235,9 @@ static void *stream_frame_thread( void *ctxt )
     uint8_t out;
 
 
-    /* Send command and arguments */
+    assert( arg_len > 0 && arg_len <= c_max_streaming_regs );
 
-    if( arg_len == 0 ) com_send_byte( (uint8_t)cmd_READ_REGISTER );
+    /* Send command and arguments */
     for( i = 0; i < arg_len; ++i )
     {
         com_send_byte( (uint8_t)cmd_READ_REGISTER );
@@ -248,8 +248,6 @@ static void *stream_frame_thread( void *ctxt )
 
 
     /* Check response */
-
-    if( arg_len == 0 ) { com_read_byte( &out ); assert( out == (uint8_t)~cmd_READ_REGISTER ); }
     for( i = 0; i < arg_len; ++i )
     {
         com_read_byte( &out );

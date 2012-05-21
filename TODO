@@ -1,7 +1,5 @@
 SIGINT to gracefully shutdown
-rename TACHO to ENGINE_SPEED
 valgrind me!
-remove arg_len ==0 in stream_frame
 make a com "interface" (abstract type and function defs) then have some kind of virtual dispatch so that coms can be interchanged (init your com_t * to be com_unix_new( ) where com_t contain
 NONONO streamframe should only call the observers if they've changed. It currently notifies all if at least one has changed.
 - all data should be pushed as it makes a difference for some (e.g. stats) even
