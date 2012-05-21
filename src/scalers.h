@@ -4,7 +4,7 @@
 typedef int (*scale_fn_t)( int in );
 
 extern int scale_id( int in );
-extern int scale_tacho( int in ); /* rpm */
+extern int scale_engine_speed( int in ); /* rpm */
 extern int scale_rpm_ref( int in ); /* rpm */
 extern int scale_maf( int in ); /* mV */
 extern int scale_temp( int in ); /* degC */

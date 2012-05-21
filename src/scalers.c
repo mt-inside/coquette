@@ -5,7 +5,7 @@ int scale_id( int in )
     return in;
 }
 
-int scale_tacho( int in )
+int scale_engine_speed( int in )
 {
     return (int)((float)in * 12.5f);
 }

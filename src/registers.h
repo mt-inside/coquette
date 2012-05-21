@@ -8,7 +8,7 @@
 
 typedef enum
 {
-    reg_TACHO = 0x00,
+    reg_ENGINE_SPEED = 0x00,
     /* 0x01 */
     reg_RPM_REF = 0x02,
     /* 0x03 */

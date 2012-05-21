@@ -58,7 +58,7 @@ static int read_regs( void )
 {
     int reg;
 
-    read_register( reg_TACHO, &reg );
+    read_register( reg_ENGINE_SPEED, &reg );
     printf( "engine %d rpm\n", reg );
 
     read_register( reg_engine_COOLANT_TEMP, &reg );

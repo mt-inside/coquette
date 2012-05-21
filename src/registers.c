@@ -11,7 +11,7 @@ static int read_register_2bytes( uint8_t *data );
 /* TODO: add unit info */
 static reg_info_t reg_infos[ ] =
 {
-    { 2, &read_register_2bytes, &scale_tacho },
+    { 2, &read_register_2bytes, &scale_engine_speed },
     /* 0x01 */ { 0, NULL, NULL },
     { 2, &read_register_2bytes, &scale_rpm_ref },
     /* 0x03 */ { 0, NULL, NULL },

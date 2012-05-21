@@ -132,8 +132,8 @@ main_form::main_form( QWidget *parent )
     stream->observers_len = 8;
     stream->observers = (observer_base_t **)malloc( stream->observers_len * sizeof(observer_base_t *) );
     stream->observers[0] = (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &value_label_cb, (void *)labelCoolantTemp );
-    stream->observers[1] = (observer_base_t *)observer_value_new( reg_TACHO, &value_label_cb, (void *)labelEngineSpeed );
-    stream->observers[2] = (observer_base_t *)observer_shift_new( reg_TACHO, &shift_label_cb, (void *)labelShift, 2000, 3000, 3 );
+    stream->observers[1] = (observer_base_t *)observer_value_new( reg_ENGINE_SPEED, &value_label_cb, (void *)labelEngineSpeed );
+    stream->observers[2] = (observer_base_t *)observer_shift_new( reg_ENGINE_SPEED, &shift_label_cb, (void *)labelShift, 2000, 3000, 3 );
     stream->observers[3] = (observer_base_t *)observer_value_new( reg_ROAD_SPEED, &value_label_cb, (void *)labelRoadSpeed );
     stream->observers[4] = (observer_base_t *)observer_integral_new( reg_ROAD_SPEED, &distance_label_cb, (void *)labelDistance );
     stream->observers[5] = (observer_base_t *)observer_zerosixty_new( reg_ROAD_SPEED, &zerosixty_label_cb, (void *)labelZerosixty, 60 );

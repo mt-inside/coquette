@@ -28,7 +28,7 @@ static int read_regs( void )
 {
     int reg;
 
-    /* read_register( reg_TACHO, &reg ); */
+    /* read_register( reg_ENGINE_SPEED, &reg ); */
     read_register( reg_engine_COOLANT_TEMP, &reg );
 
     printf( "%d $unit\n", reg );

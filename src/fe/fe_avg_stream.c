@@ -64,8 +64,8 @@ static void init_streaming( void )
     stream->observers = malloc( sizeof(observer_base_t *) * stream->observers_len );
 
     stream->observers[0] = (observer_base_t *)observer_stats_new( reg_engine_COOLANT_TEMP, &stats_print_cb, NULL, 0 );
-    stream->observers[1] = (observer_base_t *)observer_stats_new( reg_TACHO,               &stats_print_cb, NULL, 0 );
-    stream->observers[2] = (observer_base_t *)observer_shift_new( reg_TACHO,               &shift_print_cb, NULL, 2000, 3000, 10 );
+    stream->observers[1] = (observer_base_t *)observer_stats_new( reg_ENGINE_SPEED,        &stats_print_cb, NULL, 0 );
+    stream->observers[2] = (observer_base_t *)observer_shift_new( reg_ENGINE_SPEED,        &shift_print_cb, NULL, 2000, 3000, 10 );
     stream->observers[3] = (observer_base_t *)observer_stats_new( reg_ROAD_SPEED,          &stats_print_cb, NULL, 0 );
     stream->observers[4] = (observer_base_t *)observer_integral_new( reg_ROAD_SPEED, &integral_print_cb, NULL );
     stream->observers[5] = (observer_base_t *)observer_stats_new( reg_TPS,                 &stats_print_cb, NULL, 0 );
