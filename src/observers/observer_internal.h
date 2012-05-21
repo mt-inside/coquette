@@ -17,6 +17,9 @@ typedef enum
     observer_subclass_ZEROSIXTY
 } observer_subclass_t;
 
+/* "Virtual" function types. These are supplied to the base class by subclasses
+ * and are called by the corresponding methods on the base class, like a shite
+ * virtual dispatch */
 typedef void (*observer_update_fn_t)( struct _observer_base_t *obs, int first_time );
 typedef void (*observer_delete_fn_t)( struct _observer_base_t *obs );
 
