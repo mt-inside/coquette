@@ -99,11 +99,11 @@ static void observer_zerosixty_update( observer_base_t *obs, int first_time )
     this->zerosixty_old = this->zerosixty;
 }
 
-void observer_zerosixty_get_zerosixty( observer_base_t *obs, unsigned *zerosixty )
+void observer_zerosixty_get_zerosixty( observer_base_t *obs, float *zerosixty )
 {
     observer_zerosixty_t *this = (observer_zerosixty_t *)obs;
 
     assert( obs->class == observer_subclass_ZEROSIXTY );
 
-    *zerosixty = this->zerosixty;
+    *zerosixty = (float)this->zerosixty / 1000000.0f;
 }
