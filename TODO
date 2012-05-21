@@ -1,13 +1,14 @@
 SIGINT to gracefully shutdown
 rename TACHO to ENGINE_SPEED
-some way of de-duping the stream. Stream should probably do it. E.g. if I make a shift and a value over ENGINE_SPEED, it should only appear in the stream once.
-- a multiplexing observer would be a hack - it's transport dependant.
-- ideally would have a consult comm service to which you could add and remove observers. Regs would be added to stream only if not already streaming. Any change to regs would stop and restart stream.
 valgrind me!
+remove arg_len ==0 in stream_frame
 make a com "interface" (abstract type and function defs) then have some kind of virtual dispatch so that coms can be interchanged (init your com_t * to be com_unix_new( ) where com_t contain
-streamframe should only call the observers if they've changed. It currently notifies all if at least one has changed
+NONONO streamframe should only call the observers if they've changed. It currently notifies all if at least one has changed.
+- all data should be pushed as it makes a difference for some (e.g. stats) even
+  if the value is the same
 observers should be able to say if they want all data or just changed ones; stats is totally invalid unless it gets all data
-it would be much easier for observers to have this logic tbh.
+- it would be much easier for observers to have this logic tbh. Just quick
+  return if it hasn't changed and they don't care.
 stats_observer
 - use circ buffer and only store last $period data, remember to handle 0 period
   (still needs the growing buffer)
@@ -19,22 +20,18 @@ stats_observer
 do the TODOs in stream_frame.c etc
 reg_infos to gain name, unit name, range
 observabled to push their new values (complex type (maybe >1 number like stats) (with units too)) in the update call, as it's silly that you just get a unit type notification then have to ask for the value.
-observers should say which registers they want to watch (if there's a choice they should take it in their ctor). Stream_t doesn't need a reg then, it just asks the observers. When the register dedup is done this will work just fine.
-following on, one shouldn't have to put together a big array for stream_frame. Some kind of steam_info_t / obs_collection_t to which I can obs_add(). That means I wouldn't have to tell it the observer len or malloc that array. Splitting this info into two arrays, grouping by register, won't be neccessary when the register dedup is done.
-stream_t to have .addObserver(). observer_t to call one cb - qt_hud to multiplex
 observables to report a complex T, not just uint8 (e.g. value + reg_info). IS THIS NECESSARY? WHEN YOU REGISTER FOR UPDATES YOU SHOULD HAVE A REG_INFO TO HAND
-when observers notify you of new data they currently just raise an event and you have to ask them for data yourself. This makes it a bit all-or-nothing (though I think observers should stay small and only represent one piece of data)
 mock ecu for testing (maybe a gui with sliders for the values)
-remove arg_len ==0 in stream_frame
+ideally would have a consult COM service to which you could add and remove observers. Regs would be added to stream only if not already streaming. Any change to regs would stop and restart stream.
 
-Make big-endian safe. Extracting LSB by truncation, etc...
+Make big-endian safe. Extracting LSB by truncation, read_reg_2bytes(), etc...
 how to disconn from ecu to handshake another? Because handshakes start with two command-ends, I wonder if just send a new handshake?
 
 observer callbacks can get their reg from their obs struct. There should be a way to look this up to pretty name and unit enum.
 Derive cool stuff - instant and avg MPG, AFR (open and closed loop? ECU is always telling us MAF and fueling, only difference is how it determines fuel). Torque (from fuel and AFR?). Power (from torque and revs).
 some kind of framework for unit conversion (engine speed in Hz, road spd in m/s, acceleration in G).
 commands to other cpus (each cmd take an ecu and remember / switch if different? OR unified address space for registers (pair cpu & reg) - layer underneath to watch current ecu and switch if necc (sort first to reduce switching))
-Mac Serial comms - ioreg -c IOSerialBSDClient
+Mac Serial comms - ioreg -c IOSerialBSDClient. PL email - get mac driver, change PCI IDs
 
 make look like R34 / 35 GT-R, Defi ADVANCE ZD
 gauge observer - current value and 10 sec peak - stats observer does this (may need to be able to set window size - in seconds)
