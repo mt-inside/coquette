@@ -25,7 +25,7 @@ observer_ratio_t *observer_ratio_new(
 {
     observer_ratio_t *this = calloc( sizeof( observer_ratio_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_RATIO, &observer_ratio_update, cb, ctxt, reg );
+    observer_base_init( (observer_base_t *)this, observer_subclass_RATIO, &observer_ratio_update, NULL, cb, ctxt, reg );
 
     return this;
 }

@@ -1,4 +1,5 @@
 SIGINT to gracefully shutdown
+move observer_cb_t to internal.h
 valgrind me!
 make a com "interface" (abstract type and function defs) then have some kind of virtual dispatch so that coms can be interchanged (init your com_t * to be com_unix_new( ) where com_t contain
 NONONO streamframe should only call the observers if they've changed. It currently notifies all if at least one has changed.

@@ -18,12 +18,14 @@ typedef enum
 } observer_subclass_t;
 
 typedef void (*observer_update_fn_t)( struct _observer_base_t *obs, int first_time );
+typedef void (*observer_delete_fn_t)( struct _observer_base_t *obs );
 
 
 struct _observer_base_t
 {
     observer_subclass_t class;
     observer_update_fn_t update_fn;
+    observer_delete_fn_t delete_fn;
     observer_cb_t cb;
     void *ctxt;
     engine_reg_t reg;
@@ -36,6 +38,7 @@ extern void observer_base_init(
     observer_base_t *obs,
     observer_subclass_t class,
     observer_update_fn_t update_fn,
+    observer_delete_fn_t delete_fn,
     observer_cb_t cb,
     void *ctxt,
     engine_reg_t reg

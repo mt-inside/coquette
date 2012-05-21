@@ -32,7 +32,7 @@ observer_integral_t *observer_integral_new(
 {
     observer_integral_t *this = calloc( sizeof( observer_integral_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_INTEGRAL, &observer_integral_update, cb, ctxt, reg );
+    observer_base_init( (observer_base_t *)this, observer_subclass_INTEGRAL, &observer_integral_update, NULL, cb, ctxt, reg );
 
     this->integral = 0;
 

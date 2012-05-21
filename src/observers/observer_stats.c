@@ -20,6 +20,7 @@ struct _observer_stats_t
 };
 
 static void observer_stats_update( observer_base_t *this, int first_time );
+static void observer_stats_delete( observer_base_t *this );
 
 observer_stats_t *observer_stats_new( engine_reg_t reg,
                                       observer_cb_t cb, void *ctxt,
@@ -27,7 +28,7 @@ observer_stats_t *observer_stats_new( engine_reg_t reg,
 {
     observer_stats_t *this = calloc( sizeof( observer_stats_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_STATS, &observer_stats_update, cb, ctxt, reg );
+    observer_base_init( (observer_base_t *)this, observer_subclass_STATS, &observer_stats_update, &observer_stats_delete, cb, ctxt, reg );
 
     this->period = period;
 
@@ -52,6 +53,14 @@ static void observer_stats_update( observer_base_t *obs, int first_time )
 
     /* TODO: For now, assume we always have new stats available */
     obs->cb( obs, obs->ctxt );
+}
+
+static void observer_stats_delete( observer_base_t *obs )
+{
+    observer_stats_t *this = (observer_stats_t *)obs;
+    assert( obs->class == observer_subclass_STATS );
+
+    free( this->values );
 }
 
 /* TODO: move to an on-line algorithm as it'll be faster, use less space and be

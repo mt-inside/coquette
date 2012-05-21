@@ -8,6 +8,7 @@ void observer_base_init(
     observer_base_t *this,
     observer_subclass_t class,
     observer_update_fn_t update_fn,
+    observer_delete_fn_t delete_fn,
     observer_cb_t cb,
     void *ctxt,
     engine_reg_t reg
@@ -16,6 +17,7 @@ void observer_base_init(
     this->class = class;
 
     this->update_fn = update_fn;
+    this->delete_fn = delete_fn;
 
     this->cb = cb;
     this->ctxt = ctxt;
@@ -23,6 +25,12 @@ void observer_base_init(
     this->reg = reg;
 
     this->first_time = 1;
+}
+
+void observer_base_delete( observer_base_t *this )
+{
+    if( this->delete_fn ) this->delete_fn( this );
+    free( this );
 }
 
 void observer_base_update( observer_base_t *this, int value )

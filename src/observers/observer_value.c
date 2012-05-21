@@ -23,7 +23,7 @@ observer_value_t *observer_value_new(
 {
     observer_value_t *this = calloc( sizeof( observer_value_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_VALUE, &observer_value_update, cb, ctxt, reg );
+    observer_base_init( (observer_base_t *)this, observer_subclass_VALUE, &observer_value_update, NULL, cb, ctxt, reg );
 
     return this;
 }

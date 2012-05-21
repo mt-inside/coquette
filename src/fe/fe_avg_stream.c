@@ -56,36 +56,22 @@ static void stats_print_cb( observer_base_t *obs, void *ctxt )
           );
 }
 
-static void init_streaming( void )
+static stream_t *get_stream( void )
 {
-    stream_t *stream = malloc( sizeof(stream_t) );
-
-    stream->observers_len = 6;
-    stream->observers = malloc( sizeof(observer_base_t *) * stream->observers_len );
-
-    stream->observers[0] = (observer_base_t *)observer_stats_new( reg_engine_COOLANT_TEMP, &stats_print_cb, NULL, 0 );
-    stream->observers[1] = (observer_base_t *)observer_stats_new( reg_ENGINE_SPEED,        &stats_print_cb, NULL, 0 );
-    stream->observers[2] = (observer_base_t *)observer_shift_new( reg_ENGINE_SPEED,        &shift_print_cb, NULL, 2000, 3000, 10 );
-    stream->observers[3] = (observer_base_t *)observer_stats_new( reg_ROAD_SPEED,          &stats_print_cb, NULL, 0 );
-    stream->observers[4] = (observer_base_t *)observer_integral_new( reg_ROAD_SPEED, &integral_print_cb, NULL );
-    stream->observers[5] = (observer_base_t *)observer_stats_new( reg_TPS,                 &stats_print_cb, NULL, 0 );
-
-
-    /* spawns streaming thread and returns */
-    stream_registers_start( stream );
-}
-
-static void quit( void )
-{
-    LOG( "ending" );
-
-    stream_registers_end( );
-
-    com_finalise( );
+    return stream_new( 6,
+        (observer_base_t *)observer_stats_new   ( reg_engine_COOLANT_TEMP, &stats_print_cb,    NULL, 0              ),
+        (observer_base_t *)observer_stats_new   ( reg_ENGINE_SPEED,        &stats_print_cb,    NULL, 0              ),
+        (observer_base_t *)observer_shift_new   ( reg_ENGINE_SPEED,        &shift_print_cb,    NULL, 2000, 3000, 10 ),
+        (observer_base_t *)observer_stats_new   ( reg_ROAD_SPEED,          &stats_print_cb,    NULL, 0              ),
+        (observer_base_t *)observer_integral_new( reg_ROAD_SPEED,          &integral_print_cb, NULL                 ),
+        (observer_base_t *)observer_stats_new   ( reg_TPS,                 &stats_print_cb,    NULL, 0              )
+    );
 }
 
 int main( int argc, char **argv )
 {
+    stream_t *stream;
+
     assert( argc == 2 );
 
     assert( !com_init( argv[1] ) );
@@ -94,12 +80,19 @@ int main( int argc, char **argv )
 
     LOG( "handshake done" );
 
-    init_streaming();
+    stream = get_stream();
+    /* spawns streaming thread and returns */
+    stream_registers_start( stream );
 
     /* block this thread */
     getchar();
 
-    quit();
+    LOG( "ending" );
+
+    stream_registers_end( );
+    stream_delete( stream );
+
+    com_finalise( );
 
     return 0;
 }

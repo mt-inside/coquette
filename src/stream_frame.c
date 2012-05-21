@@ -71,16 +71,20 @@ int stream_registers_start( stream_t *stream )
     obs_list_list_t *list_list = malloc( sizeof(obs_list_list_t) );
     obs_list_list_item_t *lli;
     obs_list_item_t *li;
+    observer_base_t **observers;
+    unsigned observers_len;
 
 
     assert( s_state == state_NOT_RUNNING );
 
+    stream_get_observers( stream, &observers, &observers_len );
+
     /* Really crappy O(n^2) algorithm for putting this data structure together
      */
     STAILQ_INIT( list_list );
-    for( i = 0; i < stream->observers_len; ++i )
+    for( i = 0; i < observers_len; ++i )
     {
-        observer_base_t *obs = stream->observers[i];
+        observer_base_t *obs = observers[i];
         engine_reg_t new_reg = observer_base_get_reg( obs );
 
         STAILQ_FOREACH(lli, list_list, next)

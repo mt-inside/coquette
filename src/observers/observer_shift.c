@@ -29,7 +29,7 @@ observer_shift_t *observer_shift_new(
 {
     observer_shift_t *this = calloc( sizeof( observer_shift_t ), 1 );
 
-    observer_base_init( (observer_base_t *)this, observer_subclass_SHIFT, &observer_shift_update, cb, ctxt, reg );
+    observer_base_init( (observer_base_t *)this, observer_subclass_SHIFT, &observer_shift_update, NULL, cb, ctxt, reg );
 
     this->warn_start = warn_start;
     this->warn_end   = warn_end;

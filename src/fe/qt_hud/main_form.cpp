@@ -121,30 +121,27 @@ static void zerosixty_label_cb( observer_base_t *obs, void *ctxt )
 main_form::main_form( QWidget *parent )
 {
     (void)parent;
+    (void)stats_label_cb;
 
     setupUi( this );
 
 
-    stream_t *stream = (stream_t *)malloc( sizeof(stream_t) );
+    _stream = stream_new( 8,
+        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &value_label_cb, (void *)labelCoolantTemp ),
+        (observer_base_t *)observer_value_new( reg_ENGINE_SPEED, &value_label_cb, (void *)labelEngineSpeed ),
+        (observer_base_t *)observer_shift_new( reg_ENGINE_SPEED, &shift_label_cb, (void *)labelShift, 2000, 3000, 3 ),
+        (observer_base_t *)observer_value_new( reg_ROAD_SPEED, &value_label_cb, (void *)labelRoadSpeed ),
+        (observer_base_t *)observer_integral_new( reg_ROAD_SPEED, &distance_label_cb, (void *)labelDistance ),
+        (observer_base_t *)observer_zerosixty_new( reg_ROAD_SPEED, &zerosixty_label_cb, (void *)labelZerosixty, 60 ),
+        (observer_base_t *)observer_ratio_new( reg_TPS, &ratio_label_cb, (void *)labelTpsPc ),
+        (observer_base_t *)observer_ratio_new( reg_TPS, &ratio_dial_cb, (void *)dialTps )
+    );
 
-    (void)stats_label_cb;
-
-    stream->observers_len = 8;
-    stream->observers = (observer_base_t **)malloc( stream->observers_len * sizeof(observer_base_t *) );
-    stream->observers[0] = (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &value_label_cb, (void *)labelCoolantTemp );
-    stream->observers[1] = (observer_base_t *)observer_value_new( reg_ENGINE_SPEED, &value_label_cb, (void *)labelEngineSpeed );
-    stream->observers[2] = (observer_base_t *)observer_shift_new( reg_ENGINE_SPEED, &shift_label_cb, (void *)labelShift, 2000, 3000, 3 );
-    stream->observers[3] = (observer_base_t *)observer_value_new( reg_ROAD_SPEED, &value_label_cb, (void *)labelRoadSpeed );
-    stream->observers[4] = (observer_base_t *)observer_integral_new( reg_ROAD_SPEED, &distance_label_cb, (void *)labelDistance );
-    stream->observers[5] = (observer_base_t *)observer_zerosixty_new( reg_ROAD_SPEED, &zerosixty_label_cb, (void *)labelZerosixty, 60 );
-    stream->observers[6] = (observer_base_t *)observer_ratio_new( reg_TPS, &ratio_label_cb, (void *)labelTpsPc );
-    stream->observers[7] = (observer_base_t *)observer_ratio_new( reg_TPS, &ratio_dial_cb, (void *)dialTps );
-
-
-    stream_registers_start( stream );
+    stream_registers_start( _stream );
 }
 
 main_form::~main_form()
 {
-    stream_registers_end();
+    stream_registers_end( );
+    stream_delete( _stream );
 }
