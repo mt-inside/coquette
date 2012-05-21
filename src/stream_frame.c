@@ -234,8 +234,8 @@ static void *stream_frame_thread( void *ctxt )
     stream_cb_t cb   = thread_args->cb;
     void *cb_ctxt    = thread_args->cb_ctxt;
 
-    unsigned i, data_len;
-    uint8_t *data = NULL;
+    unsigned i;
+    uint8_t *data = malloc( arg_len );
     uint8_t out;
 
 
@@ -271,17 +271,13 @@ static void *stream_frame_thread( void *ctxt )
         assert( out == c_response_frame_start );
 
         com_read_byte( &out );
-        data_len = out;
-        assert( data_len > 0 );
-
-        if( !data ) data = malloc( data_len );
-        data = malloc( data_len );
+        assert( out == arg_len );
 
         /* I assume this blocks until this many bytes have come off the serial
          * port, and thus that this loop doesn't spin */
-        com_read_bytes( data, data_len );
+        com_read_bytes( data, arg_len );
 
-        cb( cb_ctxt, data, data_len );
+        cb( cb_ctxt, data, arg_len );
     }
 
     com_send_byte( cmd_STOP );
