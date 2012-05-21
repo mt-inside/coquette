@@ -4,11 +4,7 @@
 
 #define NOT_USED( x ) (void)(x)
 
-#ifdef WIN32
-
-#include "Windows.h"
-
-#define sleep(x) Sleep(1000 * (x))
+#ifdef _WIN32
 
 # define timeradd(a, b, result)						      \
   do {									      \
