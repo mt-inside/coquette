@@ -55,7 +55,7 @@ static void observer_derivative_update( observer_base_t *obs, int first_time )
         gettimeofday( &tv_now, NULL );
         timersub( &tv_now, &this->start_time, &tv_diff );
 
-        if( tv_diff.tv_sec >= this->period )
+        if( (unsigned)tv_diff.tv_sec >= this->period )
         {
             this->derivative = (float)(obs->value - this->value_old) / (float)this->period;
 
