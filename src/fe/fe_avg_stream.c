@@ -7,11 +7,25 @@
 #include "common.h"
 #include "com/com.h"
 #include "commands.h"
+#include "observers/observer_derivative.h"
 #include "observers/observer_integral.h"
 #include "observers/observer_shift.h"
 #include "observers/observer_stats.h"
 #include "stream_frame.h"
 
+
+static void derivative_print_cb( observer_base_t *obs, void *ctxt )
+{
+    float derivative;
+
+    (void)ctxt;
+
+    observer_derivative_get_derivative( obs, &derivative );
+
+    printf( "derivative: %f\n",
+            derivative
+          );
+}
 
 static void integral_print_cb( observer_base_t *obs, void *ctxt )
 {
@@ -58,13 +72,15 @@ static void stats_print_cb( observer_base_t *obs, void *ctxt )
 
 static stream_t *get_stream( void )
 {
-    return stream_new( 6,
-        (observer_base_t *)observer_stats_new   ( reg_engine_COOLANT_TEMP, &stats_print_cb,    NULL, 0              ),
-        (observer_base_t *)observer_stats_new   ( reg_ENGINE_SPEED,        &stats_print_cb,    NULL, 0              ),
-        (observer_base_t *)observer_shift_new   ( reg_ENGINE_SPEED,        &shift_print_cb,    NULL, 2000, 3000, 10 ),
-        (observer_base_t *)observer_stats_new   ( reg_ROAD_SPEED,          &stats_print_cb,    NULL, 0              ),
-        (observer_base_t *)observer_integral_new( reg_ROAD_SPEED,          &integral_print_cb, NULL                 ),
-        (observer_base_t *)observer_stats_new   ( reg_TPS,                 &stats_print_cb,    NULL, 0              )
+    return stream_new( 8,
+        (observer_base_t *)observer_stats_new     ( reg_engine_COOLANT_TEMP, &stats_print_cb,      NULL, 0              ),
+        (observer_base_t *)observer_derivative_new( reg_engine_COOLANT_TEMP, &derivative_print_cb, NULL, 1              ),
+        (observer_base_t *)observer_stats_new     ( reg_ENGINE_SPEED,        &stats_print_cb,      NULL, 0              ),
+        (observer_base_t *)observer_shift_new     ( reg_ENGINE_SPEED,        &shift_print_cb,      NULL, 2000, 3000, 10 ),
+        (observer_base_t *)observer_stats_new     ( reg_ROAD_SPEED,          &stats_print_cb,      NULL, 0              ),
+        (observer_base_t *)observer_integral_new  ( reg_ROAD_SPEED,          &integral_print_cb,   NULL                 ),
+        (observer_base_t *)observer_derivative_new( reg_ROAD_SPEED,          &derivative_print_cb, NULL, 1              ),
+        (observer_base_t *)observer_stats_new     ( reg_TPS,                 &stats_print_cb,      NULL, 0              )
     );
 }
 
