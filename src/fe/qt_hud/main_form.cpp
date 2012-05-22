@@ -71,6 +71,20 @@ static void ratio_label_cb( observer_base_t *obs, void *ctxt )
     label->setText( str );
 }
 
+static void coolant_dial_cb( observer_base_t *obs, void *ctxt )
+{
+    Dial *dial = (Dial *)ctxt;
+
+    dial->value( (float)observer_base_get_value( obs ) / 100 );
+}
+
+static void rpm_dial_cb( observer_base_t *obs, void *ctxt )
+{
+    Dial *dial = (Dial *)ctxt;
+
+    dial->value( (float)observer_base_get_value( obs ) / 8000 );
+}
+
 static void ratio_dial_cb( observer_base_t *obs, void *ctxt )
 {
     Dial *dial = (Dial *)ctxt;
@@ -142,9 +156,11 @@ main_form::main_form( QWidget *parent )
     setupUi( this );
 
 
-    _stream = stream_new( 9,
+    _stream = stream_new( 11,
         (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &value_label_cb, (void *)labelCoolantTemp ),
+        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &coolant_dial_cb, (void *)dialCoolantTemp ),
         (observer_base_t *)observer_value_new( reg_ENGINE_SPEED, &value_label_cb, (void *)labelEngineSpeed ),
+        (observer_base_t *)observer_value_new( reg_ENGINE_SPEED, &rpm_dial_cb, (void *)dialRpm ),
         (observer_base_t *)observer_shift_new( reg_ENGINE_SPEED, &shift_label_cb, (void *)labelShift, 2000, 3000, 3 ),
         (observer_base_t *)observer_value_new( reg_ROAD_SPEED, &value_label_cb, (void *)labelRoadSpeed ),
         (observer_base_t *)observer_integral_new( reg_ROAD_SPEED, &distance_label_cb, (void *)labelDistance ),

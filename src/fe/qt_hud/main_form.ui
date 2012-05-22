@@ -241,10 +241,10 @@
    <widget class="Dial" name="dialTps" native="true">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>190</y>
-      <width>271</width>
-      <height>231</height>
+      <x>260</x>
+      <y>360</y>
+      <width>120</width>
+      <height>120</height>
      </rect>
     </property>
    </widget>
@@ -318,6 +318,26 @@
     </property>
     <property name="text">
      <string>888km/h/s</string>
+    </property>
+   </widget>
+   <widget class="Dial" name="dialCoolantTemp" native="true">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>240</y>
+      <width>120</width>
+      <height>120</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="Dial" name="dialRpm" native="true">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>120</y>
+      <width>120</width>
+      <height>120</height>
+     </rect>
     </property>
    </widget>
   </widget>
