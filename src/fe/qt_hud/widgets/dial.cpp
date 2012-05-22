@@ -13,13 +13,15 @@ Dial::Dial(QWidget *parent, int startAngle, int maxArcLength)
 
 QSize Dial::minimumSizeHint() const
 {
-    /* TODO: don't understand what this does */
-    return QSize(100, 100);
+    /* TODO: don't understand what this does
+     * However, our min size is 120x120 because we draw into a 100x100 box that
+     * needs 10 clearance */
+    return QSize(120, 120);
 }
 
 QSize Dial::sizeHint() const
 {
-    return QSize(400, 200);
+    return QSize(120, 120);
 }
 
 void Dial::startAngle( int value )
