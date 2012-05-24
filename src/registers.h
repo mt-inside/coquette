@@ -20,4 +20,9 @@ typedef struct
 
 extern reg_info_t *registers_get_reg_info( engine_reg_t reg );
 
+extern void engine_bit_to_ordinates( engine_bit_t bit, engine_reg_t *reg, unsigned *offset );
+
+
+extern unsigned c_num_engine_flags_registers;
+
 #endif /* defined _INCLUDED_REGISTERS_H */

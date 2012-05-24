@@ -72,12 +72,21 @@ static reg_info_t reg_infos[ ] =
     { 1, &read_register_1byte,  &scale_id }
 };
 
+static engine_reg_t engine_bit_regs[] = { reg_engine_FLAGS0, reg_engine_FLAGS1, reg_engine_FLAGS2, reg_engine_FLAGS3 };
+unsigned c_num_engine_flags_registers = sizeof(engine_bit_regs) / sizeof(engine_bit_regs[0]);
+
 
 reg_info_t *registers_get_reg_info( engine_reg_t reg )
 {
     assert( reg < sizeof(reg_infos) / sizeof(reg_infos[0]) );
 
     return reg_infos + reg;
+}
+
+void engine_bit_to_ordinates( engine_bit_t flag, engine_reg_t *reg, unsigned *offset )
+{
+    *reg = engine_bit_regs[ flag / 8 ];
+    *offset = flag % 8;
 }
 
 
