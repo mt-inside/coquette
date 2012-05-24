@@ -139,7 +139,7 @@ int read_flag( engine_bit_t flag, int *out )
     engine_reg_t reg;
     unsigned offset;
 
-    engine_bit_to_ordinates( flag, &reg, &offset );
+    engine_flag_to_ordinates( flag, &reg, &offset );
     read_register( reg, &data );
 
     *out = ( data & ( 1 << offset ) ) >> offset;
