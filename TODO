@@ -28,6 +28,6 @@ some kind of framework for unit conversion (engine speed in Hz, road spd in m/s,
 commands to other cpus (each cmd take an ecu and remember / switch if different? OR unified address space for registers (pair cpu & reg) - layer underneath to watch current ecu and switch if necc (sort first to reduce switching))
 Mac Serial comms - ioreg -c IOSerialBSDClient. PL email - get mac driver, change PCI IDs
 
-make look like R34 / 35 GT-R, Defi ADVANCE ZD
+make look like R34 / 35 GT-R, Defi ADVANCE ZD, HKS CAMP 2
 gauge observer - current value and 10 sec peak - stats observer does this (may need to be able to set window size - in seconds)
 log observer...
