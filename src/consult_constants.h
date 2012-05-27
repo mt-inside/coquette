@@ -85,33 +85,33 @@ typedef enum
 typedef enum
 {
     /* reg_engine_FLAGS0 */
-    bit_TPS_CLOSED = 0x00,
-    bit_CRANKING = 0x01,
-    bit_NEUTRAL = 0x02,
-    bit_POWER_STEERING = 0x03,
-    bit_AC_ON_SWITCH = 0x04,
+    flag_TPS_CLOSED = 0x00,
+    flag_CRANKING = 0x01,
+    flag_NEUTRAL = 0x02,
+    flag_POWER_STEERING = 0x03,
+    flag_AC_ON_SWITCH = 0x04,
     /* 0x05 */
     /* 0x06 */
     /* 0x07 */
 
     /* reg_engine_FLAGS1 */
-    bit_COOLANT_FAN_LO = 0x08,
-    bit_COOLAND_FAN_HI = 0x09,
+    flag_COOLANT_FAN_LO = 0x08,
+    flag_COOLAND_FAN_HI = 0x09,
     /* 0x0a */
     /* 0x0b */
     /* 0x0c */
-    bit_VTC_SOLENOID = 0x0d,
-    bit_FUEL_PUMP_RELAY = 0x0e,
-    bit_AIRCON_RELAY = 0x0f,
+    flag_VTC_SOLENOID = 0x0d,
+    flag_FUEL_PUMP_RELAY = 0x0e,
+    flag_AIRCON_RELAY = 0x0f,
 
     /* reg_engine_FLAGS2 */
-    bit_EGR_SOLENOID = 0x10,
+    flag_EGR_SOLENOID = 0x10,
     /* 0x11 */
     /* 0x13 */
-    bit_IAVC_FICD_SOLENOID = 0x13,
+    flag_IAVC_FICD_SOLENOID = 0x13,
     /* 0x14 */
-    bit_WASTEGATE_SOLENOID = 0x15,
-    bit_P_REG_CTRL_VALVE = 0x16,
+    flag_WASTEGATE_SOLENOID = 0x15,
+    flag_P_REG_CTRL_VALVE = 0x16,
     /* 0x17 */
 
     /* reg_engine_FLAGS3 */
@@ -121,9 +121,9 @@ typedef enum
     /* 0x1b */
     /* 0x1c */
     /* 0x1d */
-    bit_RH_LEAN = 0x1e,
-    bit_LH_LEAN = 0x1f
-} engine_bit_t;
+    flag_RH_LEAN = 0x1e,
+    flag_LH_LEAN = 0x1f
+} engine_flag_t;
 
 typedef enum
 {
@@ -152,14 +152,14 @@ typedef enum
 
 typedef enum
 {
-    bit_FAN_LO = 0x02,
-    bit_FAN_HI = 0x03,
-    bit_RECIRC = 0x04,
-    bit_ECON = 0x05,
-    bit_DEFROST = 0x06,
-    bit_AUTO = 0x07,
-    bit_DOWN_SWITCH = 0x08,
-    bit_UP_SWITCH = 0x09
+    flag_FAN_LO = 0x02,
+    flag_FAN_HI = 0x03,
+    flag_RECIRC = 0x04,
+    flag_ECON = 0x05,
+    flag_DEFROST = 0x06,
+    flag_AUTO = 0x07,
+    flag_DOWN_SWITCH = 0x08,
+    flag_UP_SWITCH = 0x09
 } aircon_bits_t;
 
 typedef enum

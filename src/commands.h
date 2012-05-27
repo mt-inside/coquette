@@ -34,7 +34,7 @@ extern int read_dtc( fault_report_t **faults );
 extern void faults_free( fault_report_t *faults );
 extern int read_ecu_part_no( ecu_part_no_t **part_no );
 extern int read_register( engine_reg_t reg, int *out );
-extern int read_flag( engine_bit_t flag, int *out );
+extern int read_flag( engine_flag_t flag, int *out );
 extern int peek_memory( uint16_t addr, uint8_t *out );
 
 #endif /* defined _INCLUDED_COMMANDS_H */

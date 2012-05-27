@@ -133,7 +133,7 @@ int read_register( engine_reg_t reg, int *out )
     return 0;
 }
 
-int read_flag( engine_bit_t flag, int *out )
+int read_flag( engine_flag_t flag, int *out )
 {
     int data;
     engine_reg_t reg;

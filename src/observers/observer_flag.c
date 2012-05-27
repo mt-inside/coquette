@@ -21,7 +21,7 @@ struct _observer_flag_t
 static void observer_flag_update( observer_base_t *this, int first_time );
 
 observer_flag_t *observer_flag_new(
-    engine_bit_t flag,
+    engine_flag_t flag,
     observer_cb_t cb, void *ctxt
 )
 {
