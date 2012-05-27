@@ -1,3 +1,4 @@
+qt hud stops updating sometimes. Maybe because it's being called by a different thread? Indeed, the stylesheets don't like being set from another thread, and there are occasional SEGVs in the Qt/X libraries. How to marshall? will qt do this, or do I need to poll something from the qt main thread like a pipe?
 SIGINT to gracefully shutdown
 make a com "interface" (abstract type and function defs) then have some kind of virtual dispatch so that coms can be interchanged (init your com_t * to be com_unix_new( ) where com_t contain
 To be symmetrical, the observers should provide a callback to the layer below them (stream_frame etc) just as they are passed a callback from above.
