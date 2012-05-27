@@ -9,8 +9,8 @@
 
 typedef enum
 {
-    observer_subclass_FLAG,
     observer_subclass_DERIVATIVE,
+    observer_subclass_FLAG,
     observer_subclass_INTEGRAL,
     observer_subclass_RATIO,
     observer_subclass_SHIFT,
