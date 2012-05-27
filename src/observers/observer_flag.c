@@ -12,10 +12,11 @@
 struct _observer_flag_t
 {
     observer_base_t base;
+    engine_flag_t flag;
     /* base->value holds the whole flags register; the individual flag is
      * extracted and stored here */
-    int flag;
-    int flag_old;
+    int flag_value;
+    int flag_value_old;
 };
 
 static void observer_flag_update( observer_base_t *this, int first_time );
@@ -35,6 +36,8 @@ observer_flag_t *observer_flag_new(
 
     observer_base_init( (observer_base_t *)this, observer_subclass_FLAG, &observer_flag_update, NULL, cb, ctxt, reg );
 
+    this->flag = flag;
+
     return this;
 }
 
@@ -45,26 +48,26 @@ static void observer_flag_update( observer_base_t *obs, int first_time )
 
     assert( obs->class == observer_subclass_FLAG );
 
-    engine_flag_to_ordinates( obs->reg, &reg, &offset );
+    engine_flag_to_ordinates( this->flag, &reg, &offset );
 
-    this->flag = ( obs->value & ( 1 << offset ) ) >> offset;
+    this->flag_value = ( obs->value & ( 1 << offset ) ) >> offset;
 
-    if( this->flag != this->flag_old || first_time )
+    if( this->flag_value != this->flag_value_old || first_time )
     {
         obs->cb( obs, obs->ctxt );
     }
 
-    this->flag_old = this->flag;
+    this->flag_value_old = this->flag_value;
 }
 
 void observer_flag_get_flag(
     observer_base_t *obs,
-    int *flag
+    int *flag_value
 )
 {
     observer_flag_t *this = (observer_flag_t *)obs;
 
     assert( obs->class == observer_subclass_FLAG );
 
-    *flag = this->flag;
+    *flag_value = this->flag_value;
 }

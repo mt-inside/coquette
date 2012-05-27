@@ -13,7 +13,7 @@ extern observer_flag_t *observer_flag_new(
 
 extern void observer_flag_get_flag(
     observer_base_t *obs,
-    int *value
+    int *flag_value
 );
 
 #endif /* defined _INCLUDED_OBSERVER_FLAG_H */
