@@ -3,6 +3,7 @@
 
 extern "C" {
 #include "observers/observer_derivative.h"
+#include "observers/observer_flag.h"
 #include "observers/observer_integral.h"
 #include "observers/observer_ratio.h"
 #include "observers/observer_shift.h"
@@ -10,6 +11,23 @@ extern "C" {
 #include "observers/observer_value.h"
 #include "observers/observer_zerosixty.h"
 #include "stream_frame.h"
+}
+
+static void flag_label_cb( observer_base_t *obs, void *ctxt )
+{
+    QLabel *label = (QLabel *)ctxt;
+    int flag;
+
+    observer_flag_get_flag( obs, &flag );
+
+    if( flag )
+    {
+        label->setStyleSheet( "background-color: yellow;" );
+    }
+    else
+    {
+        label->setStyleSheet( "" );
+    }
 }
 
 static void value_label_cb( observer_base_t *obs, void *ctxt )
@@ -156,7 +174,7 @@ main_form::main_form( QWidget *parent )
     setupUi( this );
 
 
-    _stream = stream_new( 11,
+    _stream = stream_new( 15,
         (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &value_label_cb, (void *)labelCoolantTemp ),
         (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &coolant_dial_cb, (void *)dialCoolantTemp ),
         (observer_base_t *)observer_value_new( reg_ENGINE_SPEED, &value_label_cb, (void *)labelEngineSpeed ),
@@ -167,7 +185,11 @@ main_form::main_form( QWidget *parent )
         (observer_base_t *)observer_derivative_new( reg_ROAD_SPEED, &acceleration_label_cb, (void *)labelAcceleration, 1 ),
         (observer_base_t *)observer_zerosixty_new( reg_ROAD_SPEED, &zerosixty_label_cb, (void *)labelZerosixty, 60 ),
         (observer_base_t *)observer_ratio_new( reg_TPS, &ratio_label_cb, (void *)labelTpsPc ),
-        (observer_base_t *)observer_ratio_new( reg_TPS, &ratio_dial_cb, (void *)dialTps )
+        (observer_base_t *)observer_ratio_new( reg_TPS, &ratio_dial_cb, (void *)dialTps ),
+        (observer_base_t *)observer_flag_new( flag_CRANKING, &flag_label_cb, (void *)labelCrank ),
+        (observer_base_t *)observer_flag_new( flag_TPS_CLOSED, &flag_label_cb, (void *)label0TPS ),
+        (observer_base_t *)observer_flag_new( flag_NEUTRAL, &flag_label_cb, (void *)labelNeutral ),
+        (observer_base_t *)observer_flag_new( flag_AC_ON_SWITCH, &flag_label_cb, (void *)labelAC )
     );
 
     stream_registers_start( _stream );
