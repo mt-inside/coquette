@@ -22,9 +22,11 @@ main_form::main_form( QWidget *parent )
 
 
     _label_proxy = new proxy_value_label( this, labelCoolantTemp );
+    _dial_proxy = new proxy_value_dial( this, dialCoolantTemp );
 
-    _stream = stream_new( 1,
-        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &proxy_value_label::trampoline, _label_proxy->get_bound_cb( ) )
+    _stream = stream_new( 2,
+        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &proxy_base::trampoline, _label_proxy->get_bound_cb( ) ),
+        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &proxy_base::trampoline, _dial_proxy->get_bound_cb( ) )
     );
 
     stream_registers_start( _stream );
@@ -39,4 +41,9 @@ main_form::~main_form()
 void main_form::update_label( QLabel *label, char *value )
 {
     label->setText( value );
+}
+
+void main_form::update_dial( Dial *dial, float value )
+{
+    dial->value( value );
 }
