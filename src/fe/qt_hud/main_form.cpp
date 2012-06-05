@@ -21,10 +21,10 @@ main_form::main_form( QWidget *parent )
     setupUi( this );
 
 
-    _label_proxy = new proxy_label( this, labelCoolantTemp );
+    _label_proxy = new proxy_value_label( this, labelCoolantTemp );
 
     _stream = stream_new( 1,
-        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &proxy_label::trampoline, _label_proxy->get_bound_cb( ) )
+        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &proxy_value_label::trampoline, _label_proxy->get_bound_cb( ) )
     );
 
     stream_registers_start( _stream );

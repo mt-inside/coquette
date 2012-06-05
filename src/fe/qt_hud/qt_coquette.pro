@@ -1,8 +1,8 @@
 HEADERS = main_form.h    \
-          proxy_label.h  \
+          proxy_value_label.h  \
           widgets/dial.h
 SOURCES = main_form.cpp    \
-          proxy_label.cpp  \
+          proxy_value_label.cpp  \
           widgets/dial.cpp \
           qt_coquette.cpp
 FORMS   = main_form.ui

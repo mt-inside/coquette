@@ -2,7 +2,7 @@
 #define _INCLUDED_MAIN_FORM_H
 
 #include "ui_main_form.h"
-#include "proxy_label.h"
+#include "proxy_value_label.h"
 
 extern "C" {
 #include "stream.h"
@@ -21,7 +21,7 @@ class main_form : public QMainWindow, private Ui::main_form
 
     private:
         stream_t *_stream;
-        proxy_label *_label_proxy;
+        proxy_value_label *_label_proxy;
 };
 
 #endif /* defined _INCLUDED_MAIN_FORM_H */
