@@ -1,10 +1,16 @@
 #include "proxy_label.h"
 
 
-proxy_label::proxy_label( QLabel *label )
+proxy_label::proxy_label( QObject *mo, QLabel *label )
 {
     _label = label;
     _cb = new bound_cb_t(boost::bind(&proxy_label::cb, this, _1));
+
+    /* We use async Queued because BlockingQueued blocks the thread ad infinitum
+     * if the other end dies (e.g. the window is closed). */
+    connect( this, SIGNAL(update_label(QLabel *, char *)),
+             mo,   SLOT(  update_label(QLabel *, char *)),
+             Qt::QueuedConnection );
 }
 
 proxy_label::~proxy_label( void )
@@ -26,12 +32,12 @@ bound_cb_t *proxy_label::get_bound_cb( void )
 
 void proxy_label::cb( observer_base_t *obs )
 {
-    char str[256];
-
-    sprintf( str,
+    sprintf( _str,
              "%d",
              observer_base_get_value( obs )
            );
 
-    _label->setText( str );
+    /* Becuase we use an async connection to mo it's not safe for _str to be on
+     * our stack. */
+    emit update_label( _label, _str );
 }

@@ -16,6 +16,9 @@ class main_form : public QMainWindow, private Ui::main_form
         main_form( QWidget *parent = 0 );
         virtual ~main_form( );
 
+    public slots:
+        void update_label( QLabel *label, char *value );
+
     private:
         stream_t *_stream;
         proxy_label *_label_proxy;
