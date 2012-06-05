@@ -4,6 +4,7 @@
 #include "ui_main_form.h"
 #include "proxy_value_label.h"
 #include "proxy_ratio_dial.h"
+#include "proxy_shift_label.h"
 
 extern "C" {
 #include "stream.h"
@@ -23,8 +24,11 @@ class main_form : public QMainWindow, private Ui::main_form
 
     private:
         stream_t *_stream;
-        proxy_value_label *_label_proxy;
-        proxy_ratio_dial  *_dial_proxy;
+        proxy_value_label *_coolant_label_proxy;
+        proxy_ratio_dial  *_coolant_dial_proxy;
+        proxy_value_label *_rpm_label_proxy;
+        proxy_ratio_dial  *_rpm_dial_proxy;
+        proxy_shift_label *_rpm_shift_proxy;
 };
 
 #endif /* defined _INCLUDED_MAIN_FORM_H */

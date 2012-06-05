@@ -21,12 +21,18 @@ main_form::main_form( QWidget *parent )
     setupUi( this );
 
 
-    _label_proxy = new proxy_value_label( this, labelCoolantTemp );
-    _dial_proxy  = new proxy_ratio_dial(  this, dialCoolantTemp );
+    _coolant_label_proxy = new proxy_value_label( this, labelCoolantTemp );
+    _coolant_dial_proxy  = new proxy_ratio_dial(  this, dialCoolantTemp  );
+    _rpm_label_proxy     = new proxy_value_label( this, labelEngineSpeed );
+    _rpm_dial_proxy      = new proxy_ratio_dial(  this, dialRpm );
+    _rpm_shift_proxy     = new proxy_shift_label( this, labelShift );
 
-    _stream = stream_new( 2,
-        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &proxy_base::trampoline, _label_proxy->get_bound_cb( ) ),
-        (observer_base_t *)observer_ratio_new( reg_engine_COOLANT_TEMP, &proxy_base::trampoline, _dial_proxy->get_bound_cb( ), 0, 100 )
+    _stream = stream_new( 5,
+        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &proxy_base::trampoline, _coolant_label_proxy->get_bound_cb( ) ),
+        (observer_base_t *)observer_ratio_new( reg_engine_COOLANT_TEMP, &proxy_base::trampoline, _coolant_dial_proxy->get_bound_cb( ), 0, 100 ),
+        (observer_base_t *)observer_value_new( reg_ENGINE_SPEED,        &proxy_base::trampoline, _rpm_label_proxy->get_bound_cb( ) ),
+        (observer_base_t *)observer_ratio_new( reg_ENGINE_SPEED,        &proxy_base::trampoline, _rpm_dial_proxy->get_bound_cb( ), 0, 8000 ),
+        (observer_base_t *)observer_shift_new( reg_ENGINE_SPEED,        &proxy_base::trampoline, _rpm_shift_proxy, 2000, 3000, 3 )
     );
 
     stream_registers_start( _stream );
