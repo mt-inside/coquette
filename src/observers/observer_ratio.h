@@ -8,7 +8,8 @@ typedef struct _observer_ratio_t observer_ratio_t;
 
 extern observer_ratio_t *observer_ratio_new(
     engine_reg_t reg,
-    observer_cb_t, void *ctxt
+    observer_cb_t, void *ctxt,
+    int normal_min, int normal_max
 );
 
 /* Gets the raw value as a ratio of the max (with min normalised to 0).
