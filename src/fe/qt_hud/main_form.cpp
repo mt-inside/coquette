@@ -14,22 +14,11 @@ extern "C" {
 }
 
 
-void main_form::value_label_cb( observer_base_t *obs )
+/* It's nice that currently the observers' ctors take the same function pointer
+ * type; they can all use this trampoline function */
+/*static*/ void main_form::trampoline( observer_base_t *obs, void *ctxt )
 {
-    QLabel *label = labelCoolantTemp;
-    char str[256];
-
-    sprintf( str,
-             "%d",
-             observer_base_get_value( obs )
-           );
-
-    label->setText( str );
-}
-
-void main_form::trampoline( observer_base_t *obs, void *ctxt )
-{
-    (* static_cast<tramp_cb *>(ctxt))(obs);
+    (* static_cast<bound_cb_t *>(ctxt))(obs);
 }
 
 main_form::main_form( QWidget *parent )
@@ -46,10 +35,10 @@ main_form::main_form( QWidget *parent )
      * one on the right thread.
      */
 
-    _cb = new tramp_cb(boost::bind(&main_form::value_label_cb, this, _1));
+    _label_proxy = new proxy_label( labelCoolantTemp );
 
     _stream = stream_new( 1,
-        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &trampoline, _cb )
+        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &trampoline, _label_proxy->get_bound_cb( ) )
     );
 
     stream_registers_start( _stream );
