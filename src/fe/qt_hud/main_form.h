@@ -19,7 +19,6 @@ class main_form : public QMainWindow, private Ui::main_form
     private:
         stream_t *_stream;
         proxy_label *_label_proxy;
-        static void trampoline( observer_base_t *obs, void *ctxt );
 };
 
 #endif /* defined _INCLUDED_MAIN_FORM_H */

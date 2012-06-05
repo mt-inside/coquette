@@ -21,6 +21,7 @@ class proxy_label
     proxy_label( QLabel *label );
     virtual ~proxy_label( void );
     bound_cb_t *get_bound_cb( void );
+    static void trampoline( observer_base_t *obs, void *ctxt );
 
     private:
     void cb( observer_base_t *obs );

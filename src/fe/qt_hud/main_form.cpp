@@ -14,13 +14,6 @@ extern "C" {
 }
 
 
-/* It's nice that currently the observers' ctors take the same function pointer
- * type; they can all use this trampoline function */
-/*static*/ void main_form::trampoline( observer_base_t *obs, void *ctxt )
-{
-    (* static_cast<bound_cb_t *>(ctxt))(obs);
-}
-
 main_form::main_form( QWidget *parent )
 {
     (void)parent;
@@ -38,7 +31,7 @@ main_form::main_form( QWidget *parent )
     _label_proxy = new proxy_label( labelCoolantTemp );
 
     _stream = stream_new( 1,
-        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &trampoline, _label_proxy->get_bound_cb( ) )
+        (observer_base_t *)observer_value_new( reg_engine_COOLANT_TEMP, &proxy_label::trampoline, _label_proxy->get_bound_cb( ) )
     );
 
     stream_registers_start( _stream );
