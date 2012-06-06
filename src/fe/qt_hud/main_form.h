@@ -5,6 +5,7 @@
 #include "proxy_derivative_label.h"
 #include "proxy_integral_label.h"
 #include "proxy_ratio_dial.h"
+#include "proxy_ratio_label.h"
 #include "proxy_shift_label.h"
 #include "proxy_value_label.h"
 #include "proxy_zerosixty_label.h"
@@ -27,15 +28,17 @@ class main_form : public QMainWindow, private Ui::main_form
 
     private:
         stream_t *_stream;
-        proxy_value_label *_coolant_value_label_proxy;
-        proxy_ratio_dial  *_coolant_ratio_dial_proxy;
-        proxy_value_label *_rpm_value_label_proxy;
-        proxy_ratio_dial  *_rpm_ratio_dial_proxy;
-        proxy_shift_label *_rpm_shift_label_proxy;
-        proxy_value_label *_speed_value_label_proxy;
-        proxy_integral_label *_speed_integral_label_proxy;
+        proxy_value_label      *_coolant_value_label_proxy;
+        proxy_ratio_dial       *_coolant_ratio_dial_proxy;
+        proxy_value_label      *_rpm_value_label_proxy;
+        proxy_ratio_dial       *_rpm_ratio_dial_proxy;
+        proxy_shift_label      *_rpm_shift_label_proxy;
+        proxy_value_label      *_speed_value_label_proxy;
+        proxy_integral_label   *_speed_integral_label_proxy;
         proxy_derivative_label *_speed_derivative_label_proxy;
-        proxy_zerosixty_label *_speed_zerosixty_label_proxy;
+        proxy_zerosixty_label  *_speed_zerosixty_label_proxy;
+        proxy_ratio_label      *_tps_ratio_label_proxy;
+        proxy_ratio_dial       *_tps_ratio_dial_proxy;
 };
 
 #endif /* defined _INCLUDED_MAIN_FORM_H */
