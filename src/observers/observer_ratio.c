@@ -63,7 +63,7 @@ static void observer_ratio_update( observer_base_t *obs, int first_time )
         /* If at least one limit is manually set, and the other doesn't equal
          * it, then the ratio is defined; raise event. We won't double-raise
          * because min==max. */
-        if( !this->calibrate_min || !this->calibrate_max && this->min != this->max )
+        if( (!this->calibrate_min || !this->calibrate_max) && this->min != this->max )
         {
             obs->cb( obs, obs->ctxt );
         }
