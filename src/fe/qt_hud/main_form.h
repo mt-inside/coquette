@@ -3,6 +3,7 @@
 
 #include "ui_main_form.h"
 #include "proxy_derivative_label.h"
+#include "proxy_flag_label.h"
 #include "proxy_integral_label.h"
 #include "proxy_ratio_dial.h"
 #include "proxy_ratio_label.h"
@@ -23,8 +24,9 @@ class main_form : public QMainWindow, private Ui::main_form
         virtual ~main_form( );
 
     public slots:
-        void update_label( QLabel *label, char  *value );
-        void update_dial(  Dial   *dial,  float  value );
+        void update_label(       QLabel *label, char  *value );
+        void update_label_style( QLabel *label, char  *value );
+        void update_dial(        Dial   *dial,  float  value );
 
     private:
         stream_t *_stream;
@@ -39,6 +41,10 @@ class main_form : public QMainWindow, private Ui::main_form
         proxy_zerosixty_label  *_speed_zerosixty_label_proxy;
         proxy_ratio_label      *_tps_ratio_label_proxy;
         proxy_ratio_dial       *_tps_ratio_dial_proxy;
+        proxy_flag_label       *_cranking_flag_label_proxy;
+        proxy_flag_label       *_0tps_flag_label_proxy;
+        proxy_flag_label       *_neutral_flag_label_proxy;
+        proxy_flag_label       *_ac_flag_label_proxy;
 };
 
 #endif /* defined _INCLUDED_MAIN_FORM_H */

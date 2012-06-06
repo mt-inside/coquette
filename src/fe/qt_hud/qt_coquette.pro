@@ -1,6 +1,7 @@
 HEADERS = main_form.h               \
           proxy_base.h              \
           proxy_derivative_label.h  \
+          proxy_flag_label.h        \
           proxy_integral_label.h    \
           proxy_ratio_dial.h        \
           proxy_ratio_label.h       \
@@ -11,6 +12,7 @@ HEADERS = main_form.h               \
 SOURCES = main_form.cpp              \
           proxy_base.cpp             \
           proxy_derivative_label.cpp \
+          proxy_flag_label.cpp       \
           proxy_integral_label.cpp   \
           proxy_ratio_dial.cpp       \
           proxy_ratio_label.cpp      \
