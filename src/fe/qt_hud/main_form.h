@@ -2,14 +2,14 @@
 #define _INCLUDED_MAIN_FORM_H
 
 #include "ui_main_form.h"
-#include "proxy_derivative_label.h"
-#include "proxy_flag_label.h"
-#include "proxy_integral_label.h"
-#include "proxy_ratio_dial.h"
-#include "proxy_ratio_label.h"
-#include "proxy_shift_label.h"
-#include "proxy_value_label.h"
-#include "proxy_zerosixty_label.h"
+#include "proxies/proxy_derivative_label.h"
+#include "proxies/proxy_flag_label.h"
+#include "proxies/proxy_integral_label.h"
+#include "proxies/proxy_ratio_dial.h"
+#include "proxies/proxy_ratio_label.h"
+#include "proxies/proxy_shift_label.h"
+#include "proxies/proxy_value_label.h"
+#include "proxies/proxy_zerosixty_label.h"
 
 extern "C" {
 #include "stream.h"
