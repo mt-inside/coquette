@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 #include <assert.h>
 #include <unistd.h>
 #include <signal.h>
@@ -35,7 +36,7 @@ static void integral_print_cb( observer_base_t *obs, void *ctxt )
 
     observer_integral_get_integral( obs, &integral );
 
-    printf( "distance travelled: %ld\n",
+    printf( "distance travelled: %" PRId64 "\n",
             integral
           );
 }
