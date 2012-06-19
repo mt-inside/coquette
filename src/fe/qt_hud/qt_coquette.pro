@@ -24,4 +24,4 @@ SOURCES = main_form.cpp                      \
 FORMS   = main_form.ui
 QMAKE_CXXFLAGS += -Wall -Wextra -Werror -pg -g3 -O0
 LIBS           += -Wl,-rpath,../../../build -L../../../build -lcoquette
-INCLUDEPATH     = ../../../src boost_1_49_0
+INCLUDEPATH     = ../../../src
