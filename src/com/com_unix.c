@@ -73,7 +73,8 @@ int com_send_byte( uint8_t byte )
 
 int com_send_bytes( uint8_t *bytes, unsigned count )
 {
-    return write( s_tty, bytes, count ) != count;
+    ssize_t rc = write( s_tty, bytes, count );
+    return rc == -1 || (unsigned)rc != count;
 }
 
 
@@ -84,5 +85,6 @@ int com_read_byte( uint8_t *byte )
 
 int com_read_bytes( uint8_t *bytes, unsigned count )
 {
-    return read( s_tty, bytes, count ) != count;
+    ssize_t rc = read( s_tty, bytes, count );
+    return rc == -1 || (unsigned)rc != count;
 }
