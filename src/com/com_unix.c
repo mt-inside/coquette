@@ -23,27 +23,42 @@ int com_init( char *tty_dev_name )
     {
         tios = calloc( sizeof( struct termios ), 1 );
 
+        /* TODO: do we want to read these at all, or just assert our own set? */
         tcgetattr( s_tty, tios );
 
-        /* Magic runes that equate to 8N1 */
-        tios->c_cflag |= ( CS8 );
-        tios->c_cflag &= ~( PARENB | CSTOPB | CSIZE );
-        /* tios->c_cflag |= ( CRTSCTS | CLOCAL | CREAD ); */
-        /* tios->c_cflag &= ~( ICANON | ECHO | ECHOE | ISIG ); */
+        /* "something like the "raw" mode of the old Version 7 terminal driver"
+         * Good baseline */
+        cfmakeraw( tios );
 
-        /* tios->c_oflag &= ~OPOST; */
+        /* Input modes */
+        //tios->c_iflag |= IGNBRK;
+        //tios->c_iflag &= ~( 0 );
+
+        /* Output modes */
+        //tios->c_oflag |= 0;
+        //tios->c_oflag &= ~( OPOST );
+
+        /* Control modes */
+        /* Magic runes that equate to 8N1 */
+        tios->c_cflag &= ~( PARENB | CSTOPB | CSIZE );
+        tios->c_cflag |= CS8;
+
+        //tios->c_cflag |= CREAD | CLOCAL | CRTSCTS; /* Enable reading | Ign ctrl lines | H/W flow ctrl */
+        //tios->c_cflag &= ~( IXON | IXOFF ); /* S/W flow ctrl */
+
+        /* Local modes */
+        //tios->c_lflags |= 0;
+        //tios->c_lflags &= ~( ICANON | ISIG | ECHO | IEXTEN ); /* Canonical mode | Raise signals for ctrl chars | echo input chars | impl-defined input proc */
 
         /* No waiting for time or multiple characters */
-        /* tios->c_cc[VTIME] = 0; */
-        /* tios->c_cc[VMIN ] = 0; */
+        tios->c_cc[VTIME] = 0;
+        tios->c_cc[VMIN ] = 0;
 
         /* 9600 baud */
         assert( !cfsetspeed( tios, B9600 ) );
 
-        /* raw: no buffering? necessary? */
-        /* cfmakeraw( tios ); */
 
-        if( tcsetattr( s_tty, TCSANOW, tios ) )
+        if( tcsetattr( s_tty, TCSADRAIN, tios ) )
         {
             perror( "failed to tcsetattr" );
         }
