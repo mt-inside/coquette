@@ -40,7 +40,7 @@ int handshake( ecu_t ecu )
         assert( !com_send_byte( handshake[i] ) );
     }
 
-    com_read_byte( &out );
+    assert( !com_read_byte( &out ) );
     assert( out == c_handshake_response );
 
     return 0;

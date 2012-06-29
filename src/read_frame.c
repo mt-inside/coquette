@@ -59,42 +59,42 @@ static int read_frame_inner( cmd_t cmd,
     unsigned i;
     uint8_t out;
 
-    if( arg_len == 0 ) com_send_byte( (uint8_t)cmd );
+    if( arg_len == 0 ) assert( !com_send_byte( (uint8_t)cmd ) );
     for( i = 0; i < arg_len; ++i )
     {
-        com_send_byte( (uint8_t)cmd );
-        com_send_byte( args[i] );
+        assert( !com_send_byte( (uint8_t)cmd ) );
+        assert( !com_send_byte( args[i] ) );
     }
 
-    com_send_byte( c_end_of_request );
+    assert( !com_send_byte( c_end_of_request ) );
 
-    if( arg_len == 0 ) { com_read_byte( &out ); assert( out == (uint8_t)~cmd ); }
+    if( arg_len == 0 ) { assert( !com_read_byte( &out ) ); assert( out == (uint8_t)~cmd ); }
     for( i = 0; i < arg_len; ++i )
     {
-        com_read_byte( &out );
+        assert( !com_read_byte( &out ) );
         assert( out == (uint8_t)~cmd );
 
-        com_read_byte( &out );
+        assert( !com_read_byte( &out ) );
         assert( out == args[i] );
     }
 
-    com_read_byte( &out );
+    assert( !com_read_byte( &out ) );
     assert( out == c_response_frame_start );
 
-    com_read_byte( &out );
+    assert( !com_read_byte( &out ) );
     *data_len = out;
     assert( *data_len > 0 );
 
     *data = malloc( *data_len );
-    com_read_bytes( *data, *data_len );
+    assert( !com_read_bytes( *data, *data_len ) );
 
     /* ECU continues to steam... */
 
-    com_send_byte( cmd_STOP );
+    assert( !com_send_byte( cmd_STOP ) );
 
     /* Read (hence don't return) to the end of this frame so that we're in a
      * sane state for the next request */
-    do { com_read_byte( &out ); } while( out != c_end_of_response );
+    do { assert( !com_read_byte( &out ) ); } while( out != c_end_of_response );
 
 
     return 0;

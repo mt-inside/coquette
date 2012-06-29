@@ -225,20 +225,20 @@ static void *stream_frame_thread( void *ctxt )
     /* Send command and arguments */
     for( i = 0; i < arg_len; ++i )
     {
-        com_send_byte( (uint8_t)cmd_READ_REGISTER );
-        com_send_byte( args[i] );
+        assert( !com_send_byte( (uint8_t)cmd_READ_REGISTER ) );
+        assert( !com_send_byte( args[i] ) );
     }
 
-    com_send_byte( c_end_of_request );
+    assert( !com_send_byte( c_end_of_request ) );
 
 
     /* Check response */
     for( i = 0; i < arg_len; ++i )
     {
-        com_read_byte( &out );
+        assert( !com_read_byte( &out ) );
         assert( out == (uint8_t)~cmd_READ_REGISTER );
 
-        com_read_byte( &out );
+        assert( !com_read_byte( &out ) );
         assert( out == args[i] );
     }
 
@@ -248,24 +248,24 @@ static void *stream_frame_thread( void *ctxt )
     {
         assert( s_state == state_RUNNING );
 
-        com_read_byte( &out );
+        assert( !com_read_byte( &out ) );
         assert( out == c_response_frame_start );
 
-        com_read_byte( &out );
+        assert( !com_read_byte( &out ) );
         assert( out == arg_len );
 
         /* I assume this blocks until this many bytes have come off the serial
          * port, and thus that this loop doesn't spin */
-        com_read_bytes( data, arg_len );
+        assert( !com_read_bytes( data, arg_len ) );
 
         cb( cb_ctxt, data, arg_len );
     }
 
-    com_send_byte( cmd_STOP );
+    assert( !com_send_byte( cmd_STOP ) );
 
     /* Read (hence don't return) to the end of this frame so that we're in a
      * sane state for the next request */
-    do { com_read_byte( &out ); } while( out != c_end_of_response );
+    do { assert( !com_read_byte( &out ) ); } while( out != c_end_of_response );
 
 
     thread_args_free( thread_args );
