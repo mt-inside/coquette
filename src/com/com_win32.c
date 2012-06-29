@@ -37,10 +37,14 @@ int com_init( char *tty_dev_name )
                 /* TODO: these need looking at. We will always ask for no more
                  * characters than will be available under normal circumstances.
                  * Thus we should ask for an infinite timeout in case the ECU
-                 * is slow. */
-                timeouts->ReadIntervalTimeout = 50;
-                timeouts->ReadTotalTimeoutConstant = 50;
+                 * is slow. NB: in the real world these have always been fine.
+                 * TODO: calculate the inter-byte time at 9600Baud. */
+                /* Inter-byte timeout */
+                timeouts->ReadIntervalTimeout = 50; /* ms */
+                /* Total timeout for a read() equals:
+                 *   Multiplier * no req. bytes + Constant */
                 timeouts->ReadTotalTimeoutMultiplier = 10;
+                timeouts->ReadTotalTimeoutConstant = 50;
                 timeouts->WriteTotalTimeoutConstant = 50;
                 timeouts->WriteTotalTimeoutMultiplier = 10;
 
