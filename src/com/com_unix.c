@@ -1,3 +1,5 @@
+#include "common.h"
+
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
@@ -5,9 +7,7 @@
 #include <assert.h>
 #include <errno.h>
 
-#include "common.h"
 #include "com.h"
-#include "com_utils.h"
 
 
 static int s_tty;
@@ -83,20 +83,12 @@ int com_finalise( void )
 }
 
 
-static ssize_t write_wrapper( void *buf, size_t count )
+ssize_t write_wrapper( void *buf, size_t count )
 {
     return write( s_tty, buf, count );
 }
-int com_send_bytes( uint8_t *buf, unsigned count )
-{
-    return com_read_write_wrapper( buf, count, &write_wrapper );
-}
 
-static ssize_t read_wrapper( void *buf, size_t count )
+ssize_t read_wrapper( void *buf, size_t count )
 {
     return read( s_tty, buf, count );
-}
-int com_read_bytes( uint8_t *buf, unsigned count )
-{
-    return com_read_write_wrapper( buf, count, &read_wrapper );
 }

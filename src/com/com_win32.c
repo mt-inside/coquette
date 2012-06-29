@@ -1,7 +1,7 @@
 #include <windows.h>
+#include <unistd.h>
 
 #include "com.h"
-#include "com_utils.h"
 
 
 static HANDLE s_tty;
@@ -66,24 +66,16 @@ int com_finalise( void )
 }
 
 
-static ssize_t write_wrapper( void *buf, size_t count )
+ssize_t write_wrapper( void *buf, size_t count )
 {
     DWORD sent;
     if( WriteFile( s_tty, buf, count, &sent, NULL ) == 0 ) return -1;
     return sent;
 }
-int com_send_bytes( uint8_t *buf, unsigned count )
-{
-    return com_read_write_wrapper( buf, count, &write_wrapper );
-}
 
-static ssize_t read_wrapper( void *buf, size_t count )
+ssize_t read_wrapper( void *buf, size_t count )
 {
     DWORD sent;
     if( ReadFile( s_tty, buf, count, &sent, NULL ) == 0 ) return -1;
     return sent;
-}
-int com_read_bytes( uint8_t *buf, unsigned count )
-{
-    return com_read_write_wrapper( buf, count, &read_wrapper );
 }

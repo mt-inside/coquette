@@ -1,18 +1,38 @@
 #include "common.h"
-#include "com_utils.h"
+
+#include <unistd.h>
+#include <stdint.h>
+
 #include "com.h"
+#include "com_internal.h"
+
+
+typedef ssize_t (*com_wrapper_t)( void *, size_t );
+
+static int com_read_write_wrapper(
+    uint8_t *buf, unsigned count, com_wrapper_t fn
+);
 
 
 int com_read_byte( uint8_t *byte )
 {
     return com_read_bytes( byte, 1 );
 }
+int com_read_bytes( uint8_t *buf, unsigned count )
+{
+    return com_read_write_wrapper( buf, count, &read_wrapper );
+}
+
 int com_send_byte( uint8_t byte )
 {
     return com_send_bytes( &byte, 1 );
 }
+int com_send_bytes( uint8_t *buf, unsigned count )
+{
+    return com_read_write_wrapper( buf, count, &write_wrapper );
+}
 
-int com_read_write_wrapper(
+static int com_read_write_wrapper(
     uint8_t *buf, unsigned count,
     com_wrapper_t fn
 )
