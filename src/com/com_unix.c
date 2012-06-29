@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include "com.h"
+#include "com_utils.h"
 
 
 static int s_tty;
@@ -82,27 +83,20 @@ int com_finalise( void )
 }
 
 
-int com_send_byte( uint8_t byte )
+static ssize_t write_wrapper( int fd, void *buf, size_t count )
 {
-    return com_send_bytes( &byte, 1 );
+    return write( fd, buf, count );
+}
+int com_send_bytes( uint8_t *buf, unsigned count )
+{
+    return com_read_write_wrapper( s_tty, buf, count, &write_wrapper );
 }
 
-int com_send_bytes( uint8_t *bytes, unsigned count )
+static ssize_t read_wrapper( int fd, void *buf, size_t count )
 {
-    ssize_t rc = write( s_tty, bytes, count );
-    return rc == -1 || (unsigned)rc != count;
+    return read( fd, buf, count );
 }
-
-
-int com_read_byte( uint8_t *byte )
+int com_read_bytes( uint8_t *buf, unsigned count )
 {
-    return com_read_bytes( byte, 1 );
-}
-
-int com_read_bytes( uint8_t *bytes, unsigned count )
-{
-    ssize_t rc = read( s_tty, bytes, count );
-    if( rc == -1 ) LOG( "com: read() got -1" );
-    if( rc ==  0 ) LOG( "com: read() got 0" );
-    return rc == -1 || (unsigned)rc != count;
+    return com_read_write_wrapper( s_tty, buf, count, &read_wrapper );
 }
