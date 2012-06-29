@@ -66,24 +66,24 @@ int com_finalise( void )
 }
 
 
-static ssize_t write_wrapper( int fd, void *buf, size_t count )
+static ssize_t write_wrapper( void *buf, size_t count )
 {
     DWORD sent;
-    if( WriteFile( fd, buf, count, &sent, NULL ) == 0 ) return -1;
+    if( WriteFile( s_tty, buf, count, &sent, NULL ) == 0 ) return -1;
     return sent;
 }
 int com_send_bytes( uint8_t *buf, unsigned count )
 {
-    return com_read_write_wrapper( s_tty, buf, count, &write_wrapper );
+    return com_read_write_wrapper( buf, count, &write_wrapper );
 }
 
-static ssize_t read_wrapper( int fd, void *buf, size_t count )
+static ssize_t read_wrapper( void *buf, size_t count )
 {
     DWORD sent;
-    if( ReadFile( fd, buf, count, &sent, NULL ) == 0 ) return -1;
+    if( ReadFile( s_tty, buf, count, &sent, NULL ) == 0 ) return -1;
     return sent;
 }
 int com_read_bytes( uint8_t *buf, unsigned count )
 {
-    return com_read_write_wrapper( s_tty, buf, count, &read_wrapper );
+    return com_read_write_wrapper( buf, count, &read_wrapper );
 }

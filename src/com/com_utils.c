@@ -13,7 +13,7 @@ int com_send_byte( uint8_t byte )
 }
 
 int com_read_write_wrapper(
-    int fd, uint8_t *buf, unsigned count,
+    uint8_t *buf, unsigned count,
     com_wrapper_t fn
 )
 {
@@ -21,7 +21,7 @@ int com_read_write_wrapper(
 
     do
     {
-        rc = fn( fd, buf, count );
+        rc = fn( buf, count );
         if( rc == -1 ) LOG( "com: fn() got -1" );
         if( rc ==  0 ) LOG( "com: fn() got 0" );
         /* should never get 0 bytes as we have a 1 byte timeout on the socket
