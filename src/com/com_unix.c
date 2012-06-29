@@ -50,9 +50,10 @@ int com_init( char *tty_dev_name )
         //tios->c_lflags |= 0;
         //tios->c_lflags &= ~( ICANON | ISIG | ECHO | IEXTEN ); /* Canonical mode | Raise signals for ctrl chars | echo input chars | impl-defined input proc */
 
-        /* No waiting for time or multiple characters */
-        tios->c_cc[VTIME] = 0;
-        tios->c_cc[VMIN ] = 0;
+        /* Wait for at least one character (as sometimes we only want to read
+         * one) */
+        tios->c_cc[VTIME] = 0; /* deciseconds */
+        tios->c_cc[VMIN ] = 1;
 
         /* 9600 baud */
         assert( !cfsetspeed( tios, B9600 ) );
@@ -101,5 +102,7 @@ int com_read_byte( uint8_t *byte )
 int com_read_bytes( uint8_t *bytes, unsigned count )
 {
     ssize_t rc = read( s_tty, bytes, count );
+    if( rc == -1 ) LOG( "com: read() got -1" );
+    if( rc ==  0 ) LOG( "com: read() got 0" );
     return rc == -1 || (unsigned)rc != count;
 }
