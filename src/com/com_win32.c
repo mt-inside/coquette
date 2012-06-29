@@ -1,6 +1,7 @@
 #include <windows.h>
 
 #include "com.h"
+#include "com_utils.h"
 
 
 static HANDLE s_tty;
