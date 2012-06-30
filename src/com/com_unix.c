@@ -23,7 +23,7 @@ int com_init( char *tty_dev_name )
     if( s_tty != -1 )
     {
         /* Setting NDELAY causes VTIME & VMIN to be ignored */
-        fcntl( fd, F_SETFL, 0 ); /* TODO: turns off NDELAY. try setting FNDELAY. */
+        fcntl( s_tty, F_SETFL, 0 ); /* TODO: turns off NDELAY. try setting FNDELAY. */
 
 
         tios = calloc( sizeof( struct termios ), 1 );
