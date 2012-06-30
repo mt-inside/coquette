@@ -13,6 +13,13 @@
 static int s_tty;
 
 
+/* All of these magic runes are neccessary, i.e. setting those settings to
+ * something different stops it working. However in testing it was not necessary
+ * to assert all of them; some of them are the same as the defaults.
+ * However they're left here to a) document the protocol and b) incase future
+ * drivers have different defaults.
+ * Any setting not explicitly set is either a default that I missed, or
+ * something to which it's not sensitive, e.g. s/w flow control */
 int com_init( char *tty_dev_name )
 {
     int rc = 1;
@@ -27,8 +34,8 @@ int com_init( char *tty_dev_name )
         goto error0;
     }
 
-    /* Setting NDELAY causes VTIME & VMIN to be ignored */
-    /* TODO: turns off NDELAY. try setting FNDELAY. */
+    /* Clear NDELAY.
+     * Setting NDELAY would cause VTIME & VMIN to be ignored */
     if( fcntl( s_tty, F_SETFL, 0 ) )
     {
         perror( "Failed to fcntl() COM port" );
@@ -37,8 +44,9 @@ int com_init( char *tty_dev_name )
 
     tios = calloc( sizeof( struct termios ), 1 );
 
-    /* TODO: do we want to read these at all, or just assert our own set? */
-    /* TODO: try me off */
+    /* In testing this didn't seem to be neccessary, but future drivers might
+     * stash funny things in this that we need to preserve. It doesn't hurt to
+     * do this because we re-assert everything upon which we depend */
     if( tcgetattr( s_tty, tios ) )
     {
         perror( "Failed to tcgetattr() on COM port" );
@@ -56,30 +64,11 @@ int com_init( char *tty_dev_name )
     */
     cfmakeraw( tios );
 
-    /* Input modes */
-    //tios->c_iflag |= 0;
-    //tios->c_iflag &= ~( 0 );
-
-    /* Output modes */
-    //tios->c_oflag |= 0;
-    //tios->c_oflag &= ~( 0 );
-
     /* Control modes */
-    /* Magic runes that equate to 8N1 */
     tios->c_cflag &= ~( PARENB | CSTOPB ); /* No parity | 1 stop bit */
     tios->c_cflag &= ~CSIZE; tios->c_cflag |= CS8; /* 8bits */
-
     tios->c_cflag |= CREAD | CLOCAL; /* Enable reading | Ign ctrl lines */
-
-    tios->c_cflag &= ~CRTSCTS; /* TODO: hw flow control, try me */
-    //tios->c_cflag |= CRTSCTS; /* TODO: hw flow control, try me */
-
-    tios->c_cflag &= ~( IXON | IXOFF | IXANY ); /* TODO: S/W flow ctrl, try me */
-    //tios->c_cflag |= IXON | IXOFF | IXANY; /* TODO: S/W flow ctrl, try me */
-
-    /* Local modes */
-    //tios->c_lflags |= 0;
-    //tios->c_lflags &= ~( 0 );
+    tios->c_cflag &= ~CRTSCTS; /* No h/w flow control */
 
     /* Control characters */
     /* Wait for at least one character (as sometimes we only want to read
