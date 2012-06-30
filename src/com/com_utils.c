@@ -21,7 +21,6 @@ int com_read_byte( uint8_t *byte )
 }
 int com_read_bytes( uint8_t *buf, unsigned count )
 {
-    printf( "COM: reading %u bytes\n", count );
     return com_read_write_wrapper( buf, count, &read_wrapper );
 }
 
@@ -31,7 +30,6 @@ int com_send_byte( uint8_t byte )
 }
 int com_send_bytes( uint8_t *buf, unsigned count )
 {
-    printf( "COM: writing %u bytes\n", count );
     return com_read_write_wrapper( buf, count, &write_wrapper );
 }
 
