@@ -22,34 +22,52 @@ int com_init( char *tty_dev_name )
 
     if( s_tty != -1 )
     {
+        /* Setting NDELAY causes VTIME & VMIN to be ignored */
+        fcntl( fd, F_SETFL, 0 ); /* TODO: turns off NDELAY. try setting FNDELAY. */
+
+
         tios = calloc( sizeof( struct termios ), 1 );
 
         /* TODO: do we want to read these at all, or just assert our own set? */
-        tcgetattr( s_tty, tios );
+        tcgetattr( s_tty, tios ); /* TODO: try me off */
 
         /* "something like the "raw" mode of the old Version 7 terminal driver"
          * Good baseline */
         cfmakeraw( tios );
+        /* ==
+        termios_p->c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
+                | INLCR | IGNCR | ICRNL | IXON);
+        termios_p->c_oflag &= ~OPOST;
+        termios_p->c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+        termios_p->c_cflag &= ~(CSIZE | PARENB);
+        termios_p->c_cflag |= CS8;
+        */
+
 
         /* Input modes */
-        //tios->c_iflag |= IGNBRK;
+        //tios->c_iflag |= 0;
         //tios->c_iflag &= ~( 0 );
 
         /* Output modes */
         //tios->c_oflag |= 0;
-        //tios->c_oflag &= ~( OPOST );
+        //tios->c_oflag &= ~( 0 );
 
         /* Control modes */
         /* Magic runes that equate to 8N1 */
-        tios->c_cflag &= ~( PARENB | CSTOPB | CSIZE );
-        tios->c_cflag |= CS8;
+        tios->c_cflag &= ~( PARENB | CSTOPB ); /* No parity | 1 stop bit */
+        tios->c_cflag &= ~CSIZE; tios->c_cflag |= CS8; /* 8bits */
 
-        //tios->c_cflag |= CREAD | CLOCAL | CRTSCTS; /* Enable reading | Ign ctrl lines | H/W flow ctrl */
-        //tios->c_cflag &= ~( IXON | IXOFF ); /* S/W flow ctrl */
+        tios->c_cflag |= CREAD | CLOCAL; /* Enable reading | Ign ctrl lines */
+
+        tios->c_cflag &= ~CRTSCTS; /* TODO: hw flow control, try me */
+        //tios->c_cflag |= CRTSCTS; /* TODO: hw flow control, try me */
+
+        tios->c_cflag &= ~( IXON | IXOFF | IXANY ); /* TODO: S/W flow ctrl, try me */
+        //tios->c_cflag |= IXON | IXOFF | IXANY; /* TODO: S/W flow ctrl, try me */
 
         /* Local modes */
         //tios->c_lflags |= 0;
-        //tios->c_lflags &= ~( ICANON | ISIG | ECHO | IEXTEN ); /* Canonical mode | Raise signals for ctrl chars | echo input chars | impl-defined input proc */
+        //tios->c_lflags &= ~( 0 );
 
         /* Wait for at least one character (as sometimes we only want to read
          * one) */
@@ -60,7 +78,7 @@ int com_init( char *tty_dev_name )
         assert( !cfsetspeed( tios, B9600 ) );
 
 
-        if( tcsetattr( s_tty, TCSADRAIN, tios ) )
+        if( tcsetattr( s_tty, TCSANOW, tios ) )
         {
             perror( "failed to tcsetattr" );
         }
