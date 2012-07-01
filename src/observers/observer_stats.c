@@ -70,7 +70,8 @@ static void get_stats_for_range( int *start, unsigned count,
                                  int *mean_out, int *stdev_out )
 {
     unsigned i;
-    int min = INT_MAX, max = INT_MIN, sum = 0, sum_sqr = 0, mean, variance;
+    int min = INT_MAX, max = INT_MIN, sum = 0, sum_sqr = 0;
+    float mean, variance;
 
     for( i = 0; i < count; ++i )
     {
@@ -79,11 +80,11 @@ static void get_stats_for_range( int *start, unsigned count,
         sum += start[i];
         sum_sqr += start[i] * start[i];
     }
-    mean = sum / count;
-    variance = (sum_sqr - sum * mean) / count;
+    mean = (float)sum / count;
+    variance = ((float)sum_sqr - (float)sum * mean) / count;
 
     *min_out = min; *max_out = max;
-    *mean_out = mean; *stdev_out = (int)round( sqrt( variance ) );
+    *mean_out = (int)round( mean ); *stdev_out = (int)round( sqrt( variance ) );
 }
 
 void observer_stats_get_stats( observer_base_t *obs,
