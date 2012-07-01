@@ -1,4 +1,4 @@
-Make com_read_byte loop read() until is has everything. UNIX & win. OR maybe leave it, because the asserts will catch this happening.
+make stats_observer's window size in secs
 generalise the proxies so that reading observers and updating widgets is decoupled
 move from boost to std::bind1st, some func thing, etc
 qt hud stops updating sometimes. Maybe because it's being called by a different thread? Indeed, the stylesheets don't like being set from another thread, and there are occasional SEGVs in the Qt/X libraries. How to marshall? will qt do this, or do I need to poll something from the qt main thread like a pipe?
@@ -15,7 +15,6 @@ stats_observer
 - stdev looks suspect - had a dataset with range 1 stdev 7. Unit test!
 - means have been seen to be bollocks too. Are these both because it's
   calculating population estimates, not sample stats?
-do the TODOs in stream_frame.c etc
 reg_infos to gain name, unit name, range
 observabled to push their new values (complex type (maybe >1 number like stats) (with units too)) in the update call, as it's silly that you just get a unit type notification then have to ask for the value.
 observables to report a complex T, not just uint8 (e.g. value + reg_info). IS THIS NECESSARY? WHEN YOU REGISTER FOR UPDATES YOU SHOULD HAVE A REG_INFO TO HAND
@@ -29,8 +28,6 @@ observer callbacks can get their reg from their obs struct. There should be a wa
 Derive cool stuff - instant and avg MPG, AFR (open and closed loop? ECU is always telling us MAF and fueling, only difference is how it determines fuel). Torque (from fuel and AFR?). Power (from torque and revs).
 some kind of framework for unit conversion (engine speed in Hz, road spd in m/s, acceleration in G).
 commands to other cpus (each cmd take an ecu and remember / switch if different? OR unified address space for registers (pair cpu & reg) - layer underneath to watch current ecu and switch if necc (sort first to reduce switching))
-Mac Serial comms - ioreg -c IOSerialBSDClient. PL email - get mac driver, change PCI IDs
 
 make look like R34 / 35 GT-R, Defi ADVANCE ZD, HKS CAMP 2
-gauge observer - current value and 10 sec peak - stats observer does this (may need to be able to set window size - in seconds)
 log observer...
