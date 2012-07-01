@@ -12,14 +12,12 @@ stats_observer
   (still needs the growing buffer)
 - do proper update notifications
 - look at on-line algorithms too
-- stdev looks suspect - had a dataset with range 1 stdev 7. Unit test!
-- means have been seen to be bollocks too. Are these both because it's
-  calculating population estimates, not sample stats?
 reg_infos to gain name, unit name, range
 observabled to push their new values (complex type (maybe >1 number like stats) (with units too)) in the update call, as it's silly that you just get a unit type notification then have to ask for the value.
 observables to report a complex T, not just uint8 (e.g. value + reg_info). IS THIS NECESSARY? WHEN YOU REGISTER FOR UPDATES YOU SHOULD HAVE A REG_INFO TO HAND
 mock ecu for testing (maybe a gui with sliders for the values)
 ideally would have a consult COM service to which you could add and remove observers. Regs would be added to stream only if not already streaming. Any change to regs would stop and restart stream.
+- this needs to happen so that I can construct observers over the COM service, which they register with. I can then provide a mock com service for real unit testing
 
 Make big-endian safe. Extracting LSB by truncation, read_reg_2bytes(), etc...
 how to disconn from ecu to handshake another? Because handshakes start with two command-ends, I wonder if just send a new handshake?
