@@ -17,6 +17,7 @@ extern observer_stats_t *observer_stats_new( engine_reg_t reg,
                                              observer_cb_t cb, void *ctxt,
                                              unsigned period );
 
+/* Mean and stdev are for the sample, not population estimates */
 extern void observer_stats_get_stats( observer_base_t *obs,
                                       int *min, int *max, int *mean, int *stdev );
 
