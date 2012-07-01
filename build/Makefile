@@ -22,7 +22,8 @@ else
 endif
 
 # Source directories
-SRC_ROOT        := ../src
+ROOT            ?= ..
+SRC_ROOT        := ${ROOT}/src
 SRC_SEARCH_DIRS := ${SRC_ROOT} ${SRC_ROOT}/observers
 COM_DIR         := ${SRC_ROOT}/com
 FE_DIR          := ${SRC_ROOT}/fe
@@ -31,10 +32,10 @@ SRC_ALL_DIRS    := ${SRC_SEARCH_DIRS} ${COM_DIR} ${FE_DIR}
 # TODO - don't actually need the paths on these src files; they're just taken
 # off again. Src files are found by vpath, not these paths.
 # Front end
-FE := ${FE_DIR}/fe_avg_stream.c
+FE ?= ${FE_DIR}/fe_avg_stream.c
 FE_OBJECT_FILE := $(notdir $(patsubst %.c,%.o,$(FE)))
 
-LIB_SRC_FILES := $(foreach dir,$(SRC_SEARCH_DIRS),$(wildcard $(dir)/*.c)) ${COM} ${COM_DIR}/com_utils.c
+LIB_SRC_FILES += $(foreach dir,$(SRC_SEARCH_DIRS),$(wildcard $(dir)/*.c)) ${COM} ${COM_DIR}/com_utils.c
 LIB_OBJECT_FILES := $(patsubst %.c,%.o,$(LIB_SRC_FILES))
 LIB_OBJECT_FILES := $(notdir $(LIB_OBJECT_FILES))
 
