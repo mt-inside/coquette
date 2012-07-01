@@ -50,9 +50,13 @@ typedef enum
 } state_t;
 
 
-/* TODO: lock around me */
 static state_t s_state = state_NOT_RUNNING;
 static pthread_t s_thread;
+static pthread_mutex_t s_lock;
+
+static state_t get_state( void );
+static void set_state( state_t state );
+static void test_and_set_state( state_t old, state_t new );
 
 
 static void stream_cb( void *stream_cb_ctxt, uint8_t *data, unsigned data_len );
@@ -75,7 +79,9 @@ int stream_registers_start( stream_t *stream )
     unsigned observers_len;
 
 
-    assert( s_state == state_NOT_RUNNING );
+    pthread_mutex_init( &s_lock, NULL );
+
+    assert( get_state( ) == state_NOT_RUNNING );
 
     stream_get_observers( stream, &observers, &observers_len );
 
@@ -136,7 +142,7 @@ int stream_registers_start( stream_t *stream )
         thread_args
     );
 
-    s_state = state_RUNNING;
+    set_state( state_RUNNING );
 
 
     return 0;
@@ -146,12 +152,13 @@ void stream_registers_end( void )
 {
     void *retval;
 
-    assert( s_state == state_RUNNING );
+    test_and_set_state( state_RUNNING, state_EXITING );
 
-    s_state = state_EXITING;
     pthread_join( s_thread, &retval );
 
-    s_state = state_NOT_RUNNING;
+    set_state( state_NOT_RUNNING );
+
+    pthread_mutex_destroy( &s_lock );
 }
 
 
@@ -244,10 +251,8 @@ static void *stream_frame_thread( void *ctxt )
 
 
     /* Stream data */
-    while( s_state != state_EXITING )
+    while( get_state( ) != state_EXITING )
     {
-        assert( s_state == state_RUNNING );
-
         assert( !com_read_byte( &out ) );
         assert( out == c_response_frame_start );
 
@@ -272,4 +277,30 @@ static void *stream_frame_thread( void *ctxt )
     free( data );
 
     return NULL;
+}
+
+static state_t get_state( void )
+{
+    state_t state;
+
+    pthread_mutex_lock( &s_lock );
+    state = s_state;
+    pthread_mutex_unlock( &s_lock );
+
+    return state;
+}
+
+static void set_state( state_t state )
+{
+    pthread_mutex_lock( &s_lock );
+    s_state = state;
+    pthread_mutex_unlock( &s_lock );
+}
+
+static void test_and_set_state( state_t old, state_t new )
+{
+    pthread_mutex_lock( &s_lock );
+    assert( s_state == old );
+    s_state = new;
+    pthread_mutex_unlock( &s_lock );
 }
