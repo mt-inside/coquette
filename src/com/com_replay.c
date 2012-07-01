@@ -33,7 +33,7 @@ int com_finalise( void )
 }
 
 
-int com_send_byte( uint8_t byte )
+static int send_one_byte( uint8_t byte )
 {
     if( byte == cmd_STOP )
     {
@@ -46,20 +46,21 @@ int com_send_byte( uint8_t byte )
     return 0;
 }
 
-int com_send_bytes( uint8_t *bytes, unsigned count )
+ssize_t write_wrapper( void *buf, size_t count )
 {
     unsigned i;
+    uint8_t *bytes = buf;
 
     for( i = 0; i < count; ++i )
     {
-        com_send_byte( bytes[i] );
+        send_one_byte( bytes[i] );
     }
 
-    return 0;
+    return count;
 }
 
 
-int com_read_byte( uint8_t *byte )
+static int read_one_byte( uint8_t *byte )
 {
     unsigned x;
 
@@ -83,14 +84,15 @@ int com_read_byte( uint8_t *byte )
     return 0;
 }
 
-int com_read_bytes( uint8_t *bytes, unsigned count )
+ssize_t read_wrapper( void *buf, size_t count )
 {
     unsigned i;
+    uint8_t *bytes = buf;
 
     for( i = 0; i < count; ++i )
     {
-        com_read_byte( &(bytes[i]) );
+        read_one_byte( &(bytes[i]) );
     }
 
-    return 0;
+    return count;
 }
